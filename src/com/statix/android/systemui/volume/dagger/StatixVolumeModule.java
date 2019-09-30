@@ -34,6 +34,7 @@ import com.android.systemui.volume.VolumePanelFactory;
 import com.android.systemui.volume.dagger.VolumeModule;
 
 import com.statix.android.systemui.volume.StatixVolumeDialogComponent;
+import com.statix.android.systemui.tristate.dagger.TriStateModule;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -42,7 +43,7 @@ import dagger.Provides;
  * Dagger Module for code in the volume package.
  * Fork of {@link VolumeModule}
  */
-@Module
+@Module(includes = {TriStateModule.class})
 public interface StatixVolumeModule {
     /** */
     @Binds

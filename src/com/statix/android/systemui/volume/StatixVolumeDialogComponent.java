@@ -18,6 +18,9 @@
 package com.statix.android.systemui.volume;
 
 import android.content.Context;
+import android.view.WindowManager;
+
+import androidx.annotation.Nullable;
 
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.demomode.DemoModeController;
@@ -32,8 +35,15 @@ import com.android.systemui.volume.VolumeDialogControllerImpl;
 
 import javax.inject.Inject;
 
+import com.statix.android.systemui.tristate.TriStateUiController;
+import dagger.Lazy;
+
 @SysUISingleton
-public class StatixVolumeDialogComponent extends VolumeDialogComponent {
+public class StatixVolumeDialogComponent extends VolumeDialogComponent
+        implements TriStateUiController.UserActivityListener {
+
+    @Nullable
+    private TriStateUiController mTriStateUiController;
 
     @Inject
     public StatixVolumeDialogComponent(Context context,
@@ -44,9 +54,30 @@ public class StatixVolumeDialogComponent extends VolumeDialogComponent {
             PluginDependencyProvider pluginDependencyProvider,
             ExtensionController extensionController,
             TunerService tunerService,
-            VolumeDialog volumeDialog) {
+            VolumeDialog volumeDialog,
+            Lazy<TriStateUiController> triStateUiController) {
         super(context, keyguardViewMediator, activityStarter, volumeDialogController,
                 demoModeController, pluginDependencyProvider, extensionController, tunerService,
                 volumeDialog);
+
+        final boolean hasAlertSlider = context.getResources()
+                .getBoolean(com.android.internal.R.bool.config_hasAlertSlider);
+        if (hasAlertSlider) {
+            extensionController.newExtension(TriStateUiController.class)
+                    .withPlugin(TriStateUiController.class)
+                    .withDefault(triStateUiController::get)
+                    .withCallback(controller -> {
+                        if (mTriStateUiController != null) {
+                            mTriStateUiController.destroy();
+                        }
+                        mTriStateUiController = controller;
+                        controller.init(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY, this);
+                    }).build();
+        }
+    }
+
+    @Override
+    public void onTriStateUserActivity() {
+        onUserActivity();
     }
 }
