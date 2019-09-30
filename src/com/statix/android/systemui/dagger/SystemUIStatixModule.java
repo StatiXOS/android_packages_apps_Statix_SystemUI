@@ -74,6 +74,9 @@ import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 import com.statix.android.systemui.smartspace.KeyguardSmartspaceController;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
+import com.statix.android.systemui.tristate.TriStateUiController;
+import com.statix.android.systemui.tristate.TriStateUiControllerImpl;
+import com.statix.android.systemui.volume.VolumeDialogComponentStatix;
 
 import com.android.internal.app.AssistUtils;
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -102,7 +105,7 @@ import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.BcSmartspaceDataPlugin;
 import com.android.systemui.plugins.qs.QSFactory;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
-import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.plugins.VolumeDialogController;
 import com.android.systemui.power.EnhancedEstimates;
 import com.android.systemui.power.dagger.PowerModule;
 import com.android.systemui.qs.dagger.QSModule;
@@ -137,6 +140,7 @@ import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.IndividualSensorPrivacyController;
 import com.android.systemui.statusbar.policy.IndividualSensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.policy.NextAlarmController;
+import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
@@ -146,6 +150,7 @@ import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.sensors.ProximitySensor;
 import com.android.systemui.volume.dagger.VolumeModule;
+import com.android.systemui.volume.VolumeDialogComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -293,6 +298,14 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
+
+    @Binds
+    abstract VolumeDialogComponent bindVolumeDialogComponent(VolumeDialogComponentStatix volumeDialogComponentStatix);
+
+    @Provides
+    static TriStateUiController provideTristateUiController(Context context, VolumeDialogController volumeDialogController, ConfigurationController configurationController) {
+        return new TriStateUiControllerImpl(context, volumeDialogController, configurationController);
+    }
 
     @Binds
     @SysUISingleton
