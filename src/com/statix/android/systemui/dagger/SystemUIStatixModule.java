@@ -74,6 +74,7 @@ import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 import com.statix.android.systemui.smartspace.KeyguardSmartspaceController;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
+import com.statix.android.systemui.volume.VolumeDialogComponentStatix;
 
 import com.android.internal.app.AssistUtils;
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -146,6 +147,7 @@ import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.sensors.ProximitySensor;
 import com.android.systemui.volume.dagger.VolumeModule;
+import com.android.systemui.volume.VolumeDialogComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -293,6 +295,9 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
+
+    @Binds
+    abstract VolumeDialogComponent bindVolumeDialogComponent(VolumeDialogComponentStatix volumeDialogComponentStatix);
 
     @Binds
     @SysUISingleton
