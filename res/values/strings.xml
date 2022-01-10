@@ -32,4 +32,11 @@
     <!-- Smart Pixels QS Tile -->
     <string name="quick_settings_smart_pixels">Smart Pixels</string>
     <string name="quick_settings_smart_pixels_on_power_save">Auto-enabled Smart Pixels</string>
+
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Switch data card</string>
+    <string name="qs_data_switch_toast_0">Currently no SIM card is inserted</string>
+    <string name="qs_data_switch_toast_1">Currently only one SIM card is inserted</string>
+    <string name="qs_data_switch_changed_1">Switch data card to SIM 1.</string>
+    <string name="qs_data_switch_changed_2">Switch data card to SIM 2.</string>
 </resources>
