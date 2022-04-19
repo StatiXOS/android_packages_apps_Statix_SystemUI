@@ -287,9 +287,6 @@ public abstract class SystemUIStatixModule {
     abstract DozeHost provideDozeHost(DozeServiceHost dozeServiceHost);
 
     @Binds
-    abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
-
-    @Binds
     @SysUISingleton
     abstract UdfpsHbmProvider bindUdfpsHbmProvider(StatixUdfpsHbmProvider udfpsHbmProvider);
 

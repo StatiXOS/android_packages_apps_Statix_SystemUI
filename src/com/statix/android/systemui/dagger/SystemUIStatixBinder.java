@@ -169,7 +169,7 @@ public abstract class SystemUIStatixBinder {
     @Binds
     @IntoMap
     @ClassKey(ThemeOverlayController.class)
-    public abstract SystemUI bindThemeOverlayController(ThemeOverlayControllerStatix sysui);
+    public abstract SystemUI bindThemeOverlayController(ThemeOverlayController sysui);
 
     /**
      * Inject into ToastUI.
