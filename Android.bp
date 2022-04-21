@@ -23,6 +23,7 @@ android_library {
         "columbus-sysui-google",
         "elmyra-sysui-google",
         "gamedashboard-sysui-google",
+        "monet",
         "smartspace-google",
         "themelib",
         "SystemUI-core",
