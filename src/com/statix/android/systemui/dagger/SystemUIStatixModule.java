@@ -37,7 +37,6 @@ import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 import com.android.systemui.statusbar.NotificationLockscreenUserManagerImpl;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
-import com.android.systemui.statusbar.dagger.StartCentralSurfacesModule;
 import com.android.systemui.statusbar.notification.NotificationEntryManager;
 import com.android.systemui.statusbar.notification.collection.provider.VisualStabilityProvider;
 import com.android.systemui.statusbar.notification.collection.render.GroupMembershipManager;
@@ -79,7 +78,6 @@ import dagger.Provides;
 @Module(includes = {
         MediaModule.class,
         QSModule.class,
-        StartCentralSurfacesModule.class,
         StatixPowerModule.class,
         VolumeModule.class
 })
