@@ -18,13 +18,14 @@ package com.statix.android.systemui.statusbar.phone.dagger;
 
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.statusbar.phone.CentralSurfaces;
-import com.android.systemui.statusbar.phone.CentralSurfacesImpl;
+
+import com.statix.android.systemui.statusbar.phone.StatixCentralSurfacesImpl;
 
 import dagger.Binds;
 import dagger.Module;
 
 /**
- * Dagger Module providing {@link CentralSurfacesImpl}.
+ * Dagger Module providing {@link StatixCentralSurfacesImpl}.
  */
 @Module
 public interface StatixStatusBarPhoneModule {
@@ -33,5 +34,5 @@ public interface StatixStatusBarPhoneModule {
      */
     @Binds
     @SysUISingleton
-    CentralSurfaces bindsCentralSurfaces(CentralSurfacesImpl impl);
+    CentralSurfaces bindsCentralSurfaces(StatixCentralSurfacesImpl impl);
 }
