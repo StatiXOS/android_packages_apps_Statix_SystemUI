@@ -123,6 +123,10 @@ import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.legacysplitscreen.LegacySplitScreen;
 import com.android.wm.shell.startingsurface.StartingSurface;
 
+import com.google.android.systemui.smartspace.SmartSpaceController;
+
+import com.statix.android.systemui.statusbar.phone.StatixStatusBar;
+
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
@@ -243,8 +247,9 @@ public interface StatixStatusBarPhoneModule {
             Optional<StartingSurface> startingSurfaceOptional,
             TunerService tunerService,
             DumpManager dumpManager,
-            ActivityLaunchAnimator activityLaunchAnimator) {
-        return new StatusBar(
+            ActivityLaunchAnimator activityLaunchAnimator,
+            SmartSpaceController smartSpaceController) {
+        return new StatixStatusBar(
                 context,
                 notificationsController,
                 fragmentService,
@@ -344,7 +349,8 @@ public interface StatixStatusBarPhoneModule {
                 startingSurfaceOptional,
                 tunerService,
                 dumpManager,
-                activityLaunchAnimator
+                activityLaunchAnimator,
+                smartSpaceController
         );
     }
 }
