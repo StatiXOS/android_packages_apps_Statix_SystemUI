@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb53a3cd_9e161f57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-06-05T22:08:45Z",
+      "side": 1,
+      "message": "kang all smartspace layouts from pe, i think i made the same mistake in a lot of different places.",
+      "revId": "9f9091646ad3d8a21a5d03efe62f9c41097443bf",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
