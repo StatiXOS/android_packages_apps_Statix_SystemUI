@@ -13,12 +13,12 @@ android_library {
         "res-elmyra",
         "res-gamedashboard",
         "res-keyguard",
-        "res-smartspace",
     ],
     static_libs: [
         "ambientmusic-google",
         "assistmanager-google",
         "backgesture-google",
+        "bcsmartspace-res",
         "colorkt",
         "columbus-sysui-google",
         "elmyra-sysui-google",
