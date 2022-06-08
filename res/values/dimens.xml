@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (C) 2022 StatiXOS
+ SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- dimensions for the navigation bar handle -->
+    <dimen name="navigation_handle_bottom">8dp</dimen>
+    <dimen name="navigation_handle_radius">2dp</dimen>
+    <dimen name="navigation_handle_sample_horizontal_margin">10dp</dimen>
+    <dimen name="navigation_home_handle_width">108dp</dimen>
+
+</resources>
