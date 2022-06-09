@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2022 StatiXOS
+ * SPDX-License-Identifer: Apache-2.0
+ */
+
 package com.statix.android.systemui.dagger;
 
 import static com.android.systemui.Dependency.ALLOW_NOTIFICATION_LONG_PRESS_NAME;
