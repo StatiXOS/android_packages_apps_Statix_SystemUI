@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2022 StatiXOS
+ * SPDX-License-Identifer: Apache-2.0
+ */
+
 package com.statix.android.systemui.statusbar.phone;
 
 import static com.android.systemui.Dependency.TIME_TICK_HANDLER_NAME;

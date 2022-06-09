@@ -1,3 +1,8 @@
+//
+// Copyright (C) 2022 StatiXOS
+// SPDX-License-Identifer: Apache-2.0
+//
+
 java_library {
     name: "vendor-pixelatoms-java",
     vendor: true,

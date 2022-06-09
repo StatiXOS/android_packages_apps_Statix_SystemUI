@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2022 StatiX
+ * SPDX-License-Identifer: Apache-2.0
+ */
+
 package com.statix.android.systemui.qs.tileimpl;
 
 // keep in sync with frameworks/base/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSFactoryImpl.java
