@@ -3,6 +3,7 @@
  *           (c) 2018, Joe Maples
  *           (c) 2018, Adin Kwok
  *           (c) 2018, CarbonROM
+ *           (c) 2022, StatiXOS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
