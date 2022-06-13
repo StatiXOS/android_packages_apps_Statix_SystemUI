@@ -70,6 +70,7 @@ import com.google.android.systemui.smartspace.SmartSpaceController;
 import com.statix.android.systemui.StatixServices;
 import com.statix.android.systemui.assist.AssistManagerGoogle;
 import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
+import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 import com.statix.android.systemui.smartspace.KeyguardSmartspaceController;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
@@ -103,7 +104,6 @@ import com.android.systemui.plugins.qs.QSFactory;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.power.EnhancedEstimates;
-import com.android.systemui.power.EnhancedEstimatesImpl;
 import com.android.systemui.power.dagger.PowerModule;
 import com.android.systemui.qs.dagger.QSModule;
 import com.android.systemui.qs.tileimpl.QSFactoryImpl;
@@ -182,7 +182,7 @@ public abstract class SystemUIStatixModule {
     }
 
     @Binds
-    abstract EnhancedEstimates bindEnhancedEstimates(EnhancedEstimatesImpl enhancedEstimates);
+    abstract EnhancedEstimates bindEnhancedEstimates(EnhancedEstimatesStatixImpl enhancedEstimates);
 
     @Binds
     abstract NotificationLockscreenUserManager bindNotificationLockscreenUserManager(
