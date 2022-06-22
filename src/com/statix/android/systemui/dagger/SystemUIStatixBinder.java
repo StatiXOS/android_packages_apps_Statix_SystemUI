@@ -36,7 +36,6 @@ import com.android.systemui.wmshell.WMShell;
 import com.android.systemui.dagger.SysUISingleton;
 
 import com.google.android.systemui.columbus.ColumbusTargetRequestService;
-import com.google.android.systemui.gamedashboard.GameMenuActivity;
 
 import com.statix.android.systemui.StatixServices;
 import com.statix.android.systemui.statusbar.dagger.StatixStatusBarModule;
@@ -232,14 +231,6 @@ public abstract class SystemUIStatixBinder {
     @IntoMap
     @ClassKey(StatixServices.class)
     public abstract SystemUI bindStatixServices(StatixServices sysui);
-
-    /**
-     * Inject into GameMenuActivity.
-     */
-    @Binds
-    @IntoMap
-    @ClassKey(GameMenuActivity.class)
-    public abstract Activity bindGameMenuActivity(GameMenuActivity activity);
 
     /**
      * Inject into ColumbusTargetRequestService.
