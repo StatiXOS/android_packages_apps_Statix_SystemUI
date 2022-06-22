@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21e2e291_7bcd8009",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2022-06-22T00:16:03Z",
+      "side": 1,
+      "message": "This doesn\u0027t bring back the toggles for some reason.",
+      "revId": "aadf3eaceccb920cdb70a4a9d62226dc109f5a39",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
