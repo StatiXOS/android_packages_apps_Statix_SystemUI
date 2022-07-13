@@ -44,7 +44,7 @@ android_library {
         "columbus-sysui-google",
         "elmyra-sysui-google",
         "monet",
-        "smartspace-google",
+        "smartspace-proto-java",
         "themelib",
         "SystemUI-core",
         "tensorflowlite_java",
