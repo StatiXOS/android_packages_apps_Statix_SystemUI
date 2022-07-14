@@ -36,7 +36,6 @@ android_library {
         "res-keyguard",
     ],
     static_libs: [
-        "ambientmusic-google",
         "assistmanager-google",
         "backgesture-google",
         "bcsmartspace-res",
