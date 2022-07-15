@@ -31,7 +31,12 @@ import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
+import com.android.systemui.statusbar.phone.CentralSurfaces;
 import com.android.systemui.statusbar.policy.BatteryController;
+
+import com.statix.android.systemui.ambient.AmbientIndicationContainer;
+
+import dagger.Lazy;
 
 import vendor.lineage.powershare.V1_0.IPowerShare;
 
@@ -43,6 +48,8 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         implements BatteryController.BatteryStateChangeCallback {
 
     private IPowerShare mPowerShare;
+    private Lazy<CentralSurfaces> mCentralSurfacesLazy;
+    private AmbientIndicationContainer mAmbientContainer;
     private BatteryController mBatteryController;
     private NotificationManager mNotificationManager;
     private Notification mNotification;
@@ -59,7 +66,8 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
             QSLogger qsLogger,
-            BatteryController batteryController
+            BatteryController batteryController,
+            Lazy<CentralSurfaces> centralSurfacesLazy
     ) {
         super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
                 statusBarStateController, activityStarter, qsLogger);
@@ -67,6 +75,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         if (mPowerShare == null) {
             return;
         }
+        mCentralSurfacesLazy = centralSurfacesLazy;
 
         mBatteryController = batteryController;
         mNotificationManager = mContext.getSystemService(NotificationManager.class);
@@ -86,6 +95,10 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         mNotification.visibility = Notification.VISIBILITY_PUBLIC;
 
         batteryController.addCallback(this);
+    }
+
+    public void initialize() {
+        mAmbientContainer = (AmbientIndicationContainer) mCentralSurfacesLazy.get().getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
     }
 
     @Override
@@ -116,8 +129,14 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         try {
             if (mPowerShare.isEnabled()) {
                 mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+                if (mAmbientContainer != null) {
+                    mAmbientContainer.setReverseChargingMessage("Sharing battery", true);
+                }
             } else {
                 mNotificationManager.cancel(NOTIFICATION_ID);
+                if (mAmbientContainer != null) {
+                    mAmbientContainer.setReverseChargingMessage("", false);
+                }
             }
         } catch (RemoteException ex) {
             ex.printStackTrace();
