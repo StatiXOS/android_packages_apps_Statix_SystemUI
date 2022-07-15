@@ -118,7 +118,9 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             case "glovemode":
                 return mGloveModeTileProvider.get();
             case "powershare":
-                return mPowerShareTileProvider.get();
+                PowerShareTile tile = mPowerShareTileProvider.get();
+                tile.initialize();
+                return tile;
             case "smartpixels":
                 return mSmartPixelsTileProvider.get();
             default:
