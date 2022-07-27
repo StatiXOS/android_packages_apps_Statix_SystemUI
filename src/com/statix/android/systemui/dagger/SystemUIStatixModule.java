@@ -73,7 +73,6 @@ import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
 import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 import com.statix.android.systemui.smartspace.KeyguardSmartspaceController;
-import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
 
 import com.android.internal.app.AssistUtils;
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -141,7 +140,6 @@ import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.telephony.TelephonyListenerManager;
-import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.sensors.ProximitySensor;
@@ -290,9 +288,6 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract DozeHost provideDozeHost(DozeServiceHost dozeServiceHost);
-
-    @Binds
-    abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
 
     @Binds
     @SysUISingleton
