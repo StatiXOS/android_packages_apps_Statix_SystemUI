@@ -35,8 +35,6 @@ import com.android.systemui.volume.VolumeUI;
 import com.android.systemui.wmshell.WMShell;
 import com.android.systemui.dagger.SysUISingleton;
 
-import com.google.android.systemui.columbus.ColumbusTargetRequestService;
-
 import com.statix.android.systemui.StatixServices;
 import com.statix.android.systemui.statusbar.dagger.StatixStatusBarModule;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
@@ -231,12 +229,4 @@ public abstract class SystemUIStatixBinder {
     @IntoMap
     @ClassKey(StatixServices.class)
     public abstract SystemUI bindStatixServices(StatixServices sysui);
-
-    /**
-     * Inject into ColumbusTargetRequestService.
-     */
-    @Binds
-    @IntoMap
-    @ClassKey(ColumbusTargetRequestService.class)
-    public abstract Service bindColumbusTargetRequestService(ColumbusTargetRequestService activity);
 }
