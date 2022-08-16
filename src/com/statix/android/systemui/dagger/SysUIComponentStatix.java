@@ -12,19 +12,12 @@ import com.android.systemui.dagger.SystemUIBinder;
 import com.android.systemui.dagger.SysUIComponent;
 import com.android.systemui.dagger.SystemUIModule;
 
-import com.statix.android.systemui.columbus.ColumbusModule;
-import com.statix.android.systemui.elmyra.ElmyraModule;
-import com.statix.android.systemui.keyguard.KeyguardSliceProviderStatix;
-import com.statix.android.systemui.smartspace.KeyguardSmartspaceController;
-
 import dagger.Subcomponent;
 
 @SysUISingleton
 @Subcomponent(modules = {
-        ColumbusModule.class,
         DefaultComponentBinder.class,
         DependencyProvider.class,
-        ElmyraModule.class,
         SystemUIModule.class,
         SystemUIStatixBinder.class,
         SystemUIStatixModule.class})
@@ -34,12 +27,4 @@ public interface SysUIComponentStatix extends SysUIComponent {
     interface Builder extends SysUIComponent.Builder {
         SysUIComponentStatix build();
     }
-
-    /**
-     * Member injection into the supplied argument.
-     */
-    void inject(KeyguardSliceProviderStatix keyguardSliceProviderStatix);
-
-    @SysUISingleton
-    KeyguardSmartspaceController createKeyguardSmartspaceController();
 }
