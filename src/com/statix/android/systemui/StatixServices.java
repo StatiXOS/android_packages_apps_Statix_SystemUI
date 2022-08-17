@@ -39,10 +39,10 @@ public class StatixServices extends VendorServices {
     }
 
     @Override
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public void dump(PrintWriter printWriter, String[] strArr) {
         for (int i = 0; i < mServices.size(); i++) {
             if (mServices.get(i) instanceof Dumpable) {
-                ((Dumpable) mServices.get(i)).dump(fileDescriptor, printWriter, strArr);
+                ((Dumpable) mServices.get(i)).dump(printWriter, strArr);
             }
         }
     }

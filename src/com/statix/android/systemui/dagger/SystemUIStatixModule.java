@@ -5,257 +5,250 @@
 
 package com.statix.android.systemui.dagger;
 
-import static com.android.systemui.Dependency.ALLOW_NOTIFICATION_LONG_PRESS_NAME;
-import static com.android.systemui.Dependency.LEAK_REPORT_EMAIL_NAME;
-import static com.statix.android.systemui.Dependency.*;
-
-import android.app.AlarmManager;
-import android.app.IActivityManager;
-import android.app.KeyguardManager;
-import android.content.pm.LauncherApps;
-import android.media.AudioManager;
+import android.app.INotificationManager;
 import android.content.Context;
-import android.hardware.SensorPrivacyManager;
+import android.hardware.display.DisplayManager;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.UserManager;
-import android.os.Vibrator;
-import android.util.Log;
-import android.view.IWindowManager;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.android.internal.logging.UiEventLogger;
-
-import com.statix.android.systemui.StatixServices;
-import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
-import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
-import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
-
-import com.android.internal.app.AssistUtils;
-import com.android.keyguard.KeyguardUpdateMonitor;
-import com.android.keyguard.KeyguardViewController;
-import com.android.systemui.assist.AssistLogger;
-import com.android.systemui.assist.AssistManager;
-import com.android.systemui.assist.PhoneStateMonitor;
-import com.android.systemui.assist.ui.DefaultUiController;
+import com.android.internal.statusbar.IStatusBarService;
+import com.android.keyguard.clock.ClockModule;
+import com.android.keyguard.dagger.KeyguardBouncerComponent;
+import com.android.systemui.BootCompleteCache;
+import com.android.systemui.BootCompleteCacheImpl;
+import com.android.systemui.SystemUIFactory;
+import com.android.systemui.appops.dagger.AppOpsModule;
+import com.android.systemui.assist.AssistModule;
+import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
+import com.android.systemui.biometrics.AuthController;
 import com.android.systemui.biometrics.UdfpsHbmProvider;
-import com.android.systemui.broadcast.BroadcastDispatcher;
-import com.android.systemui.dagger.qualifiers.Background;
+import com.android.systemui.biometrics.dagger.BiometricsModule;
+import com.android.systemui.classifier.FalsingModule;
+import com.android.systemui.controls.dagger.ControlsModule;
+import com.android.systemui.dagger.qualifiers.DisplayId;
 import com.android.systemui.dagger.qualifiers.Main;
+import com.android.systemui.dagger.qualifiers.UiBackground;
+import com.android.systemui.dagger.ContextComponentHelper;
+import com.android.systemui.dagger.ContextComponentResolver;
+import com.android.systemui.dagger.PluginModule;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.demomode.DemoModeController;
-import com.android.systemui.dock.DockManager;
-import com.android.systemui.dock.DockManagerImpl;
-import com.android.systemui.doze.DozeHost;
+import com.android.systemui.demomode.dagger.DemoModeModule;
+import com.android.systemui.doze.dagger.DozeComponent;
+import com.android.systemui.dreams.dagger.DreamModule;
 import com.android.systemui.dump.DumpManager;
-import com.android.systemui.flags.FeatureFlags;
-import com.android.systemui.keyguard.WakefulnessLifecycle;
-import com.android.systemui.media.dagger.MediaModule;
+import com.android.systemui.flags.FlagsModule;
+import com.android.systemui.fragments.FragmentService;
+import com.android.systemui.log.dagger.LogModule;
+import com.android.systemui.lowlightclock.LowLightClockController;
 import com.android.systemui.model.SysUiState;
-import com.android.systemui.navigationbar.NavigationBarController;
-import com.android.systemui.navigationbar.NavigationModeController;
-import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.navigationbar.NavigationBarComponent;
 import com.android.systemui.plugins.BcSmartspaceDataPlugin;
-import com.android.systemui.plugins.qs.QSFactory;
-import com.android.systemui.plugins.statusbar.StatusBarStateController;
-import com.android.systemui.statusbar.policy.KeyguardStateController;
-import com.android.systemui.power.EnhancedEstimates;
-import com.android.systemui.power.dagger.PowerModule;
-import com.android.systemui.qs.dagger.QSModule;
-import com.android.systemui.qs.tileimpl.QSFactoryImpl;
-import com.android.systemui.recents.OverviewProxyService;
+import com.android.systemui.privacy.PrivacyModule;
 import com.android.systemui.recents.Recents;
-import com.android.systemui.recents.RecentsImplementation;
-import com.android.systemui.settings.UserTracker;
-import com.android.systemui.statusbar.commandline.CommandRegistry;
+import com.android.systemui.screenshot.dagger.ScreenshotModule;
+import com.android.systemui.settings.dagger.SettingsModule;
+import com.android.systemui.smartspace.dagger.SmartspaceModule;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
-import com.android.systemui.statusbar.NotificationLockscreenUserManagerImpl;
-import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
+import com.android.systemui.statusbar.QsFrameTranslateModule;
+import com.android.systemui.statusbar.notification.NotifPipelineFlags;
 import com.android.systemui.statusbar.notification.NotificationEntryManager;
-import com.android.systemui.statusbar.notification.collection.render.GroupMembershipManager;
-import com.android.systemui.statusbar.phone.DozeServiceHost;
-import com.android.systemui.statusbar.phone.HeadsUpManagerPhone;
-import com.android.systemui.statusbar.phone.KeyguardBypassController;
-import com.android.systemui.statusbar.phone.KeyguardEnvironmentImpl;
-import com.android.systemui.statusbar.phone.NotificationShadeWindowControllerImpl;
+import com.android.systemui.statusbar.notification.collection.NotifPipeline;
+import com.android.systemui.statusbar.notification.collection.inflation.NotificationRowBinder;
+import com.android.systemui.statusbar.notification.collection.inflation.NotificationRowBinderImpl;
+import com.android.systemui.statusbar.notification.collection.legacy.NotificationGroupManagerLegacy;
+import com.android.systemui.statusbar.notification.collection.notifcollection.CommonNotifCollection;
+import com.android.systemui.statusbar.notification.collection.render.NotificationVisibilityProvider;
+import com.android.systemui.statusbar.notification.interruption.NotificationInterruptStateProvider;
+import com.android.systemui.statusbar.notification.people.PeopleHubModule;
+import com.android.systemui.statusbar.notification.row.dagger.ExpandableNotificationRowComponent;
+import com.android.systemui.statusbar.notification.row.dagger.NotificationRowComponent;
+import com.android.systemui.statusbar.notification.row.dagger.NotificationShelfComponent;
+import com.android.systemui.statusbar.phone.CentralSurfaces;
 import com.android.systemui.statusbar.phone.ShadeController;
-import com.android.systemui.statusbar.phone.ShadeControllerImpl;
-import com.android.systemui.statusbar.phone.StatusBar;
-import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
-import com.android.systemui.statusbar.policy.BatteryController;
-import com.android.systemui.statusbar.policy.BatteryControllerImpl;
+import com.android.systemui.statusbar.phone.dagger.CentralSurfacesComponent;
 import com.android.systemui.statusbar.policy.ConfigurationController;
-import com.android.systemui.statusbar.policy.DeviceProvisionedController;
-import com.android.systemui.statusbar.policy.DeviceProvisionedControllerImpl;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
-import com.android.systemui.statusbar.policy.IndividualSensorPrivacyController;
-import com.android.systemui.statusbar.policy.IndividualSensorPrivacyControllerImpl;
-import com.android.systemui.statusbar.policy.NextAlarmController;
-import com.android.systemui.statusbar.policy.SensorPrivacyController;
-import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
+import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.ZenModeController;
-import com.android.systemui.telephony.TelephonyListenerManager;
-import com.android.systemui.tuner.TunerService;
-import com.android.systemui.util.concurrency.DelayableExecutor;
-import com.android.systemui.util.sensors.ProximitySensor;
-import com.android.systemui.volume.dagger.VolumeModule;
+import com.android.systemui.statusbar.policy.dagger.SmartRepliesInflationModule;
+import com.android.systemui.statusbar.policy.dagger.StatusBarPolicyModule;
+import com.android.systemui.statusbar.window.StatusBarWindowModule;
+import com.android.systemui.tuner.dagger.TunerModule;
+import com.android.systemui.unfold.SysUIUnfoldModule;
+import com.android.systemui.user.UserModule;
+import com.android.systemui.util.concurrency.SysUIConcurrencyModule;
+import com.android.systemui.util.dagger.UtilModule;
+import com.android.systemui.util.sensors.SensorModule;
+import com.android.systemui.util.settings.SettingsUtilModule;
+import com.android.systemui.util.time.SystemClock;
+import com.android.systemui.util.time.SystemClockImpl;
+import com.android.systemui.wallet.dagger.WalletModule;
+import com.android.systemui.wmshell.BubblesManager;
+import com.android.wm.shell.bubbles.Bubbles;
+import com.android.wm.shell.dagger.DynamicOverride;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
+
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
-import javax.inject.Named;
-
 import dagger.Binds;
-import dagger.Lazy;
+import dagger.BindsOptionalOf;
 import dagger.Module;
 import dagger.Provides;
-import dagger.multibindings.ElementsIntoSet;
 
 @Module(includes = {
-        MediaModule.class,
-        PowerModule.class,
-        QSModule.class,
-        VolumeModule.class
-})
+            AppOpsModule.class,
+            AssistModule.class,
+            BiometricsModule.class,
+            ClockModule.class,
+            DreamModule.class,
+            ControlsModule.class,
+            DemoModeModule.class,
+            FalsingModule.class,
+            FlagsModule.class,
+            LogModule.class,
+            PeopleHubModule.class,
+            PluginModule.class,
+            PrivacyModule.class,
+            QsFrameTranslateModule.class,
+            ScreenshotModule.class,
+            SensorModule.class,
+            SettingsModule.class,
+            SettingsUtilModule.class,
+            SmartRepliesInflationModule.class,
+            SmartspaceModule.class,
+            StatusBarPolicyModule.class,
+            StatusBarWindowModule.class,
+            SysUIConcurrencyModule.class,
+            SysUIUnfoldModule.class,
+            TunerModule.class,
+            UserModule.class,
+            UtilModule.class,
+            WalletModule.class
+        },
+        subcomponents = {
+            CentralSurfacesComponent.class,
+            NavigationBarComponent.class,
+            NotificationRowComponent.class,
+            DozeComponent.class,
+            ExpandableNotificationRowComponent.class,
+            KeyguardBouncerComponent.class,
+            NotificationShelfComponent.class,
+            FragmentService.FragmentCreator.class
+        })
 public abstract class SystemUIStatixModule {
 
+    @Binds
+    abstract BootCompleteCache bindBootCompleteCache(BootCompleteCacheImpl bootCompleteCache);
+
+    /** */
+    @Binds
+    public abstract ContextComponentHelper bindComponentHelper(
+            ContextComponentResolver componentHelper);
+
+    /** */
+    @Binds
+    public abstract NotificationRowBinder bindNotificationRowBinder(
+            NotificationRowBinderImpl notificationRowBinder);
+
     @SysUISingleton
     @Provides
-    @Named(LEAK_REPORT_EMAIL_NAME)
-    static String provideLeakReportEmail() {
-        return "";
+    static SysUiState provideSysUiState(DumpManager dumpManager) {
+        final SysUiState state = new SysUiState();
+        dumpManager.registerDumpable(state);
+        return state;
     }
 
-    @Binds
-    abstract EnhancedEstimates bindEnhancedEstimates(EnhancedEstimatesStatixImpl enhancedEstimates);
+    @BindsOptionalOf
+    abstract BcSmartspaceDataPlugin optionalBcSmartspaceDataPlugin();
 
-    @Binds
-    abstract NotificationLockscreenUserManager bindNotificationLockscreenUserManager(
-            NotificationLockscreenUserManagerImpl notificationLockscreenUserManager);
+    @BindsOptionalOf
+    abstract Recents optionalRecents();
 
-    @Provides
+    @BindsOptionalOf
+    abstract CentralSurfaces optionalCentralSurfaces();
+
+    @BindsOptionalOf
+    abstract AlternateUdfpsTouchProvider optionalUdfpsTouchProvider();
+
     @SysUISingleton
-    static BatteryController provideBatteryController(
-            Context context,
-            EnhancedEstimates enhancedEstimates,
-            PowerManager powerManager,
-            BroadcastDispatcher broadcastDispatcher,
-            DemoModeController demoModeController,
-            @Main Handler mainHandler,
-            @Background Handler bgHandler) {
-        BatteryController bC = new BatteryControllerImpl(
-                context,
-                enhancedEstimates,
-                powerManager,
-                broadcastDispatcher,
-                demoModeController,
-                mainHandler,
-                bgHandler);
-        bC.init();
-        return bC;
-    }
-
     @Provides
-    @SysUISingleton
-    static SensorPrivacyController provideSensorPrivacyController(
-            SensorPrivacyManager sensorPrivacyManager) {
-        SensorPrivacyController spC = new SensorPrivacyControllerImpl(sensorPrivacyManager);
-        spC.init();
-        return spC;
+    static Optional<UdfpsHbmProvider> provideUdfpsHbmProvider(@Main Handler handler, @UiBackground Executor bgExecutor,
+            @DisplayId int displayId, AuthController authController, DisplayManager displayManager) {
+        return Optional.of(new StatixUdfpsHbmProvider(handler, bgExecutor, displayId, authController, displayManager));
     }
 
     @Provides
-    @SysUISingleton
-    static IndividualSensorPrivacyController provideIndividualSensorPrivacyController(
-            SensorPrivacyManager sensorPrivacyManager) {
-        IndividualSensorPrivacyController spC = new IndividualSensorPrivacyControllerImpl(
-                sensorPrivacyManager);
-        spC.init();
-        return spC;
+    static SystemUIFactory getSystemUIFactory() {
+        return SystemUIFactory.getInstance();
     }
 
-    @Binds
+    // TODO: This should provided by the WM component
+    /** Provides Optional of BubbleManager */
     @SysUISingleton
-    public abstract QSFactory bindQSFactory(QSFactoryImplStatix qsFactoryImpl);
+    @Provides
+    static Optional<BubblesManager> provideBubblesManager(Context context,
+            Optional<Bubbles> bubblesOptional,
+            NotificationShadeWindowController notificationShadeWindowController,
+            KeyguardStateController keyguardStateController,
+            ShadeController shadeController,
+            ConfigurationController configurationController,
+            @Nullable IStatusBarService statusBarService,
+            INotificationManager notificationManager,
+            NotificationVisibilityProvider visibilityProvider,
+            NotificationInterruptStateProvider interruptionStateProvider,
+            ZenModeController zenModeController,
+            NotificationLockscreenUserManager notifUserManager,
+            NotificationGroupManagerLegacy groupManager,
+            NotificationEntryManager entryManager,
+            CommonNotifCollection notifCollection,
+            NotifPipeline notifPipeline,
+            SysUiState sysUiState,
+            NotifPipelineFlags notifPipelineFlags,
+            DumpManager dumpManager,
+            @Main Executor sysuiMainExecutor) {
+        return Optional.ofNullable(BubblesManager.create(context,
+                bubblesOptional,
+                notificationShadeWindowController,
+                keyguardStateController,
+                shadeController,
+                configurationController,
+                statusBarService,
+                notificationManager,
+                visibilityProvider,
+                interruptionStateProvider,
+                zenModeController,
+                notifUserManager,
+                groupManager,
+                entryManager,
+                notifCollection,
+                notifPipeline,
+                sysUiState,
+                notifPipelineFlags,
+                dumpManager,
+                sysuiMainExecutor));
+    }
 
+    @SysUISingleton
     @Binds
-    abstract DockManager bindDockManager(DockManagerImpl dockManager);
+    abstract SystemClock bindSystemClock(SystemClockImpl systemClock);
 
-    @Binds
-    abstract NotificationEntryManager.KeyguardEnvironment bindKeyguardEnvironment(
-            KeyguardEnvironmentImpl keyguardEnvironment);
-
-    @Binds
-    abstract ShadeController provideShadeController(ShadeControllerImpl shadeController);
+    @BindsOptionalOf
+    @DynamicOverride
+    abstract LowLightClockController optionalLowLightClockController();
 
     @SysUISingleton
     @Provides
-    @Named(ALLOW_NOTIFICATION_LONG_PRESS_NAME)
-    static boolean provideAllowNotificationLongPress() {
-        return true;
-    }
-
-    @SysUISingleton
-    @Provides
-    static HeadsUpManagerPhone provideHeadsUpManagerPhone(
-            Context context,
-            StatusBarStateController statusBarStateController,
-            KeyguardBypassController bypassController,
-            GroupMembershipManager groupManager,
-            ConfigurationController configurationController) {
-        return new HeadsUpManagerPhone(context, statusBarStateController, bypassController,
-                groupManager, configurationController);
-    }
-
-    @Binds
-    abstract HeadsUpManager bindHeadsUpManagerPhone(HeadsUpManagerPhone headsUpManagerPhone);
-
-    @Provides
-    @SysUISingleton
-    static Recents provideRecents(Context context, RecentsImplementation recentsImplementation,
-            CommandQueue commandQueue) {
-        return new Recents(context, recentsImplementation, commandQueue);
-    }
-
-    @SysUISingleton
-    @Provides
-    static DeviceProvisionedController bindDeviceProvisionedController(
-            DeviceProvisionedControllerImpl deviceProvisionedController) {
-        deviceProvisionedController.init();
-        return deviceProvisionedController;
-    }
-
-    @Binds
-    abstract KeyguardViewController bindKeyguardViewController(
-            StatusBarKeyguardViewManager statusBarKeyguardViewManager);
-
-    @Binds
-    abstract NotificationShadeWindowController bindNotificationShadeController(
-            NotificationShadeWindowControllerImpl notificationShadeWindowController);
-
-    @Binds
-    abstract DozeHost provideDozeHost(DozeServiceHost dozeServiceHost);
-
-    @Binds
-    @SysUISingleton
-    abstract UdfpsHbmProvider bindUdfpsHbmProvider(StatixUdfpsHbmProvider udfpsHbmProvider);
-
-    @Provides
-    @SysUISingleton
-    static StatixServices provideStatixServices(Context context, UiEventLogger uiEventLogger, AlarmManager am, StatusBar sb) {
-        return new StatixServices(context, uiEventLogger, am, sb);
+    static Optional<LowLightClockController> provideLowLightClockController(
+            @DynamicOverride Optional<LowLightClockController> optionalController) {
+        if (optionalController.isPresent() && optionalController.get().isLowLightClockEnabled()) {
+            return optionalController;
+        } else {
+            return Optional.empty();
+        }
     }
 }
