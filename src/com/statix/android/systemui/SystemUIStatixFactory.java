@@ -6,10 +6,6 @@
 package com.statix.android.systemui;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.Handler;
-
-import com.google.android.systemui.gesture.BackGestureTfClassifierProviderGoogle;
 
 import com.statix.android.systemui.dagger.DaggerGlobalRootComponentStatix;
 import com.statix.android.systemui.dagger.GlobalRootComponentStatix;
@@ -29,18 +25,5 @@ public class SystemUIStatixFactory extends SystemUIFactory {
         return DaggerGlobalRootComponentStatix.builder()
                 .context(context)
                 .build();
-    }
-
-    @Override
-    public BackGestureTfClassifierProvider createBackGestureTfClassifierProvider(AssetManager am, String modelName) {
-        return new BackGestureTfClassifierProviderGoogle(am, modelName);
-    }
-
-    @Override
-    public void init(Context context, boolean fromTest) throws ExecutionException, InterruptedException {
-        super.init(context, fromTest);
-        if (shouldInitializeComponents()) {
-            ((SysUIComponentStatix) getSysUIComponent()).createKeyguardSmartspaceController();
-        }
     }
 }
