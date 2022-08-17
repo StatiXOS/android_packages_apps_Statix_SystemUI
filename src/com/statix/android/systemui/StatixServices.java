@@ -5,16 +5,13 @@
 
 package com.statix.android.systemui;
 
-import android.app.AlarmManager;
 import android.content.Context;
 
-import com.android.internal.logging.UiEventLogger;
 import com.android.systemui.Dumpable;
 import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.flags.FeatureFlags;
-import com.android.systemui.statusbar.phone.StatusBar;
 
 import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
@@ -29,17 +26,11 @@ import dagger.Lazy;
 @SysUISingleton
 public class StatixServices extends VendorServices {
 
-    private final AlarmManager mAlarmManager;
-    private final StatusBar mStatusBar;
-    private final UiEventLogger mUiEventLogger;
     private final ArrayList<Object> mServices = new ArrayList<>();
 
     @Inject
-    public StatixServices(Context context, UiEventLogger uiEventLogger, AlarmManager alarmManager, StatusBar statusBar) {
+    public StatixServices(Context context) {
         super(context);
-        mUiEventLogger = uiEventLogger;
-        mAlarmManager = alarmManager;
-        mStatusBar = statusBar;
     }
 
     @Override
@@ -48,10 +39,10 @@ public class StatixServices extends VendorServices {
     }
 
     @Override
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public void dump(PrintWriter printWriter, String[] strArr) {
         for (int i = 0; i < mServices.size(); i++) {
             if (mServices.get(i) instanceof Dumpable) {
-                ((Dumpable) mServices.get(i)).dump(fileDescriptor, printWriter, strArr);
+                ((Dumpable) mServices.get(i)).dump(printWriter, strArr);
             }
         }
     }
