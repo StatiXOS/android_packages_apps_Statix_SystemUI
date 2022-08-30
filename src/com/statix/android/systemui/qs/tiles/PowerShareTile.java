@@ -135,12 +135,12 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
             if (mPowerShare.isEnabled()) {
                 mNotificationManager.notify(NOTIFICATION_ID, mNotification);
                 if (mAmbientContainer != null) {
-                    mAmbientContainer.setReverseChargingMessage("Sharing battery", true);
+                    mAmbientContainer.setReverseChargingMessage("Sharing battery");
                 }
             } else {
                 mNotificationManager.cancel(NOTIFICATION_ID);
                 if (mAmbientContainer != null) {
-                    mAmbientContainer.setReverseChargingMessage("", false);
+                    mAmbientContainer.setReverseChargingMessage("");
                 }
             }
         } catch (RemoteException ex) {
