@@ -21,18 +21,27 @@ license {
 }
 
 android_library {
+    name: "StatixSystemUI-res",
+    manifest: "AndroidManifest.xml",
+    resource_dirs: [
+        "res",
+        "res-keyguard",
+    ],
+    static_libs: [
+        "SystemUI-core",
+    ],
+}
+
+android_library {
     name: "StatixSystemUI-core",
     srcs: [
         "src/**/*.kt",
         "src/**/*.java",
         "src/**/I*.aidl",
     ],
-    resource_dirs: [
-        "res",
-        "res-keyguard",
-    ],
     static_libs: [
         "monet",
+        "StatixSystemUI-res",
         "SystemUI-core",
         "vendor.lineage.powershare-V1.0-java",
         "//hardware/google/interfaces:com.google.hardware.pixel.display-V3-java",
