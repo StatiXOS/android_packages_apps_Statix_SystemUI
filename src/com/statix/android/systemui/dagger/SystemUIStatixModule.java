@@ -23,6 +23,7 @@ import com.android.systemui.demomode.DemoModeController;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
+import com.android.systemui.lowlightclock.LowLightClockController;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.plugins.qs.QSFactory;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
@@ -60,8 +61,12 @@ import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.volume.dagger.VolumeModule;
 
+import com.android.wm.shell.dagger.DynamicOverride;
+
 import com.statix.android.systemui.StatixServices;
 import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
+import com.statix.android.systemui.lowlightclock.LowLightClockControllerImpl;
+import com.statix.android.systemui.lowlightclock.dagger.LowLightModule;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 
@@ -72,6 +77,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = {
+        LowLightModule.class,
         MediaModule.class,
         QSModule.class,
         StartCentralSurfacesModule.class,
@@ -213,4 +219,9 @@ public abstract class SystemUIStatixModule {
     static StatixServices provideStatixServices(Context context) {
         return new StatixServices(context);
     }
+
+    @Binds
+    @DynamicOverride
+    @SysUISingleton
+    abstract LowLightClockController bindLowLightClockController(LowLightClockControllerImpl impl);
 }
