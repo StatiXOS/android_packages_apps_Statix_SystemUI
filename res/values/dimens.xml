@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="low_light_clock_charging_text_alpha">0.8</dimen>
+    <dimen name="low_light_clock_charging_text_min_height">48dp</dimen>
+    <dimen name="low_light_clock_text_size">240sp</dimen>
+    <dimen name="low_light_status_text_size">18sp</dimen>
+</resources>
