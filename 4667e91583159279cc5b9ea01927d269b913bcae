@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3955cf7b_d6068048",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-09-10T01:23:54Z",
+      "side": 1,
+      "message": "this is apparently for docked tablets only and is currently experimental",
+      "revId": "4667e91583159279cc5b9ea01927d269b913bcae",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
