@@ -25,7 +25,8 @@ import com.statix.android.systemui.statusbar.phone.dagger.StatixStatusBarPhoneMo
 import dagger.Module;
 
 /** */
-@Module(includes = {StatixStatusBarPhoneModule.class, CentralSurfacesDependenciesModule.class,
+@Module(includes = {StatixStatusBarPhoneModule.class, StatixCentralSurfacesDependenciesModule.class,
+        CentralSurfacesDependenciesModule.class,
         NotificationsModule.class, NotificationRowModule.class})
 public interface StatixCentralSurfacesModule {
 }
