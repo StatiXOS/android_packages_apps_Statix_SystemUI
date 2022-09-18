@@ -64,6 +64,8 @@ import com.statix.android.systemui.StatixServices;
 import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
+import com.statix.android.systemui.statusbar.policy.StatixBluetoothController;
+import com.statix.android.systemui.statusbar.policy.StatixBluetoothControllerImpl;
 
 import javax.inject.Named;
 
@@ -213,4 +215,7 @@ public abstract class SystemUIStatixModule {
     static StatixServices provideStatixServices(Context context) {
         return new StatixServices(context);
     }
+
+    @Binds
+    abstract StatixBluetoothController bindBluetoothController(StatixBluetoothControllerImpl impl);
 }

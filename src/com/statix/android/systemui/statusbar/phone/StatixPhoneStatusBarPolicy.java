@@ -18,7 +18,6 @@ import com.android.systemui.privacy.logging.PrivacyLogger;
 import com.android.systemui.screenrecord.RecordingController;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy;
-import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CastController;
 import com.android.systemui.statusbar.policy.DataSaverController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
@@ -33,6 +32,8 @@ import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.util.RingerModeTracker;
 import com.android.systemui.util.time.DateFormatUtil;
 
+import com.statix.android.systemui.statusbar.policy.StatixBluetoothController;
+
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -44,7 +45,7 @@ public class StatixPhoneStatusBarPolicy extends PhoneStatusBarPolicy {
             CommandQueue commandQueue, BroadcastDispatcher broadcastDispatcher,
             @UiBackground Executor uiBgExecutor, @Main Resources resources,
             CastController castController, HotspotController hotspotController,
-            BluetoothController bluetoothController, NextAlarmController nextAlarmController,
+            StatixBluetoothController bluetoothController, NextAlarmController nextAlarmController,
             UserInfoController userInfoController, RotationLockController rotationLockController,
             DataSaverController dataSaverController, ZenModeController zenModeController,
             DeviceProvisionedController deviceProvisionedController,
