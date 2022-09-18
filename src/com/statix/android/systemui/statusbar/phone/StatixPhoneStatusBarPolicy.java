@@ -18,7 +18,6 @@ import com.android.systemui.privacy.logging.PrivacyLogger;
 import com.android.systemui.screenrecord.RecordingController;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy;
-import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CastController;
 import com.android.systemui.statusbar.policy.DataSaverController;
@@ -41,7 +40,7 @@ import javax.inject.Inject;
 public class StatixPhoneStatusBarPolicy extends PhoneStatusBarPolicy {
 
     @Inject
-    public StatixPhoneStatusBarPolicy(StatusBarIconController iconController,
+    public StatixPhoneStatusBarPolicy(StatixStatusBarIconController iconController,
             CommandQueue commandQueue, BroadcastDispatcher broadcastDispatcher,
             @UiBackground Executor uiBgExecutor, @Main Resources resources,
             CastController castController, HotspotController hotspotController,
