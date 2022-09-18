@@ -75,7 +75,6 @@ import com.android.systemui.statusbar.phone.LightBarController;
 import com.android.systemui.statusbar.phone.LockscreenGestureLogger;
 import com.android.systemui.statusbar.phone.LockscreenWallpaper;
 import com.android.systemui.statusbar.phone.NotificationIconAreaController;
-import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy;
 import com.android.systemui.statusbar.phone.ScreenOffAnimationController;
 import com.android.systemui.statusbar.phone.ScrimController;
 import com.android.systemui.statusbar.phone.ShadeController;
@@ -187,7 +186,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             KeyguardDismissUtil keyguardDismissUtil,
             ExtensionController extensionController,
             UserInfoControllerImpl userInfoControllerImpl,
-            PhoneStatusBarPolicy phoneStatusBarPolicy,
+            StatixPhoneStatusBarPolicy phoneStatusBarPolicy,
             KeyguardIndicationController keyguardIndicationController,
             DemoModeController demoModeController,
             Lazy<NotificationShadeDepthController> notificationShadeDepthControllerLazy,
@@ -213,7 +212,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             DreamOverlayStateController dreamOverlayStateController,
             WiredChargingRippleController wiredChargingRippleController,
             IDreamManager dreamManager) {
-            
+
         super(context, notificationsController, fragmentService, lightBarController, autoHideController,
             statusBarWindowController, statusBarWindowStateController, keyguardUpdateMonitor, statusBarSignalPolicy,
             pulseExpansionHandler, notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController,
