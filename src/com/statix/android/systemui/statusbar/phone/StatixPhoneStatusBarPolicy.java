@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.UserManager;
 import android.telecom.TelecomManager;
 
+import com.android.systemui.R;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.dagger.qualifiers.DisplayId;
 import com.android.systemui.dagger.qualifiers.Main;
@@ -40,6 +41,11 @@ import javax.inject.Inject;
 
 public class StatixPhoneStatusBarPolicy extends PhoneStatusBarPolicy {
 
+    private Resources mResources;
+    private StatixBluetoothController mBluetooth;
+    private StatixStatusBarIconController mIconController;
+    private final String mSlotBluetooth;
+
     @Inject
     public StatixPhoneStatusBarPolicy(StatixStatusBarIconController iconController,
             CommandQueue commandQueue, BroadcastDispatcher broadcastDispatcher,
@@ -64,5 +70,57 @@ public class StatixPhoneStatusBarPolicy extends PhoneStatusBarPolicy {
             zenModeController, deviceProvisionedController, keyguardStateController, locationController, sensorPrivacyController,
             iActivityManager, alarmManager, userManager, devicePolicyManager, recordingController, telecomManager, displayId,
             sharedPreferences, dateFormatUtil, ringerModeTracker, privacyItemController, privacyLogger);
+        mIconController = iconController;
+        mBluetooth = bluetoothController;
+        mSlotBluetooth = resources.getString(com.android.internal.R.string.status_bar_bluetooth);
+        mResources = resources;
+    }
+
+    @Override
+    public void onBluetoothDevicesChanged() {
+        updateBluetooth();
+    }
+
+    @Override
+    public void onBluetoothStateChange(boolean enabled) {
+        updateBluetooth();
+    }
+
+    private final void updateBluetooth() {
+        int iconId = R.drawable.stat_sys_data_bluetooth_connected;
+        String contentDescription =
+                mResources.getString(R.string.accessibility_quick_settings_bluetooth_on);
+        boolean bluetoothVisible = false;
+        int batteryLevel = -1;
+        if (mBluetooth != null) {
+            if (mBluetooth.isBluetoothConnected()
+                    && (mBluetooth.isBluetoothAudioActive()
+                    || !mBluetooth.isBluetoothAudioProfileOnly())) {
+                contentDescription = mResources.getString(
+                        R.string.accessibility_bluetooth_connected);
+                bluetoothVisible = mBluetooth.isBluetoothEnabled();
+                batteryLevel = mBluetooth.getBatteryLevel();
+            }
+        }
+
+        mIconController.setBluetoothIcon(mSlotBluetooth,
+                new BluetoothIconState(bluetoothVisible, batteryLevel, contentDescription));
+    }
+
+    public static class BluetoothIconState {
+        public boolean visible;
+        public int batteryLevel;
+        public String contentDescription;
+
+        public BluetoothIconState(boolean visible, int batteryLevel, String contentDescription) {
+            this.visible = visible;
+            this.batteryLevel = batteryLevel;
+            this.contentDescription = contentDescription;
+        }
+
+        @Override
+        public String toString() {
+            return "BluetoothIconState(visible=" + visible + " batteryLevel=" + batteryLevel + ")";
+        }
     }
 }

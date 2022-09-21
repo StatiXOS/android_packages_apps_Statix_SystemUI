@@ -17,6 +17,8 @@ import javax.inject.Inject;
 @SysUISingleton
 public class StatixBluetoothControllerImpl extends BluetoothControllerImpl implements StatixBluetoothController {
 
+    private int mBatteryLevel;
+
     @Inject
     public StatixBluetoothControllerImpl(
             Context context,
@@ -25,6 +27,28 @@ public class StatixBluetoothControllerImpl extends BluetoothControllerImpl imple
             @Main Looper mainLooper,
             @Nullable LocalBluetoothManager localBluetoothManager) {
         super(context, dumpManager, bgLooper, mainLooper, localBluetoothManager);
+    }
+
+    @Override
+    public int getBatteryLevel() {
+        if (!mConnectedDevices.isEmpty()) {
+            return mConnectedDevices.get(0).getBatteryLevel();
+        }
+        return -1;
+    }
+
+    @Override
+    protected void updateConnected() {
+        super.updateConnected();
+        updateBattery();
+    }
+
+    private void updateBattery() {
+        int batteryLevel = getBatteryLevel();
+        if (batteryLevel != mBatteryLevel) {
+            mBatteryLevel = batteryLevel;
+            mHandler.sendEmptyMessage(H.MSG_STATE_CHANGED);
+        }
     }
 
 }
