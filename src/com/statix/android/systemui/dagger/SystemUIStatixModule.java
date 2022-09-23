@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 
 import com.android.keyguard.KeyguardViewController;
+import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
 import com.android.systemui.biometrics.UdfpsHbmProvider;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.dagger.qualifiers.Background;
@@ -61,9 +62,13 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.volume.dagger.VolumeModule;
 
 import com.statix.android.systemui.StatixServices;
+import com.statix.android.systemui.biometrics.FingerprintExtProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
+import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
+
+import java.util.Optional;
 
 import javax.inject.Named;
 
@@ -213,4 +218,8 @@ public abstract class SystemUIStatixModule {
     static StatixServices provideStatixServices(Context context) {
         return new StatixServices(context);
     }
+
+    @Binds
+    @SysUISingleton
+    abstract AlternateUdfpsTouchProvider bindUdfpsTouchProvider(StatixUdfpsTouchProvider provider);
 }
