@@ -6,7 +6,6 @@
 package com.statix.android.systemui.dagger;
 
 import com.android.systemui.dagger.SystemUICoreStartableModule;
-import com.android.systemui.dagger.DefaultComponentBinder;
 import com.android.systemui.dagger.DependencyProvider;
 import com.android.systemui.dagger.ReferenceSystemUIModule;
 import com.android.systemui.dagger.SysUISingleton;
@@ -17,7 +16,7 @@ import dagger.Subcomponent;
 
 @SysUISingleton
 @Subcomponent(modules = {
-        DefaultComponentBinder.class,
+        StatixComponentBinder.class,
         DependencyProvider.class,
         SystemUICoreStartableModule.class,
         SystemUIModule.class,
