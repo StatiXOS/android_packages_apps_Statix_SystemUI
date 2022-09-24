@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa046509_e7feca93",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-09-24T05:13:01Z",
+      "side": 1,
+      "message": "TODO: consider moving this to pixelparts, this is only usable for pixels implementing the fingerprint extension aidl atm",
+      "revId": "3a913093c5c273b5c5bd0a4e5369518c52f46d18",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
