@@ -13,10 +13,10 @@ import android.os.ServiceManager
 import android.view.Surface
 import com.android.systemui.biometrics.AuthController
 import com.android.systemui.biometrics.UdfpsHbmProvider
+import com.android.systemui.biometrics.dagger.BiometricsBackground
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.DisplayId
 import com.android.systemui.dagger.qualifiers.Main
-import com.android.systemui.dagger.qualifiers.UiBackground
 import com.google.hardware.pixel.display.IDisplay
 import java.util.concurrent.Executor
 import javax.inject.Inject
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @SysUISingleton
 class StatixUdfpsHbmProvider @Inject constructor(
     @Main private val handler: Handler,
-    @UiBackground private val bgExecutor: Executor,
+    @BiometricsBackground private val bgExecutor: Executor,
     @DisplayId private val displayId: Int,
     private val authController: AuthController,
     private val displayManager: DisplayManager,
