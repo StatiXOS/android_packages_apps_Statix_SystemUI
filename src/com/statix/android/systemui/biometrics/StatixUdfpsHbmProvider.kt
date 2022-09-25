@@ -54,6 +54,9 @@ class StatixUdfpsHbmProvider @Inject constructor(
         // Run the callback and skip enabling if already enabled
         // (otherwise it may fail, similar to disabling)
         if (halControlsIllumination || displayHal?.let { it.lhbmState } == true) {
+            displayHal?.let {
+                authController.udfpsHbmListener?.onHbmEnabled(displayId)
+            }
             onHbmEnabled?.run()
             return
         }
