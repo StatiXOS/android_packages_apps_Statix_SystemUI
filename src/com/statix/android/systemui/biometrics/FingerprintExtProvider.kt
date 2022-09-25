@@ -14,8 +14,12 @@ class FingerprintExtProvider @Inject constructor() {
             return null
         }
 
-        val fingerprintExt = IFingerprintExt.Stub.asInterface(binder.getExtension())
-        return fingerprintExt
+        try {
+            val fingerprintExt = IFingerprintExt.Stub.asInterface(binder.getExtension())
+            return fingerprintExt
+        } catch (e: NullPointerException) {
+            return null
+        }
     }
 
     companion object {
