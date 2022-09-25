@@ -46,4 +46,7 @@
     <!-- A toast message shown after successfully deleting a screen recording [CHAR LIMIT=NONE] -->
     <string name="screenrecord_delete_description">Screen recording deleted</string>
 
+    <!-- Home controls -->
+    <string name="home_controls_tile_title">Home</string>
+
 </resources>
