@@ -49,4 +49,14 @@
     <!-- Home controls -->
     <string name="home_controls_tile_title">Home</string>
 
+    <!-- Face -->
+    <string name="face_notification_name">Face unlock</string>
+    <string name="face_reenroll_dialog_cancel">Not now</string>
+    <string name="face_reenroll_dialog_confirm">Set up</string>
+    <string name="face_reenroll_dialog_content">Delete your current face data to set up face unlock again.\n\nThe face data used by face unlock will be permanently and securely deleted. After removal, you will need your PIN, pattern, or password to unlock your phone, sign in to apps, and confirm payments.</string>
+    <string name="face_reenroll_dialog_title">Set up face unlock</string>
+    <string name="face_reenroll_failure_dialog_content">Couldn’t set up face unlock. Go to Settings to try again.</string>
+    <string name="face_reenroll_notification_content">Setup required to improve security and performance</string>
+    <string name="face_reenroll_notification_title">Face unlock needs to be set up again</string>
+
 </resources>
