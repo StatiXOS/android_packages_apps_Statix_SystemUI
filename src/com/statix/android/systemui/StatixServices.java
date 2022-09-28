@@ -8,20 +8,16 @@ package com.statix.android.systemui;
 import android.content.Context;
 
 import com.android.systemui.Dumpable;
-import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.flags.FeatureFlags;
 
+import com.statix.android.systemui.face.FaceNotificationService;
 import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import dagger.Lazy;
 
 @SysUISingleton
 public class StatixServices extends VendorServices {
@@ -36,6 +32,9 @@ public class StatixServices extends VendorServices {
     @Override
     public void start() {
         addService(new SmartPixelsReceiver(mContext));
+        if (mContext.getPackageManager().hasSystemFeature("android.hardware.biometrics.face")) {
+            addService(new FaceNotificationService(mContext));
+        }
     }
 
     @Override
