@@ -60,6 +60,7 @@ import com.android.systemui.statusbar.policy.IndividualSensorPrivacyController;
 import com.android.systemui.statusbar.policy.IndividualSensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
+import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
 import com.statix.android.systemui.StatixServices;
@@ -68,6 +69,7 @@ import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
+import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
 
 import javax.inject.Named;
 
@@ -224,4 +226,7 @@ public abstract class SystemUIStatixModule {
     @SysUISingleton
     @Binds
     abstract AlternateUdfpsTouchProvider bindUdfpsTouchProvider(StatixUdfpsTouchProvider provider);
+
+    @Binds
+    abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
 }
