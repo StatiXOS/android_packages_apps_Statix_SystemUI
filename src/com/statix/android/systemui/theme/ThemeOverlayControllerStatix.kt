@@ -67,6 +67,7 @@ class ThemeOverlayControllerStatix @Inject constructor(
     }
 
     override fun start() {
+        super.start()
         configurationController.addCallback(darkConfigurationListener)
     }
 
