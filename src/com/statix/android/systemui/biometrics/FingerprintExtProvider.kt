@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class FingerprintExtProvider @Inject constructor() {
     public fun getExtension(): IFingerprintExt? {
-        val binder: IBinder = ServiceManager.waitForDeclaredService(FINGERPRINT_EXT_SERVICE)
+        val binder: IBinder? = ServiceManager.waitForDeclaredService(FINGERPRINT_EXT_SERVICE)
         if (binder == null) {
             return null
         }
