@@ -5,6 +5,11 @@
 
 package com.statix.android.systemui.qs.tileimpl;
 
+import android.content.Context;
+
+import com.android.systemui.plugins.qs.QSIconView;
+import com.android.systemui.plugins.qs.QSTileView;
+
 // keep in sync with frameworks/base/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSFactoryImpl.java
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.plugins.qs.QSTile;
@@ -12,6 +17,7 @@ import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
+import com.android.systemui.qs.tileimpl.QSTileViewImpl;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AlarmTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
@@ -24,7 +30,6 @@ import com.android.systemui.qs.tiles.ColorInversionTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DeviceControlsTile;
 import com.android.systemui.qs.tiles.DndTile;
-import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.InternetTile;
 import com.android.systemui.qs.tiles.LocationTile;
@@ -45,9 +50,12 @@ import com.android.systemui.util.leak.GarbageMonitor;
 // Custom tiles
 import com.statix.android.systemui.qs.tiles.CaffeineTile;
 import com.statix.android.systemui.qs.tiles.DataSwitchTile;
+import com.statix.android.systemui.qs.tiles.FlashlightStrengthTile;
 import com.statix.android.systemui.qs.tiles.GloveModeTile;
 import com.statix.android.systemui.qs.tiles.PowerShareTile;
 import com.statix.android.systemui.qs.tiles.SmartPixelsTile;
+
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -57,6 +65,7 @@ import dagger.Lazy;
 @SysUISingleton
 public class QSFactoryImplStatix extends QSFactoryImpl {
 
+    private static final String[] SLIDER_TILES = { "flashlight" };
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<GloveModeTile> mGloveModeTileProvider;
@@ -76,7 +85,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             Provider<AirplaneModeTile> airplaneModeTileProvider,
             Provider<WorkModeTile> workModeTileProvider,
             Provider<RotationLockTile> rotationLockTileProvider,
-            Provider<FlashlightTile> flashlightTileProvider,
+            Provider<FlashlightStrengthTile> flashlightTileProvider,
             Provider<LocationTile> locationTileProvider,
             Provider<CastTile> castTileProvider,
             Provider<HotspotTile> hotspotTileProvider,
@@ -100,9 +109,10 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             Provider<PowerShareTile> powerShareTileProvider,
             Provider<GloveModeTile> gloveModeTileProvider,
             Provider<SmartPixelsTile> smartPixelsTileProvider,
-            Provider<DataSwitchTile> dataSwitchTileProvider) {
+            Provider<DataSwitchTile> dataSwitchTileProvider,
+            Provider<FlashlightStrengthTile> flashlightStrengthTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
-            airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, batterySaverTileProvider,
+            airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider::get, locationTileProvider, castTileProvider, hotspotTileProvider, batterySaverTileProvider,
             dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
             cameraToggleTileProvider, microphoneToggleTileProvider, deviceControlsTileProvider, alarmTileProvider, quickAccessWalletTileProvider, qrCodeScannerTileProvider, oneHandedModeTileProvider,
             colorCorrectionTileProvider);
@@ -135,5 +145,15 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
     protected QSTileImpl createTileInternal(String tileSpec) {
         QSTileImpl tile = createTileStatix(tileSpec);
         return tile != null ? tile : super.createTileInternal(tileSpec);
+    }
+
+    @Override
+    public QSTileView createTileView(Context context, QSTile tile, boolean collapsedView) {
+        QSIconView icon = tile.createTileView(context);
+        if (Arrays.asList(SLIDER_TILES).contains(tile.getTileSpec())) {
+            TouchableQSTile touchableTile = (TouchableQSTile) tile;
+            return new SliderQSTileViewImpl(context, icon, collapsedView, touchableTile.getTouchListener(), touchableTile.getSettingsSystemKey());
+        }
+        return new QSTileViewImpl(context, icon, collapsedView);
     }
 }
