@@ -45,6 +45,7 @@ import com.android.systemui.util.leak.GarbageMonitor;
 // Custom tiles
 import com.statix.android.systemui.qs.tiles.CaffeineTile;
 import com.statix.android.systemui.qs.tiles.DataSwitchTile;
+import com.statix.android.systemui.qs.tiles.FlashlightStrengthTile;
 import com.statix.android.systemui.qs.tiles.GloveModeTile;
 import com.statix.android.systemui.qs.tiles.PowerShareTile;
 import com.statix.android.systemui.qs.tiles.SmartPixelsTile;
@@ -59,6 +60,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
 
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
+    private final Provider<FlashlightStrengthTile> mFlashlightStrengthTileProvider;
     private final Provider<GloveModeTile> mGloveModeTileProvider;
     private final Provider<PowerShareTile> mPowerShareTileProvider;
     private final Provider<SmartPixelsTile> mSmartPixelsTileProvider;
@@ -100,7 +102,8 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             Provider<PowerShareTile> powerShareTileProvider,
             Provider<GloveModeTile> gloveModeTileProvider,
             Provider<SmartPixelsTile> smartPixelsTileProvider,
-            Provider<DataSwitchTile> dataSwitchTileProvider) {
+            Provider<DataSwitchTile> dataSwitchTileProvider,
+            Provider<FlashlightStrengthTile> flashlightStrengthTileProvider) {
         super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider, locationTileProvider, castTileProvider, hotspotTileProvider, batterySaverTileProvider,
             dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
@@ -112,6 +115,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
         mGloveModeTileProvider = gloveModeTileProvider;
         mPowerShareTileProvider = powerShareTileProvider;
         mSmartPixelsTileProvider = smartPixelsTileProvider;
+        mFlashlightStrengthTileProvider = flashlightStrengthTileProvider;
     }
 
     private QSTileImpl createTileStatix(String tileSpec) {
@@ -126,6 +130,8 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
                 return mPowerShareTileProvider.get();
             case "smartpixels":
                 return mSmartPixelsTileProvider.get();
+            case "flashlightstrength":
+                return mFlashlightStrengthTileProvider.get();
             default:
                 return null;
         }
