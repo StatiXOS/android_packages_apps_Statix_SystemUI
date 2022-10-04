@@ -40,6 +40,9 @@
     <string name="qs_data_switch_changed_1">Switch data card to SIM 1.</string>
     <string name="qs_data_switch_changed_2">Switch data card to SIM 2.</string>
 
+    <!-- Flashlight tile -->
+    <string name="brightness_percentage_secondary_label"><xliff:g id="brightness_level_as_percentage">%s</xliff:g>%% brightness</string>
+
     <!-- ScreenRecord -->
     <!-- Label for notification action to delete a screen recording file [CHAR LIMIT=35] -->
     <string name="screenrecord_delete_label">Delete</string>
