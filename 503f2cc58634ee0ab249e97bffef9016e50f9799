@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3519eb8_fba53fbe",
+        "filename": "src/com/statix/android/systemui/ambientmusic/AmbientIndicationContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2022-10-09T23:57:08Z",
+      "side": 1,
+      "message": "L403-L429 Ignore for now",
+      "revId": "503f2cc58634ee0ab249e97bffef9016e50f9799",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
