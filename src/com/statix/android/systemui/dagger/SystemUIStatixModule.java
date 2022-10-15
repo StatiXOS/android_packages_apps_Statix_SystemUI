@@ -214,11 +214,9 @@ public abstract class SystemUIStatixModule {
     @SysUISingleton
     public abstract QSFactory bindQSFactory(QSFactoryImplStatix qsFactoryImpl);
 
-    @Provides
+    @Binds
     @SysUISingleton
-    static StatixServices provideStatixServices(Context context) {
-        return new StatixServices(context);
-    }
+    abstract StatixServices bindStatixServices(StatixServices services);
 
     @Binds
     abstract ControlsTileResourceConfiguration bindControlsTileResourceConfiguration(StatixControlsTileResourceConfigurationImpl configuration);

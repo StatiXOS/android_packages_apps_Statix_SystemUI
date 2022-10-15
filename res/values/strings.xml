@@ -26,6 +26,23 @@
     <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
     <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
 
+    <!-- Elmyra -->
+    <!-- Actions -->
+    <string name="action_screenshot_name">Take screenshot</string>
+    <string name="action_assistant_name">Open assistant</string>
+    <string name="action_camera_name">Open camera</string>
+    <string name="action_power_menu_name">Open power menu</string>
+    <string name="action_mute_name">Mute calls and notifications</string>
+    <string name="action_flashlight_name">Turn flashlight on/off</string>
+    <string name="action_screen_name">Turn screen on/off</string>
+
+    <!-- Pref keys -->
+    <string name="pref_key_enabled" translatable="false">enabled</string>
+    <string name="pref_key_sensitivity" translatable="false">sensitivity</string>
+    <string name="pref_key_action" translatable="false">action</string>
+    <string name="pref_key_allow_screen_off" translatable="false">allow_screen_off</string>
+    <string name="pref_key_allow_screen_off_action_forced" translatable="false">allow_screen_off_action_forced</string>
+
     <!-- Glove Mode Tile -->
     <string name="quick_settings_glove_mode_label">Glove Mode</string>
 
