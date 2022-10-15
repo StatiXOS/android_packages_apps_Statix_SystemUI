@@ -63,7 +63,6 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
-import com.statix.android.systemui.StatixServices;
 import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
@@ -213,12 +212,6 @@ public abstract class SystemUIStatixModule {
     @Binds
     @SysUISingleton
     public abstract QSFactory bindQSFactory(QSFactoryImplStatix qsFactoryImpl);
-
-    @Provides
-    @SysUISingleton
-    static StatixServices provideStatixServices(Context context) {
-        return new StatixServices(context);
-    }
 
     @Binds
     abstract ControlsTileResourceConfiguration bindControlsTileResourceConfiguration(StatixControlsTileResourceConfigurationImpl configuration);
