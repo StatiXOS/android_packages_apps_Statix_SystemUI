@@ -40,6 +40,7 @@ android_library {
         "src/**/I*.aidl",
     ],
     static_libs: [
+        "elmyra-messages-java",
         "monet",
         "StatixSystemUI-res",
         "SystemUI-core",

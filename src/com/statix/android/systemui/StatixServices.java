@@ -10,9 +10,11 @@ import android.content.Context;
 import com.android.systemui.Dumpable;
 import com.android.systemui.R;
 import com.android.systemui.VendorServices;
+import com.android.systemui.assist.AssistManager;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.flags.FeatureFlags;
 
+import com.statix.android.systemui.elmyra.ElmyraService;
 import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
 import java.io.FileDescriptor;
@@ -27,15 +29,20 @@ import dagger.Lazy;
 public class StatixServices extends VendorServices {
 
     private final ArrayList<Object> mServices = new ArrayList<>();
+    private AssistManager mAssistManager;
 
     @Inject
-    public StatixServices(Context context) {
+    public StatixServices(Context context, AssistManager assistManager) {
         super(context);
+        mAssistManager = assistManager;
     }
 
     @Override
     public void start() {
         addService(new SmartPixelsReceiver(mContext));
+        if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub") && mContext.getPackageManager().hasSystemFeature("android.hardware.sensor.assist")) {
+            addService(new ElmyraService(mContext, mAssistManager));
+        }
     }
 
     @Override

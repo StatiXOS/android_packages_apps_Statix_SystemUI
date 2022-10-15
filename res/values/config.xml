@@ -51,4 +51,10 @@
         <item><xliff:g id="id">@android/status_bar_sensors_off</xliff:g></item>
     </string-array>
 
+    <!-- Elmyra -->
+    <bool name="default_enabled" translatable="false">true</bool>
+    <integer name="default_sensitivity" translatable="false">5</integer>
+    <string name="default_action" translatable="false">screenshot</string>
+    <bool name="default_allow_screen_off" translatable="false">true</bool>
+
 </resources>
