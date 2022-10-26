@@ -45,6 +45,8 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
 
        mFilter = new IntentFilter();
        mFilter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
+       filter.addAction(Intent.ACTION_DREAMING_STARTED);
+       filter.addAction(Intent.ACTION_DREAMING_STOPPED);
        mFilter.addAction(Intent.ACTION_USER_FOREGROUND);
 
        initiateSettingsObserver();
@@ -140,6 +142,17 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
 
    @Override
    public void onReceive(final Context context, Intent intent) {
-       mSettingsObserver.update();
+       boolean isAodEnabled = Settings.Secure.getInt(mResolver, Settings.Secure.DOZE_ALWAYS_ON, 0) == 1;
+       if (intent.getAction().equals(Intent.ACTION_DREAMING_STARTED) && isAodEnabled) {
+           mContext.startService(mSmartPixelsService);
+           mServiceRunning = true;
+           Log.d(TAG, "Started smart pixels for AOD");
+       } else if (intent.getAction().equals(Intent.ACTION_DREAMING_STOPPED) && isAodEnabled) {
+           mContext.stopService(mSmartPixelsService);
+           mServiceRunning = false;
+           Log.d(TAG, "Stopped smart pixels for AOD exit");
+       } else {
+           mSettingsObserver.update();
+       }
    }
 }
