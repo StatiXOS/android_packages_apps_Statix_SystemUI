@@ -45,6 +45,8 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
 
        mFilter = new IntentFilter();
        mFilter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
+       mFilter.addAction(Intent.ACTION_DREAMING_STARTED);
+       mFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
        mFilter.addAction(Intent.ACTION_USER_FOREGROUND);
 
        initiateSettingsObserver();
@@ -84,6 +86,9 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
            mResolver.registerContentObserver(Settings.System.getUriFor(
                    Settings.System.SMART_PIXELS_SHIFT_TIMEOUT),
                    false, this, UserHandle.USER_ALL);
+           mResolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.DOZE_ALWAYS_ON),
+                   false, this, UserHandle.USER_ALL);
            update();
        }
 
@@ -93,6 +98,9 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
        }
 
        public void update() {
+           boolean isAodEnabled = Settings.Secure.getIntForUser(
+                   mResolver, Settings.Secure.DOZE_ALWAYS_ON,
+                   0, UserHandle.USER_CURRENT) == 1;
            mEnabled = (Settings.System.getIntForUser(
                    mResolver, Settings.System.SMART_PIXELS_ENABLE,
                    0, UserHandle.USER_CURRENT) == 1);
@@ -101,7 +109,7 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
                    0, UserHandle.USER_CURRENT) == 1);
            mPowerSave = mPowerManager.isPowerSaveMode();
 
-           if (mEnabled || mOnPowerSave) {
+           if (mEnabled || mOnPowerSave || isAodEnabled) {
                if (!mRegisteredReceiver)
                    registerReceiver();
            } else if (mRegisteredReceiver) {
@@ -140,6 +148,18 @@ public class SmartPixelsReceiver extends BroadcastReceiver {
 
    @Override
    public void onReceive(final Context context, Intent intent) {
-       mSettingsObserver.update();
+       boolean isAodEnabled = Settings.Secure.getInt(mResolver, Settings.Secure.DOZE_ALWAYS_ON, 0) == 1;
+       if (intent.getAction().equals(Intent.ACTION_DREAMING_STARTED) && isAodEnabled) {
+           mContext.startService(mSmartPixelsService);
+           mServiceRunning = true;
+           Log.d(TAG, "Started smart pixels for AOD");
+       } else if (intent.getAction().equals(Intent.ACTION_DREAMING_STOPPED) && isAodEnabled) {
+           mContext.stopService(mSmartPixelsService);
+           mServiceRunning = false;
+           Log.d(TAG, "Stopped smart pixels for AOD exit");
+       }
+       if (mEnabled) {
+           mSettingsObserver.update();
+       }
    }
 }
