@@ -21,7 +21,6 @@ import com.android.systemui.qs.tileimpl.QSTileViewImpl;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AlarmTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
-import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.CameraToggleTile;
 import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
@@ -48,6 +47,7 @@ import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 
 // Custom tiles
+import com.statix.android.systemui.qs.tiles.BluetoothDialogTile;
 import com.statix.android.systemui.qs.tiles.CaffeineTile;
 import com.statix.android.systemui.qs.tiles.DataSwitchTile;
 import com.statix.android.systemui.qs.tiles.FlashlightStrengthTile;
@@ -78,7 +78,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             Provider<CustomTile.Builder> customTileBuilderProvider,
             Provider<WifiTile> wifiTileProvider,
             Provider<InternetTile> internetTileProvider,
-            Provider<BluetoothTile> bluetoothTileProvider,
+            Provider<BluetoothDialogTile> bluetoothTileProvider,
             Provider<CellularTile> cellularTileProvider,
             Provider<DndTile> dndTileProvider,
             Provider<ColorInversionTile> colorInversionTileProvider,
@@ -110,7 +110,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             Provider<GloveModeTile> gloveModeTileProvider,
             Provider<SmartPixelsTile> smartPixelsTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider) {
-        super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
+        super(qsHostLazy, customTileBuilderProvider, wifiTileProvider, internetTileProvider, bluetoothTileProvider::get, cellularTileProvider, dndTileProvider, colorInversionTileProvider,
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider::get, locationTileProvider, castTileProvider, hotspotTileProvider, batterySaverTileProvider,
             dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
             cameraToggleTileProvider, microphoneToggleTileProvider, deviceControlsTileProvider, alarmTileProvider, quickAccessWalletTileProvider, qrCodeScannerTileProvider, oneHandedModeTileProvider,
