@@ -34,6 +34,7 @@ import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
 import com.android.systemui.statusbar.CommandQueue;
+import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 import com.android.systemui.statusbar.NotificationLockscreenUserManagerImpl;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
@@ -67,6 +68,7 @@ import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
+import com.statix.android.systemui.statusbar.KeyguardIndicationControllerStatix;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
 
 import javax.inject.Named;
@@ -220,4 +222,7 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
+
+    @Binds
+    abstract KeyguardIndicationController bindKeyguardIndicationController(KeyguardIndicationControllerStatix impl);
 }

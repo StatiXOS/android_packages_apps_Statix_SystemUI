@@ -40,6 +40,7 @@ android_library {
         "src/**/I*.aidl",
     ],
     static_libs: [
+        "adaptivecharging",
         "elmyra-messages-java",
         "elmyra-sysui-shared",
         "monet",
