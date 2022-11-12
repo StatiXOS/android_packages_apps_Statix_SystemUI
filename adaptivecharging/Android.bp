@@ -1,0 +1,7 @@
+java_library {
+    name: "adaptivecharging",
+    srcs: ["src/**/*.java"],
+    static_libs: [
+        "vendor.google.google_battery-V1.0-java",
+    ],
+}
