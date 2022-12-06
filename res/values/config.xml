@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- SystemUIFactory component -->
-    <string name="config_systemUIFactoryComponent" translatable="false">com.statix.android.systemui.SystemUIStatixFactory</string>
+    <!-- SystemUIInitializer component -->
+    <string name="config_systemUIFactoryComponent" translatable="false">com.statix.android.systemui.SystemUIStatixInitializer</string>
 
     <!-- Tiles native to Statix System UI. Order should match "quick_settings_tiles_default" -->
     <string name="quick_settings_tiles_stock" translatable="false">
