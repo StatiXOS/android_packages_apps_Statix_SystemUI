@@ -15,7 +15,7 @@ import android.os.PowerManager;
 
 import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
-import com.android.systemui.biometrics.UdfpsHbmProvider;
+import com.android.systemui.biometrics.UdfpsDisplayModeProvider;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
 import com.android.systemui.dagger.qualifiers.Background;
@@ -63,7 +63,7 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
-import com.statix.android.systemui.biometrics.StatixUdfpsHbmProvider;
+import com.statix.android.systemui.biometrics.StatixUdfpsDisplayModeProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
@@ -206,7 +206,7 @@ public abstract class SystemUIStatixModule {
 
     @SysUISingleton
     @Binds
-    abstract UdfpsHbmProvider bindUdfpsHbmProvider(StatixUdfpsHbmProvider provider);
+    abstract UdfpsDisplayModeProvider bindUdfpsDisplayModeProvider(StatixUdfpsDisplayModeProvider provider);
 
     /** */
     @Binds
