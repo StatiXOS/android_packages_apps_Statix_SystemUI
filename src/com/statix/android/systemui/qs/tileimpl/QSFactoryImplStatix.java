@@ -29,6 +29,7 @@ import com.android.systemui.qs.tiles.ColorInversionTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DeviceControlsTile;
 import com.android.systemui.qs.tiles.DndTile;
+import com.android.systemui.qs.tiles.DreamTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.InternetTile;
 import com.android.systemui.qs.tiles.LocationTile;
@@ -105,6 +106,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             Provider<QRCodeScannerTile> qrCodeScannerTileProvider,
             Provider<OneHandedModeTile> oneHandedModeTileProvider,
             Provider<ColorCorrectionTile> colorCorrectionTileProvider,
+            Provider<DreamTile> dreamTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<PowerShareTile> powerShareTileProvider,
             Provider<GloveModeTile> gloveModeTileProvider,
@@ -114,7 +116,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
             airplaneModeTileProvider, workModeTileProvider, rotationLockTileProvider, flashlightTileProvider::get, locationTileProvider, castTileProvider, hotspotTileProvider, batterySaverTileProvider,
             dataSaverTileProvider, nightDisplayTileProvider, nfcTileProvider, memoryTileProvider, uiModeNightTileProvider, screenRecordTileProvider, reduceBrightColorsTileProvider,
             cameraToggleTileProvider, microphoneToggleTileProvider, deviceControlsTileProvider, alarmTileProvider, quickAccessWalletTileProvider, qrCodeScannerTileProvider, oneHandedModeTileProvider,
-            colorCorrectionTileProvider);
+            colorCorrectionTileProvider, dreamTileProvider);
         // custom tile
         mCaffeineTileProvider = caffeineTileProvider;
         mDataSwitchTileProvider = dataSwitchTileProvider;
