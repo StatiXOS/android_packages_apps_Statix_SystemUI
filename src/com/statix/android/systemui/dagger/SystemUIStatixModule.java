@@ -13,6 +13,7 @@ import android.hardware.SensorPrivacyManager;
 import android.os.Handler;
 import android.os.PowerManager;
 
+import com.android.internal.logging.UiEventLogger;
 import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
 import com.android.systemui.biometrics.UdfpsDisplayModeProvider;
@@ -50,6 +51,7 @@ import com.android.systemui.statusbar.phone.DozeServiceHost;
 import com.android.systemui.statusbar.phone.HeadsUpManagerPhone;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
+import com.android.systemui.statusbar.policy.AccessibilityManagerWrapper;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.BatteryControllerImpl;
 import com.android.systemui.statusbar.policy.ConfigurationController;
@@ -164,7 +166,10 @@ public abstract class SystemUIStatixModule {
             KeyguardBypassController bypassController,
             GroupMembershipManager groupManager,
             VisualStabilityProvider visualStabilityProvider,
-            ConfigurationController configurationController) {
+            ConfigurationController configurationController,
+            @Main Handler handler,
+            AccessibilityManagerWrapper accessibilityManagerWrapper,
+            UiEventLogger uiEventLogger) {
         return new HeadsUpManagerPhone(
                 context,
                 headsUpManagerLogger,
@@ -172,7 +177,10 @@ public abstract class SystemUIStatixModule {
                 bypassController,
                 groupManager,
                 visualStabilityProvider,
-                configurationController
+                configurationController,
+                handler,
+                accessibilityManagerWrapper,
+                uiEventLogger
         );
     }
 
