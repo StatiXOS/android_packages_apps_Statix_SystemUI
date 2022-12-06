@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.android.internal.logging.UiEventLogger;
 
 import com.android.systemui.R;
 import com.android.systemui.dagger.qualifiers.LongRunning;
+import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.screenrecord.RecordingController;
 import com.android.systemui.screenrecord.RecordingService;
 import com.android.systemui.screenrecord.ScreenMediaRecorder;
@@ -49,9 +51,9 @@ public class StatixRecordingService extends RecordingService {
 
     @Inject
     public StatixRecordingService(RecordingController controller, @LongRunning Executor executor,
-            UiEventLogger uiEventLogger, NotificationManager notificationManager,
+            @Main Handler handler, UiEventLogger uiEventLogger, NotificationManager notificationManager,
             UserContextProvider userContextTracker, KeyguardDismissUtil keyguardDismissUtil) {
-        super(controller, executor, uiEventLogger, notificationManager, userContextTracker, keyguardDismissUtil);
+        super(controller, executor, handler, uiEventLogger, notificationManager, userContextTracker, keyguardDismissUtil);
         mNotificationManager = notificationManager;
         mUserContextTracker = userContextTracker;
     }
