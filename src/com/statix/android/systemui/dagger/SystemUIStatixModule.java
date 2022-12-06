@@ -106,6 +106,7 @@ public abstract class SystemUIStatixModule {
             PowerManager powerManager,
             BroadcastDispatcher broadcastDispatcher,
             DemoModeController demoModeController,
+            DumpManager dumpManager,
             @Main Handler mainHandler,
             @Background Handler bgHandler) {
         BatteryController bC = new BatteryControllerImpl(
@@ -114,6 +115,7 @@ public abstract class SystemUIStatixModule {
                 powerManager,
                 broadcastDispatcher,
                 demoModeController,
+                dumpManager,
                 mainHandler,
                 bgHandler);
         bC.init();
