@@ -163,7 +163,10 @@ public abstract class SystemUIStatixModule {
             KeyguardBypassController bypassController,
             GroupMembershipManager groupManager,
             VisualStabilityProvider visualStabilityProvider,
-            ConfigurationController configurationController) {
+            ConfigurationController configurationController,
+            @Main Handler handler,
+            AccessibilityManagerWrapper accessibilityManagerWrapper,
+            UiEventLogger uiEventLogger) {
         return new HeadsUpManagerPhone(
                 context,
                 headsUpManagerLogger,
@@ -171,7 +174,10 @@ public abstract class SystemUIStatixModule {
                 bypassController,
                 groupManager,
                 visualStabilityProvider,
-                configurationController
+                configurationController,
+                handler,
+                accessibilityManagerWrapper,
+                uiEventLogger
         );
     }
 
