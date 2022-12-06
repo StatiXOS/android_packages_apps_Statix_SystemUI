@@ -1,6 +1,5 @@
 package com.statix.android.systemui.statusbar;
 
-import android.app.IActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -101,13 +100,13 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             FalsingManager falsingManager,
             LockPatternUtils lockPatternUtils,
             ScreenLifecycle screenLifecycle,
-            IActivityManager iActivityManager,
             KeyguardBypassController keyguardBypassController,
             AccessibilityManager accessibilityManager,
+            FaceHelpMessageDeferral faceHelpMessageDeferral,
             DeviceConfigProxy deviceConfigProxy) {
         super(context, mainLooper, wakeLockBuilder, keyguardStateController, statusBarStateController, keyguardUpdateMonitor, dockManager, broadcastDispatcher,
-              devicePolicyManager, iBatteryStats, userManager, executor, bgExecutor, falsingManager, lockPatternUtils, screenLifecycle, iActivityManager,
-              keyguardBypassController, accessibilityManager);
+              devicePolicyManager, iBatteryStats, userManager, executor, bgExecutor, falsingManager, lockPatternUtils, screenLifecycle,
+              keyguardBypassController, accessibilityManager, faceHelpMessageDeferral);
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public final void onReceive(Context context, Intent intent) {
