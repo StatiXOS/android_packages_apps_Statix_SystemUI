@@ -21,13 +21,13 @@ import com.android.systemui.accessibility.floatingmenu.AccessibilityFloatingMenu
 import com.android.systemui.animation.ActivityLaunchAnimator;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.broadcast.BroadcastDispatcher;
+import com.android.systemui.charging.WiredChargingRippleController;
 import com.android.systemui.classifier.FalsingCollector;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.UiBackground;
 import com.android.systemui.demomode.DemoModeController;
-import com.android.systemui.dreams.DreamOverlayStateController;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.fragments.FragmentService;
 import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
@@ -39,6 +39,7 @@ import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.PluginDependencyProvider;
 import com.android.systemui.recents.ScreenPinningRequest;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
+import com.android.systemui.shade.ShadeController;
 import com.android.systemui.shared.plugins.PluginManager;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.LockscreenShadeTransitionController;
@@ -47,15 +48,10 @@ import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.statusbar.NotificationRemoteInputManager;
 import com.android.systemui.statusbar.NotificationShadeDepthController;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
-import com.android.systemui.statusbar.NotificationViewHierarchyManager;
 import com.android.systemui.statusbar.PulseExpansionHandler;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
-import com.android.systemui.statusbar.charging.WiredChargingRippleController;
 import com.android.systemui.statusbar.notification.DynamicPrivacyController;
-import com.android.systemui.statusbar.notification.NotificationEntryManager;
-import com.android.systemui.statusbar.notification.NotifPipelineFlags;
 import com.android.systemui.statusbar.notification.NotificationWakeUpCoordinator;
-import com.android.systemui.statusbar.notification.collection.legacy.VisualStabilityManager;
 import com.android.systemui.statusbar.notification.init.NotificationsController;
 import com.android.systemui.statusbar.notification.interruption.NotificationInterruptStateProvider;
 import com.android.systemui.statusbar.notification.logging.NotificationLogger;
@@ -75,7 +71,6 @@ import com.android.systemui.statusbar.phone.NotificationIconAreaController;
 import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy;
 import com.android.systemui.statusbar.phone.ScreenOffAnimationController;
 import com.android.systemui.statusbar.phone.ScrimController;
-import com.android.systemui.statusbar.phone.ShadeController;
 import com.android.systemui.statusbar.phone.StatusBarHideIconsForBouncerManager;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy;
@@ -134,11 +129,9 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             FalsingManager falsingManager,
             FalsingCollector falsingCollector,
             BroadcastDispatcher broadcastDispatcher,
-            NotificationEntryManager notificationEntryManager,
             NotificationGutsManager notificationGutsManager,
             NotificationLogger notificationLogger,
             NotificationInterruptStateProvider notificationInterruptStateProvider,
-            NotificationViewHierarchyManager notificationViewHierarchyManager,
             PanelExpansionStateManager panelExpansionStateManager,
             KeyguardViewMediator keyguardViewMediator,
             DisplayMetrics displayMetrics,
@@ -154,7 +147,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             WakefulnessLifecycle wakefulnessLifecycle,
             SysuiStatusBarStateController statusBarStateController,
             Optional<Bubbles> bubblesOptional,
-            VisualStabilityManager visualStabilityManager,
             DeviceProvisionedController deviceProvisionedController,
             NavigationBarController navigationBarController,
             AccessibilityFloatingMenuController accessibilityFloatingMenuController,
@@ -201,23 +193,20 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             WallpaperManager wallpaperManager,
             Optional<StartingSurface> startingSurfaceOptional,
             ActivityLaunchAnimator activityLaunchAnimator,
-            NotifPipelineFlags notifPipelineFlags,
             InteractionJankMonitor jankMonitor,
             DeviceStateManager deviceStateManager,
-            DreamOverlayStateController dreamOverlayStateController,
             WiredChargingRippleController wiredChargingRippleController,
             IDreamManager dreamManager) {
-
         super(context, notificationsController, fragmentService, lightBarController, autoHideController,
             statusBarWindowController, statusBarWindowStateController, keyguardUpdateMonitor, statusBarSignalPolicy,
             pulseExpansionHandler, notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController,
             headsUpManagerPhone, dynamicPrivacyController, falsingManager, falsingCollector, broadcastDispatcher,
-            notificationEntryManager, notificationGutsManager, notificationLogger, notificationInterruptStateProvider,
-            notificationViewHierarchyManager, panelExpansionStateManager, keyguardViewMediator, displayMetrics,
+            notificationGutsManager, notificationLogger, notificationInterruptStateProvider,
+            panelExpansionStateManager, keyguardViewMediator, displayMetrics,
             metricsLogger, uiBgExecutor, notificationMediaManager, lockScreenUserManager, remoteInputManager,
             userSwitcherController, batteryController, colorExtractor, screenLifecycle,
-            wakefulnessLifecycle, statusBarStateController, bubblesOptional, visualStabilityManager,
-            deviceProvisionedController, navigationBarController, accessibilityFloatingMenuController, assistManagerLazy,
+            wakefulnessLifecycle, statusBarStateController, bubblesOptional, deviceProvisionedController,
+            navigationBarController, accessibilityFloatingMenuController, assistManagerLazy,
             configurationController, notificationShadeWindowController, dozeParameters, scrimController, lockscreenWallpaperLazy,
             biometricUnlockControllerLazy, dozeServiceHost, powerManager, screenPinningRequest,
             dozeScrimController, volumeComponent, commandQueue, centralSurfacesComponentFactory, pluginManager, shadeController,
@@ -227,7 +216,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             brightnessSliderFactory, screenOffAnimationController, wallpaperController, ongoingCallController,
             statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags, keyguardUnlockAnimationController,
             delayableExecutor, messageRouter, wallpaperManager, startingSurfaceOptional, activityLaunchAnimator,
-            notifPipelineFlags, jankMonitor, deviceStateManager, dreamOverlayStateController, wiredChargingRippleController, dreamManager);
+            jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager);
     }
 
 }
