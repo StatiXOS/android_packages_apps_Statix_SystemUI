@@ -19,6 +19,7 @@ package com.statix.android.systemui.power.dagger;
 import com.android.systemui.power.EnhancedEstimates;
 import com.android.systemui.power.PowerNotificationWarnings;
 import com.android.systemui.power.PowerUI;
+import com.android.systemui.power.data.repository.PowerRepositoryModule;
 
 import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
 
@@ -27,7 +28,11 @@ import dagger.Module;
 
 
 /** Dagger Module for code in the power package. */
-@Module
+@Module(
+        includes = {
+                PowerRepositoryModule.class,
+        }
+)
 public interface StatixPowerModule {
     /** */
     @Binds
