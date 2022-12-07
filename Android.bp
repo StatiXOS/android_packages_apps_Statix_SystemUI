@@ -25,7 +25,6 @@ android_library {
     manifest: "AndroidManifest.xml",
     resource_dirs: [
         "res",
-        "res-keyguard",
     ],
     static_libs: [
         "SystemUI-core",
