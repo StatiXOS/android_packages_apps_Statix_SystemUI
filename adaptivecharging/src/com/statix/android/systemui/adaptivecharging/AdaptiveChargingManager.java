@@ -1,9 +1,11 @@
 package com.statix.android.systemui.adaptivecharging;
 
 import android.content.Context;
-import android.os.HwBinder;
+import android.os.Binder;
+import android.os.IBinder;
 import android.os.LocaleList;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.provider.DeviceConfig;
 import android.provider.Settings;
 import android.text.format.DateFormat;
@@ -12,8 +14,8 @@ import android.util.Log;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
-import vendor.google.google_battery.V1_2.IGoogleBattery;
-import vendor.google.google_battery.V1_0.Result;
+import vendor.google.google_battery.ChargingStage;
+import vendor.google.google_battery.IGoogleBattery;
 
 public class AdaptiveChargingManager {
 
@@ -80,7 +82,8 @@ public class AdaptiveChargingManager {
         }
         boolean result = false;
         try {
-            result = googBatteryInterface.setChargingDeadline(secondsFromNow) == Result.OK;
+            googBatteryInterface.setChargingDeadline(secondsFromNow);
+            result = true;
         } catch (RemoteException e) {
             Log.e(TAG, "setChargingDeadline() failed");
         }
@@ -89,9 +92,9 @@ public class AdaptiveChargingManager {
     }
 
     public void queryStatus(final AdaptiveChargingStatusReceiver adaptiveChargingStatusReceiver) {
-        HwBinder.DeathRecipient deathRecipient = new HwBinder.DeathRecipient() {
+        IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() {
                 @Override
-                public final void serviceDied(long j) {
+                public final void binderDied() {
                     if (DEBUG) {
                         Log.d("AdaptiveChargingManager", "serviceDied");
                     }
@@ -104,46 +107,34 @@ public class AdaptiveChargingManager {
             return;
         }
         try {
-            googBatteryIntf.getChargingStageAndDeadline(new IGoogleBattery.getChargingStageAndDeadlineCallback() {
-                @Override
-                public void onValues(byte result, String stage, int seconds) {
-                    if (result == Result.OK) {
-                        adaptiveChargingStatusReceiver.onReceiveStatus(seconds, stage);
-                    }
-                    destroyHalInterface(googBatteryIntf, deathRecipient);
-                    adaptiveChargingStatusReceiver.onDestroyInterface();
-                }
-            });
+            ChargingStage stage = googBatteryIntf.getChargingStageAndDeadline();
+            adaptiveChargingStatusReceiver.onReceiveStatus(stage.deadlineSecs, stage.stage);
         } catch (RemoteException e) {
-            Log.e("AdaptiveChargingManager", "Failed to get Adaptive Chaging status: ", e);
-            destroyHalInterface(googBatteryIntf, deathRecipient);
-            adaptiveChargingStatusReceiver.onDestroyInterface();
+            Log.e("AdaptiveChargingManager", "Failed to get Adaptive Charging status: ", e);
         }
+        destroyHalInterface(googBatteryIntf, deathRecipient);
+        adaptiveChargingStatusReceiver.onDestroyInterface();
     }
 
-    private void destroyHalInterface(IGoogleBattery iGoogleBattery, HwBinder.DeathRecipient deathRecipient) {
+    private void destroyHalInterface(IGoogleBattery iGoogleBattery, IBinder.DeathRecipient deathRecipient) {
         if (DEBUG) {
             Log.d("AdaptiveChargingManager", "destroyHalInterface");
         }
         if (deathRecipient != null) {
-            try {
-                iGoogleBattery.unlinkToDeath(deathRecipient);
-            } catch (RemoteException e) {
-                Log.e("AdaptiveChargingManager", "unlinkToDeath failed: ", e);
-            }
+            iGoogleBattery.asBinder().unlinkToDeath(deathRecipient, 0);
         }
     }
 
-    private static IGoogleBattery initHalInterface(HwBinder.DeathRecipient deathReceiver) {
+    private static IGoogleBattery initHalInterface(IBinder.DeathRecipient deathReceiver) {
         if (DEBUG) {
             Log.d("AdaptiveChargingManager", "initHalInterface");
         }
         try {
-            IGoogleBattery service = IGoogleBattery.getService();
-            if (service != null && deathReceiver != null) {
-                service.linkToDeath(deathReceiver, 0);
+            IBinder binder = Binder.allowBlocking(ServiceManager.waitForDeclaredService("vendor.google.google_battery.IGoogleBattery/default"));
+            if (binder != null && deathReceiver != null) {
+                binder.linkToDeath(deathReceiver, 0);
             }
-            return service;
+            return IGoogleBattery.Stub.asInterface(binder);
         } catch (RemoteException | NoSuchElementException e) {
             Log.e("AdaptiveChargingManager", "failed to get Google Battery HAL: ", e);
             return null;
