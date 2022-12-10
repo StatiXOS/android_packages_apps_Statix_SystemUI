@@ -67,7 +67,6 @@ import com.android.systemui.statusbar.policy.IndividualSensorPrivacyControllerIm
 import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
-import com.android.systemui.volume.dagger.VolumeModule;
 
 import com.statix.android.systemui.biometrics.FingerprintExtProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
@@ -79,6 +78,8 @@ import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
 
 import javax.inject.Named;
 
+import com.statix.android.systemui.qs.tileimpl.StatixQSFactoryImpl;
+import com.statix.android.systemui.volume.dagger.StatixVolumeModule;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -89,7 +90,7 @@ import dagger.Provides;
         QSModule.class,
         ReferenceScreenshotModule.class,
         StatixPowerModule.class,
-        VolumeModule.class
+        StatixVolumeModule.class
 })
 public abstract class SystemUIStatixModule {
 
