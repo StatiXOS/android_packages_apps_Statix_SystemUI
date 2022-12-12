@@ -49,16 +49,22 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private PercentageDrawable percentageDrawable;
     private String mSettingsKey;
     private SettingObserver mSettingObserver;
+    private bool mShouldListenToSettingsUpdates = false;
 
     public SliderQSTileViewImpl(Context context, QSIconView icon, boolean collapsed, View.OnTouchListener touchListener, String settingKey) {
         super(context, icon, collapsed);
         mSettingsKey = settingKey;
-        percentageDrawable = new PercentageDrawable();
-        percentageDrawable.setAlpha(64);
+        mPercentageDrawable = new PercentageDrawable();
+        mPercentageDrawable.setAlpha(64);
         updatePercentBackground(false /* default */);
         mSettingObserver = new SettingObserver(new Handler(Looper.getMainLooper()));
-        setOnTouchListener(touchListener);
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(settingKey), false, mSettingObserver, UserHandle.USER_CURRENT);
+        // If the touchListener is null, the calling tile would like us to behave like a normal QSTileViewImpl.
+        if (touchListener != null) {
+            mShouldListenToSettingsUpdates = true;
+            setOnTouchListener(touchListener);
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(settingKey), false, mSettingObserver, UserHandle.USER_CURRENT);
+        }
+        updatePercentBackground(false /* default */);
     }
 
     @Override
@@ -68,9 +74,11 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     }
 
     private void updatePercentBackground(boolean active) {
-        percentageDrawable.setTint(active ? Color.WHITE : Color.BLACK);
-        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{colorBackgroundDrawable, percentageDrawable});
-        setBackground(layerDrawable);
+        if (mShouldListenToSettingsUpdates) {
+            mPercentageDrawable.setTint(active ? Color.WHITE : Color.BLACK);
+            LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{colorBackgroundDrawable, mPercentageDrawable});
+            setBackground(layerDrawable);
+        }
     }
 
     private final class SettingObserver extends ContentObserver {
@@ -81,7 +89,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            percentageDrawable.updatePercent();
+            mPercentageDrawable.updatePercent();
         }
     }
 
