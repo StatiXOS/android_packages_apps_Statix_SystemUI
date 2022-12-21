@@ -305,7 +305,7 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
         }
     }
 
-    override fun onPrimaryMetadataOrStateChanged(mediaMetadata: MediaMetadata, mediaState: Int) {
+    override fun onPrimaryMetadataOrStateChanged(mediaMetadata: MediaMetadata?, mediaState: Int) {
         if (mediaPlaybackState != mediaState) {
             mediaPlaybackState = mediaState
             if (!isMediaPlaying()) {
