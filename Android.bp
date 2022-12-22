@@ -37,6 +37,7 @@ android_library {
         "src/**/*.kt",
         "src/**/*.java",
         "src/**/I*.aidl",
+        "//frameworks/base/packages/SystemUI:DebugJavaFiles",
     ],
     static_libs: [
         "adaptivecharging",
