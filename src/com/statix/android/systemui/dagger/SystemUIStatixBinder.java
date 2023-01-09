@@ -7,9 +7,9 @@
 package com.statix.android.systemui.dagger;
 
 import com.android.systemui.CoreStartable;
-import com.android.systemui.keyguard.dagger.KeyguardModule;
 import com.android.systemui.recents.RecentsModule;
 
+import com.statix.android.systemui.keyguard.dagger.StatixKeyguardModule;
 import com.statix.android.systemui.statusbar.dagger.StatixCentralSurfacesModule;
 
 import com.statix.android.systemui.StatixServices;
@@ -19,7 +19,7 @@ import dagger.Module;
 import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 
-@Module(includes = {RecentsModule.class, StatixCentralSurfacesModule.class, KeyguardModule.class})
+@Module(includes = {RecentsModule.class, StatixCentralSurfacesModule.class, StatixKeyguardModule.class})
 public abstract class SystemUIStatixBinder {
 
     /**
