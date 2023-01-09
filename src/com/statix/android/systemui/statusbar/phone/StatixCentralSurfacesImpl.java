@@ -10,13 +10,17 @@ import android.os.PowerManager;
 import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
 
+import androidx.annotation.Nullable;
+
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.statusbar.RegisterStatusBarResult;
 
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
 
 import com.android.systemui.InitController;
+import com.android.systemui.R;
 import com.android.systemui.accessibility.floatingmenu.AccessibilityFloatingMenuController;
 import com.android.systemui.animation.ActivityLaunchAnimator;
 import com.android.systemui.assist.AssistManager;
@@ -37,6 +41,7 @@ import com.android.systemui.keyguard.WakefulnessLifecycle;
 import com.android.systemui.navigationbar.NavigationBarController;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.PluginDependencyProvider;
+import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.recents.ScreenPinningRequest;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.shade.ShadeController;
@@ -96,6 +101,7 @@ import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.StartingSurface;
 
 import com.statix.android.systemui.statusbar.KeyguardIndicationControllerStatix;
+import com.statix.android.systemui.visualizer.VisualizerView;
 
 import dagger.Lazy;
 
@@ -107,6 +113,38 @@ import javax.inject.Named;
 
 @SysUISingleton
 public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
+
+    private final ScreenLifecycle mScreenLifecycle;
+    private final SysuiStatusBarStateController mStatusBarStateController;
+    private VisualizerView mVisualizerView;
+
+    private StatusBarStateController.StateListener mStateListener =
+            new StatusBarStateController.StateListener() {
+                @Override
+                public void onStateChanged(int newState) {
+                    mVisualizerView.setStatusBarState(newState);
+                    mVisualizerView.setDozing(mDozing);
+                }
+
+                @Override
+                public void onDozingChanged(boolean isDozing) {
+                    mDozing = isDozing;
+                    mVisualizerView.setDozing(isDozing);
+                }
+            };
+
+    private final ScreenLifecycle.Observer mScreenObserver = new ScreenLifecycle.Observer() {
+        @Override
+        public void onScreenTurnedOn() {
+            mVisualizerView.setVisible(true);
+        }
+
+        @Override
+        public void onScreenTurnedOff() {
+            mVisualizerView.setVisible(false);
+        }
+    };
+
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Inject
@@ -217,6 +255,28 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags, keyguardUnlockAnimationController,
             delayableExecutor, messageRouter, wallpaperManager, startingSurfaceOptional, activityLaunchAnimator,
             jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager);
+        mScreenLifecycle = screenLifecycle;
+        mStatusBarStateController = statusBarStateController;
+    }
+
+    @Override
+    protected void makeStatusBarView(@Nullable RegisterStatusBarResult result) {
+        super.makeStatusBarView(result);
+        mVisualizerView = getNotificationShadeWindowView().findViewById(R.id.visualizer_view);
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        mScreenLifecycle.addObserver(mScreenObserver);
+        mStatusBarStateController.addCallback(mStateListener,
+                SysuiStatusBarStateController.RANK_STATUS_BAR);
+    }
+
+    @Override
+    public boolean hideKeyguardImpl(boolean forceStateChange) {
+        mVisualizerView.setDozing(mDozing);
+        return super.hideKeyguardImpl(forceStateChange);
     }
 
 }

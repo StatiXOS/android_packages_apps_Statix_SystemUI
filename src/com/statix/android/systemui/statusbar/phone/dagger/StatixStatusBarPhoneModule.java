@@ -38,7 +38,7 @@ public interface StatixStatusBarPhoneModule {
     @Binds
     @IntoMap
     @ClassKey(CentralSurfaces.class)
-    abstract CoreStartable bindsCoreStartableCentralSrufaces(StatixCentralSurfacesImpl statusBarStatix);
+    abstract CoreStartable bindsCoreStartableCentralSurfaces(StatixCentralSurfacesImpl statusBarStatix);
 
     /**
      * Provides our instance of CentralSurfaces which is considered optional.
