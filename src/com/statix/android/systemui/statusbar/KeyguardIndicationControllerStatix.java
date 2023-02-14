@@ -11,6 +11,8 @@ import android.os.Looper;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -154,6 +156,17 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             mUpdateMonitorCallback = new StatixKeyguardCallback();
         }
         return mUpdateMonitorCallback;
+    }
+
+    @Override
+    public void setIndicationArea(ViewGroup viewGroup) {
+        super.setIndicationArea(viewGroup);
+        viewGroup.setOnClickListener(new ViewGroup.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAdaptiveChargingManager.setEnabled(!mAdaptiveChargingManager.getEnabled());
+            }
+        });
     }
 
     private void refreshAdaptiveChargingEnabled() {
