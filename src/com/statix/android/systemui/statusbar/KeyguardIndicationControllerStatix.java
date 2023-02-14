@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -54,16 +57,42 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
     @VisibleForTesting
     private AdaptiveChargingManager mAdaptiveChargingManager;
     @VisibleForTesting
-    private AdaptiveChargingManager.AdaptiveChargingStatusReceiver mAdaptiveChargingStatusReceiver;
+    private AdaptiveChargingManager.AdaptiveChargingStatusReceiver mAdaptiveChargingStatusReceiver =
+        new AdaptiveChargingManager.AdaptiveChargingStatusReceiver() {
+            @Override
+            public void onDestroyInterface() {}
+
+            @Override
+            public void onReceiveStatus(int seconds, String stage) {
+                boolean wasActive = mAdaptiveChargingActive;
+                mAdaptiveChargingActive = AdaptiveChargingManager.isActive(stage, seconds);
+                long currentEstimation = mEstimatedChargeCompletion;
+                long currentTimeMillis = System.currentTimeMillis();
+                mEstimatedChargeCompletion = TimeUnit.SECONDS.toMillis(seconds + 29) + currentTimeMillis;
+                long abs = Math.abs(mEstimatedChargeCompletion - currentEstimation);
+                if (mAdaptiveChargingActive != wasActive || (mAdaptiveChargingActive && abs > TimeUnit.SECONDS.toMillis(30L))) {
+                    updateDeviceEntryIndication(true);
+                }
+            }
+        };
     private int mBatteryLevel;
     private final BroadcastDispatcher mBroadcastDispatcher;
-    private final BroadcastReceiver mBroadcastReceiver;
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public final void onReceive(Context context, Intent intent) {
+                if ("com.google.android.systemui.adaptivecharging.ADAPTIVE_CHARGING_DEADLINE_SET".equals(intent.getAction())) {
+                    triggerAdaptiveChargingStatusUpdate();
+                }
+            }
+        };
     private final Context mContext;
     private final DeviceConfigProxy mDeviceConfig;
     private long mEstimatedChargeCompletion;
     private boolean mInited;
     private boolean mIsCharging;
     private StatixKeyguardCallback mUpdateMonitorCallback;
+    @Background
+    private Handler mBgHandler;
 
     private class StatixKeyguardCallback extends KeyguardIndicationController.BaseKeyguardCallback {
         private StatixKeyguardCallback() {
@@ -104,39 +133,16 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             KeyguardBypassController keyguardBypassController,
             AccessibilityManager accessibilityManager,
             FaceHelpMessageDeferral faceHelpMessageDeferral,
-            DeviceConfigProxy deviceConfigProxy) {
+            DeviceConfigProxy deviceConfigProxy,
+            @Background Handler handler) {
         super(context, mainLooper, wakeLockBuilder, keyguardStateController, statusBarStateController, keyguardUpdateMonitor, dockManager, broadcastDispatcher,
               devicePolicyManager, iBatteryStats, userManager, executor, bgExecutor, falsingManager, lockPatternUtils, screenLifecycle,
               keyguardBypassController, accessibilityManager, faceHelpMessageDeferral);
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public final void onReceive(Context context, Intent intent) {
-                if ("com.google.android.systemui.adaptivecharging.ADAPTIVE_CHARGING_DEADLINE_SET".equals(intent.getAction())) {
-                    triggerAdaptiveChargingStatusUpdate();
-                }
-            }
-        };
-        mAdaptiveChargingStatusReceiver = new AdaptiveChargingManager.AdaptiveChargingStatusReceiver() {
-            @Override
-            public void onDestroyInterface() {}
-
-            @Override
-            public void onReceiveStatus(int seconds, String stage) {
-                boolean wasActive = mAdaptiveChargingActive;
-                mAdaptiveChargingActive = AdaptiveChargingManager.isActive(stage, seconds);
-                long currentEstimation = mEstimatedChargeCompletion;
-                long currentTimeMillis = System.currentTimeMillis();
-                mEstimatedChargeCompletion = TimeUnit.SECONDS.toMillis(seconds + 29) + currentTimeMillis;
-                long abs = Math.abs(mEstimatedChargeCompletion - currentEstimation);
-                if (mAdaptiveChargingActive != wasActive || (mAdaptiveChargingActive && abs > TimeUnit.SECONDS.toMillis(30L))) {
-                    updateDeviceEntryIndication(true);
-                }
-            }
-        };
         mContext = context;
         mBroadcastDispatcher = broadcastDispatcher;
         mDeviceConfig = deviceConfigProxy;
         mAdaptiveChargingManager = new AdaptiveChargingManager(context);
+        mBgHandler = handler;
     }
 
     @Override
@@ -154,6 +160,24 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             mUpdateMonitorCallback = new StatixKeyguardCallback();
         }
         return mUpdateMonitorCallback;
+    }
+
+    @Override
+    public void setIndicationArea(ViewGroup viewGroup) {
+        super.setIndicationArea(viewGroup);
+        viewGroup.setOnClickListener(new ViewGroup.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAdaptiveChargingManager.setEnabled(!mAdaptiveChargingManager.getEnabled());
+                boolean newEnabled = mAdaptiveChargingManager.getEnabled();
+                mBgHandler.postAtTime(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdaptiveChargingManager.setEnabled(!newEnabled);
+                    }
+                }, System.currentTimeMillis() + 43200000 /* 12 hours */);
+            }
+        });
     }
 
     private void refreshAdaptiveChargingEnabled() {
