@@ -48,6 +48,7 @@ import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 import com.android.systemui.statusbar.NotificationLockscreenUserManagerImpl;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
+import com.android.systemui.statusbar.events.StatusBarEventsModule;
 import com.android.systemui.statusbar.notification.collection.provider.VisualStabilityProvider;
 import com.android.systemui.statusbar.notification.collection.render.GroupMembershipManager;
 import com.android.systemui.statusbar.phone.DozeServiceHost;
@@ -89,7 +90,8 @@ import dagger.Provides;
         QSModule.class,
         ReferenceScreenshotModule.class,
         StatixPowerModule.class,
-        VolumeModule.class
+        VolumeModule.class,
+        StatusBarEventsModule.class
 })
 public abstract class SystemUIStatixModule {
 
