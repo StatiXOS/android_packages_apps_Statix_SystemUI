@@ -68,7 +68,6 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
-import com.statix.android.systemui.biometrics.StatixUdfpsDisplayModeProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
@@ -214,10 +213,6 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract DozeHost provideDozeHost(DozeServiceHost dozeServiceHost);
-
-    @SysUISingleton
-    @Binds
-    abstract UdfpsDisplayModeProvider bindUdfpsDisplayModeProvider(StatixUdfpsDisplayModeProvider provider);
 
     /** */
     @Binds
