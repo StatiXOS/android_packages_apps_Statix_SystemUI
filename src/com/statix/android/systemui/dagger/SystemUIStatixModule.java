@@ -13,6 +13,8 @@ import android.hardware.SensorPrivacyManager;
 import android.os.Handler;
 import android.os.PowerManager;
 
+import androidx.annotation.Nullable;
+
 import com.android.internal.logging.UiEventLogger;
 import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
@@ -226,8 +228,16 @@ public abstract class SystemUIStatixModule {
     abstract ControlsTileResourceConfiguration bindControlsTileResourceConfiguration(StatixControlsTileResourceConfigurationImpl configuration);
 
     @SysUISingleton
-    @Binds
-    abstract AlternateUdfpsTouchProvider bindUdfpsTouchProvider(StatixUdfpsTouchProvider provider);
+    @Provides
+    @Nullable
+    static AlternateUdfpsTouchProvider bindUdfpsTouchProvider() {
+        FingerprintExtProvider provider = new FingerprintExtProvider();
+        if (provider.getExtension() == null) {
+            return null;
+        } else {
+            return new StatixUdfpsTouchProvider(provider);
+        }
+    }
 
     @Binds
     abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);

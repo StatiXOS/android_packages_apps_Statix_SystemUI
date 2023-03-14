@@ -51,8 +51,4 @@ class StatixUdfpsTouchProvider @Inject constructor(
         }
     }
 
-    override fun isAvailable(): Boolean {
-        return getFingerprintExt() != null
-    }
-
 }
