@@ -11,13 +11,18 @@ import com.android.systemui.dagger.ReferenceSystemUIModule;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.SysUIComponent;
 import com.android.systemui.dagger.SystemUIModule;
+import com.android.systemui.keyguard.CustomizationProvider;
+import com.android.systemui.statusbar.NotificationInsetsModule;
+import com.android.systemui.statusbar.QsFrameTranslateModule;
 
 import dagger.Subcomponent;
 
 @SysUISingleton
 @Subcomponent(modules = {
-        StatixComponentBinder.class,
         DependencyProvider.class,
+        NotificationInsetsModule.class,
+        QsFrameTranslateModule.class,
+        StatixComponentBinder.class,
         SystemUICoreStartableModule.class,
         SystemUIModule.class,
         SystemUIStatixBinder.class,
@@ -29,4 +34,10 @@ public interface SysUIComponentStatix extends SysUIComponent {
     interface Builder extends SysUIComponent.Builder {
         SysUIComponentStatix build();
     }
+
+    /**
+     * Member injection into the supplied argument.
+     */
+    void inject(CustomizationProvider customizationProvider);
+
 }

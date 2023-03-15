@@ -42,6 +42,7 @@ import com.android.systemui.screenshot.ReferenceScreenshotModule;
 import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
 import com.android.systemui.shade.ShadeController;
 import com.android.systemui.shade.ShadeControllerImpl;
+import com.android.systemui.shade.ShadeExpansionStateManager;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
@@ -68,6 +69,7 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
+import com.statix.android.systemui.biometrics.FingerprintExtProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
@@ -170,7 +172,8 @@ public abstract class SystemUIStatixModule {
             ConfigurationController configurationController,
             @Main Handler handler,
             AccessibilityManagerWrapper accessibilityManagerWrapper,
-            UiEventLogger uiEventLogger) {
+            UiEventLogger uiEventLogger,
+            ShadeExpansionStateManager shadeExpansionStateManager) {
         return new HeadsUpManagerPhone(
                 context,
                 headsUpManagerLogger,
@@ -181,7 +184,8 @@ public abstract class SystemUIStatixModule {
                 configurationController,
                 handler,
                 accessibilityManagerWrapper,
-                uiEventLogger
+                uiEventLogger,
+                shadeExpansionStateManager
         );
     }
 
@@ -225,8 +229,7 @@ public abstract class SystemUIStatixModule {
     @SysUISingleton
     @Provides
     @Nullable
-    static AlternateUdfpsTouchProvider bindUdfpsTouchProvider() {
-        FingerprintExtProvider provider = new FingerprintExtProvider();
+    static AlternateUdfpsTouchProvider bindUdfpsTouchProvider(FingerprintExtProvider provider) {
         if (provider.getExtension() == null) {
             return null;
         } else {

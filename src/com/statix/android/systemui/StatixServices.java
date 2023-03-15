@@ -37,14 +37,16 @@ public class StatixServices extends VendorServices {
     private final AlarmManager mAlarmManager;
     private final AssistManager mAssistManager;
     private final CentralSurfaces mCentralSurfaces;
+    private final Context mContext;
     private final FlashlightController mFlashlightController;
 
     @Inject
     public StatixServices(Context context, AlarmManager alarmManager, AssistManager assistManager, CentralSurfaces centralSurfaces, FlashlightController flashlightController) {
-        super(context);
+        super();
         mAlarmManager = alarmManager;
         mAssistManager = assistManager;
         mCentralSurfaces = centralSurfaces;
+        mContext = context;
         mFlashlightController = flashlightController;
     }
 

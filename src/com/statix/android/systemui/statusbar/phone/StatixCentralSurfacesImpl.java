@@ -34,13 +34,16 @@ import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.keyguard.ui.viewmodel.LightRevealScrimViewModel;
 import com.android.systemui.navigationbar.NavigationBarController;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.PluginDependencyProvider;
+import com.android.systemui.plugins.PluginManager;
 import com.android.systemui.recents.ScreenPinningRequest;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
+import com.android.systemui.shade.CameraLauncher;
 import com.android.systemui.shade.ShadeController;
-import com.android.systemui.shared.plugins.PluginManager;
+import com.android.systemui.shade.ShadeExpansionStateManager;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.LockscreenShadeTransitionController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
@@ -77,7 +80,6 @@ import com.android.systemui.statusbar.phone.StatusBarSignalPolicy;
 import com.android.systemui.statusbar.phone.StatusBarTouchableRegionManager;
 import com.android.systemui.statusbar.phone.dagger.CentralSurfacesComponent;
 import com.android.systemui.statusbar.phone.ongoingcall.OngoingCallController;
-import com.android.systemui.statusbar.phone.panelstate.PanelExpansionStateManager;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
@@ -132,7 +134,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             NotificationGutsManager notificationGutsManager,
             NotificationLogger notificationLogger,
             NotificationInterruptStateProvider notificationInterruptStateProvider,
-            PanelExpansionStateManager panelExpansionStateManager,
+            ShadeExpansionStateManager shadeExpansionStateManager,
             KeyguardViewMediator keyguardViewMediator,
             DisplayMetrics displayMetrics,
             MetricsLogger metricsLogger,
@@ -196,13 +198,15 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             InteractionJankMonitor jankMonitor,
             DeviceStateManager deviceStateManager,
             WiredChargingRippleController wiredChargingRippleController,
-            IDreamManager dreamManager) {
+            IDreamManager dreamManager,
+            Lazy<CameraLauncher> cameraLauncherLazy,
+            Lazy<LightRevealScrimViewModel> lightRevealScrimViewModelLazy) {
         super(context, notificationsController, fragmentService, lightBarController, autoHideController,
             statusBarWindowController, statusBarWindowStateController, keyguardUpdateMonitor, statusBarSignalPolicy,
             pulseExpansionHandler, notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController,
             headsUpManagerPhone, dynamicPrivacyController, falsingManager, falsingCollector, broadcastDispatcher,
             notificationGutsManager, notificationLogger, notificationInterruptStateProvider,
-            panelExpansionStateManager, keyguardViewMediator, displayMetrics,
+            shadeExpansionStateManager, keyguardViewMediator, displayMetrics,
             metricsLogger, uiBgExecutor, notificationMediaManager, lockScreenUserManager, remoteInputManager,
             userSwitcherController, batteryController, colorExtractor, screenLifecycle,
             wakefulnessLifecycle, statusBarStateController, bubblesOptional, deviceProvisionedController,
@@ -216,7 +220,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             brightnessSliderFactory, screenOffAnimationController, wallpaperController, ongoingCallController,
             statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags, keyguardUnlockAnimationController,
             delayableExecutor, messageRouter, wallpaperManager, startingSurfaceOptional, activityLaunchAnimator,
-            jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager);
+            jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager, cameraLauncherLazy, lightRevealScrimViewModelLazy);
     }
 
 }
