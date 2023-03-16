@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8bc896d_c391120e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2023-03-16T00:56:09Z",
+      "side": 1,
+      "message": "take nocr sir",
+      "revId": "a68956edc4ac4b5eeb413835bcb3732ac466ca71",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
