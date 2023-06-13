@@ -1,5 +1,6 @@
 package com.statix.android.systemui.statusbar;
 
+import android.app.AlarmManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +33,7 @@ import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.keyguard.ScreenLifecycle;
+import com.android.systemui.keyguard.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.KeyguardIndicationController;
@@ -108,10 +110,12 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             AccessibilityManager accessibilityManager,
             FaceHelpMessageDeferral faceHelpMessageDeferral,
             DeviceConfigProxy deviceConfigProxy,
-            KeyguardLogger keyguardLogger) {
+            KeyguardLogger keyguardLogger,
+            AlternateBouncerInteractor alternateBouncerInteractor,
+            AlarmManager alarmManager) {
         super(context, mainLooper, wakeLockBuilder, keyguardStateController, statusBarStateController, keyguardUpdateMonitor, dockManager, broadcastDispatcher,
               devicePolicyManager, iBatteryStats, userManager, executor, bgExecutor, falsingManager, authController, lockPatternUtils, screenLifecycle,
-              keyguardBypassController, accessibilityManager, faceHelpMessageDeferral, keyguardLogger);
+              keyguardBypassController, accessibilityManager, faceHelpMessageDeferral, keyguardLogger, alternateBouncerInteractor, alarmManager);
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public final void onReceive(Context context, Intent intent) {

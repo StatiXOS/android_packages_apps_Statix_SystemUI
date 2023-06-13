@@ -49,10 +49,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class DataSwitchTile extends QSTileImpl<BooleanState> {
+
     private boolean mCanSwitch = true;
     private MyCallStateListener mPhoneStateListener;
     private boolean mRegistered = false;
     private int mSimCount = 0;
+
+    public static final String TILE_SPEC = "dataswitch";
+
     BroadcastReceiver mSimReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "mSimReceiver:onReceive");

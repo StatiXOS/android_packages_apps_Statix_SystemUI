@@ -33,6 +33,8 @@ import javax.inject.Inject;
 
 public class GloveModeTile extends QSTileImpl<BooleanState> {
 
+    public static final String TILE_SPEC = "glovemode";
+
     private LineageHardwareManager mHardwareManager;
 
     @Inject

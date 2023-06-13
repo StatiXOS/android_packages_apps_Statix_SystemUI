@@ -47,6 +47,8 @@ import javax.inject.Inject;
 
 public class BluetoothDialogTile extends BluetoothTile {
 
+    public static final String TILE_SPEC = "bt";
+
     private final Handler mHandler;
     private final BluetoothDialogFactory mBluetoothDialogFactory;
 

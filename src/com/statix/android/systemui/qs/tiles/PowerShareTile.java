@@ -48,6 +48,8 @@ import javax.inject.Inject;
 public class PowerShareTile extends QSTileImpl<BooleanState>
         implements BatteryController.BatteryStateChangeCallback {
 
+    public static final String TILE_SPEC = "powershare";
+
     private IPowerShare mPowerShare;
     private Lazy<CentralSurfaces> mCentralSurfacesLazy;
     private AmbientIndicationContainer mAmbientContainer;

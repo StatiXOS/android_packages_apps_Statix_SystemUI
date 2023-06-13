@@ -5,6 +5,7 @@ import static com.android.systemui.Dependency.TIME_TICK_HANDLER_NAME;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.hardware.devicestate.DeviceStateManager;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.service.dreams.IDreamManager;
@@ -34,12 +35,14 @@ import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.keyguard.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.keyguard.ui.viewmodel.LightRevealScrimViewModel;
 import com.android.systemui.navigationbar.NavigationBarController;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.PluginDependencyProvider;
 import com.android.systemui.plugins.PluginManager;
 import com.android.systemui.recents.ScreenPinningRequest;
+import com.android.systemui.settings.UserTracker;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.shade.CameraLauncher;
 import com.android.systemui.shade.ShadeController;
@@ -106,6 +109,7 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 
 @SysUISingleton
 public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
@@ -200,7 +204,10 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             WiredChargingRippleController wiredChargingRippleController,
             IDreamManager dreamManager,
             Lazy<CameraLauncher> cameraLauncherLazy,
-            Lazy<LightRevealScrimViewModel> lightRevealScrimViewModelLazy) {
+            Lazy<LightRevealScrimViewModel> lightRevealScrimViewModelLazy,
+            AlternateBouncerInteractor alternateBouncerInteractor,
+            UserTracker userTracker,
+            Provider<FingerprintManager> fingerprintManagerProvider) {
         super(context, notificationsController, fragmentService, lightBarController, autoHideController,
             statusBarWindowController, statusBarWindowStateController, keyguardUpdateMonitor, statusBarSignalPolicy,
             pulseExpansionHandler, notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController,
@@ -220,7 +227,8 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             brightnessSliderFactory, screenOffAnimationController, wallpaperController, ongoingCallController,
             statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags, keyguardUnlockAnimationController,
             delayableExecutor, messageRouter, wallpaperManager, startingSurfaceOptional, activityLaunchAnimator,
-            jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager, cameraLauncherLazy, lightRevealScrimViewModelLazy);
+            jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager, cameraLauncherLazy, lightRevealScrimViewModelLazy,
+            alternateBouncerInteractor, userTracker, fingerprintManagerProvider);
     }
 
 }

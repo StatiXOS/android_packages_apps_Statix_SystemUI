@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.logging.UiEventLogger;
 import com.android.keyguard.KeyguardViewController;
+import com.android.systemui.battery.BatterySaverModule;
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
 import com.android.systemui.biometrics.UdfpsDisplayModeProvider;
 import com.android.systemui.broadcast.BroadcastDispatcher;
@@ -39,6 +40,7 @@ import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
 import com.android.systemui.screenshot.ReferenceScreenshotModule;
+import com.android.systemui.rotationlock.RotationLockModule;
 import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
 import com.android.systemui.shade.ShadeController;
 import com.android.systemui.shade.ShadeControllerImpl;
@@ -56,8 +58,7 @@ import com.android.systemui.statusbar.phone.HeadsUpManagerPhone;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.policy.AccessibilityManagerWrapper;
-import com.android.systemui.statusbar.policy.BatteryController;
-import com.android.systemui.statusbar.policy.BatteryControllerImpl;
+import com.android.systemui.statusbar.policy.AospPolicyModule;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedControllerImpl;
@@ -74,6 +75,7 @@ import com.statix.android.systemui.biometrics.FingerprintExtProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
+import com.statix.android.systemui.qs.tileimpl.StatixQSModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 import com.statix.android.systemui.statusbar.KeyguardIndicationControllerStatix;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
@@ -85,11 +87,15 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = {
+        AospPolicyModule.class,
+        BatterySaverModule.class,
         GestureModule.class,
         MediaModule.class,
         QSModule.class,
         ReferenceScreenshotModule.class,
+        RotationLockModule.class,
         StatixPowerModule.class,
+        StatixQSModule.class,
         VolumeModule.class,
         StatusBarEventsModule.class
 })
@@ -105,30 +111,6 @@ public abstract class SystemUIStatixModule {
     @Binds
     abstract NotificationLockscreenUserManager bindNotificationLockscreenUserManager(
             NotificationLockscreenUserManagerImpl notificationLockscreenUserManager);
-
-    @Provides
-    @SysUISingleton
-    static BatteryController provideBatteryController(
-            Context context,
-            EnhancedEstimates enhancedEstimates,
-            PowerManager powerManager,
-            BroadcastDispatcher broadcastDispatcher,
-            DemoModeController demoModeController,
-            DumpManager dumpManager,
-            @Main Handler mainHandler,
-            @Background Handler bgHandler) {
-        BatteryController bC = new BatteryControllerImpl(
-                context,
-                enhancedEstimates,
-                powerManager,
-                broadcastDispatcher,
-                demoModeController,
-                dumpManager,
-                mainHandler,
-                bgHandler);
-        bC.init();
-        return bC;
-    }
 
     @Provides
     @SysUISingleton

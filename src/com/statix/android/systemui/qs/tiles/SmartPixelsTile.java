@@ -37,6 +37,9 @@ import javax.inject.Inject;
 
 public class SmartPixelsTile extends QSTileImpl<BooleanState> implements
         BatteryController.BatteryStateChangeCallback {
+
+    public static final String TILE_SPEC = "smartpixels";
+
     private static final ComponentName SMART_PIXELS_SETTING_COMPONENT = new ComponentName(
             "com.android.settings", "com.statix.android.settings.StatixSettings$SmartPixelsActivity");
 
