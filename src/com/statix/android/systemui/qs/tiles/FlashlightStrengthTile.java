@@ -34,6 +34,8 @@ import javax.inject.Inject;
 
 public class FlashlightStrengthTile extends FlashlightTile implements TouchableQSTile {
 
+    public static final String TILE_SPEC = "flashlight";
+
     private static Key<Integer> FLASHLIGHT_MAX_BRIGHTNESS_CHARACTERISTIC =
             CameraCharacteristics.FLASH_INFO_STRENGTH_MAXIMUM_LEVEL;
     private static Key<Integer> FLASHLIGHT_DEFAULT_BRIGHTNESS_CHARACTERISTIC =
