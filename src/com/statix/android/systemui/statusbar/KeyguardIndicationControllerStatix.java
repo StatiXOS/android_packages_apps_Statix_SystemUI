@@ -53,6 +53,7 @@ import javax.inject.Inject;
 @SysUISingleton
 public class KeyguardIndicationControllerStatix extends KeyguardIndicationController {
 
+    private AlarmManager mAlarmManager;
     private boolean mAdaptiveChargingActive;
     private boolean mAdaptiveChargingEnabledInSettings;
     @VisibleForTesting
@@ -119,7 +120,15 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public final void onReceive(Context context, Intent intent) {
-                if ("com.google.android.systemui.adaptivecharging.ADAPTIVE_CHARGING_DEADLINE_SET".equals(intent.getAction())) {
+                if (AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED.equals(intent.getAction())) {
+                    // Set the new deadline.
+                    AlarmManager.AlarmClockInfo info = mAlarmManager.getNextAlarmClock();
+                    if (info == null) {
+                        return;
+                    }
+                    long nextAlarmMillis = info.getTriggerTime();
+                    long millisFromNow = nextAlarmMillis - System.currentTimeMillis();
+                    mAdaptiveChargingManager.setAdaptiveChargingDeadline((int) millisFromNow/1000);
                     triggerAdaptiveChargingStatusUpdate();
                 }
             }
@@ -145,6 +154,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
         mBroadcastDispatcher = broadcastDispatcher;
         mDeviceConfig = deviceConfigProxy;
         mAdaptiveChargingManager = new AdaptiveChargingManager(context);
+        mAlarmManager = alarmManager;
     }
 
     @Override
@@ -188,7 +198,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
                 }
         });
         triggerAdaptiveChargingStatusUpdate();
-        mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, new IntentFilter("com.google.android.systemui.adaptivecharging.ADAPTIVE_CHARGING_DEADLINE_SET"), null, UserHandle.ALL);
+        mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, new IntentFilter(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED), null, UserHandle.ALL);
     }
 
     public void triggerAdaptiveChargingStatusUpdate() {
