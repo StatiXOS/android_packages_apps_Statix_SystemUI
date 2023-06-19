@@ -53,6 +53,9 @@ import javax.inject.Inject;
 @SysUISingleton
 public class KeyguardIndicationControllerStatix extends KeyguardIndicationController {
 
+    private static final long MILLIS_IN_DAY = 86400000;
+
+    private AlarmManager mAlarmManager;
     private boolean mAdaptiveChargingActive;
     private boolean mAdaptiveChargingEnabledInSettings;
     @VisibleForTesting
@@ -65,6 +68,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
     private final Context mContext;
     private final DeviceConfigProxy mDeviceConfig;
     private long mEstimatedChargeCompletion;
+    private long mLastAlarm;
     private boolean mInited;
     private boolean mIsCharging;
     private StatixKeyguardCallback mUpdateMonitorCallback;
@@ -119,8 +123,19 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public final void onReceive(Context context, Intent intent) {
-                if ("com.google.android.systemui.adaptivecharging.ADAPTIVE_CHARGING_DEADLINE_SET".equals(intent.getAction())) {
-                    triggerAdaptiveChargingStatusUpdate();
+                if (AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED.equals(intent.getAction())) {
+                    // Set the new deadline.
+                    AlarmManager.AlarmClockInfo info = mAlarmManager.getNextAlarmClock();
+                    if (info == null) {
+                        return;
+                    }
+                    long nextAlarmMillis = info.getTriggerTime();
+                    mLastAlarm = nextAlarmMillis;
+                    long millisFromNow = nextAlarmMillis - System.currentTimeMillis();
+                    if (millisFromNow < MILLIS_IN_DAY) {
+                        mAdaptiveChargingManager.setAdaptiveChargingDeadline((int) millisFromNow/1000);
+                        triggerAdaptiveChargingStatusUpdate();
+                    }
                 }
             }
         };
@@ -145,6 +160,10 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
         mBroadcastDispatcher = broadcastDispatcher;
         mDeviceConfig = deviceConfigProxy;
         mAdaptiveChargingManager = new AdaptiveChargingManager(context);
+        mAlarmManager = alarmManager;
+        if (alarmManager.getNextAlarmClock() != null) {
+            mLastAlarm = alarmManager.getNextAlarmClock().getTriggerTime();
+        }
     }
 
     @Override
@@ -180,6 +199,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             return;
         }
         mInited = true;
+        mAdaptiveChargingManager.setAdaptiveChargingDeadline((int) mLastAlarm/1000);
         DelayableExecutor delayableExecutor = mExecutor;
         mDeviceConfig.addOnPropertiesChangedListener("adaptive_charging", delayableExecutor,
             (properties) -> {
@@ -188,7 +208,10 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
                 }
         });
         triggerAdaptiveChargingStatusUpdate();
-        mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, new IntentFilter("com.google.android.systemui.adaptivecharging.ADAPTIVE_CHARGING_DEADLINE_SET"), null, UserHandle.ALL);
+        IntentFilter adaptiveFilter = new IntentFilter();
+        adaptiveFilter.addAction(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED);
+        adaptiveFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, adaptiveFilter, null, UserHandle.ALL);
     }
 
     public void triggerAdaptiveChargingStatusUpdate() {
