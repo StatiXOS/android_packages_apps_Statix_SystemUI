@@ -129,7 +129,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             public void onDestroyInterface() {}
 
             @Override
-            public void onReceiveStatus(int seconds, String stage) {
+            public void onReceiveStatus(int seconds, int stage) {
                 boolean wasActive = mAdaptiveChargingActive;
                 mAdaptiveChargingActive = AdaptiveChargingManager.isActive(stage, seconds);
                 long currentEstimation = mEstimatedChargeCompletion;
