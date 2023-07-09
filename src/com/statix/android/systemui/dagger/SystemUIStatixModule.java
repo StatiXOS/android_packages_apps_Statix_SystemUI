@@ -19,6 +19,7 @@ import com.android.internal.logging.UiEventLogger;
 import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.battery.BatterySaverModule;
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
+import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
 import com.android.systemui.biometrics.UdfpsDisplayModeProvider;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
@@ -71,6 +72,7 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
+import com.statix.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl;
 import com.statix.android.systemui.biometrics.FingerprintExtProvider;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
@@ -226,4 +228,7 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract KeyguardIndicationController bindKeyguardIndicationController(KeyguardIndicationControllerStatix impl);
+
+    @Binds
+    abstract FingerprintInteractiveToAuthProvider bindFingerprintInteractiveToAuthProviderImpl(FingerprintInteractiveToAuthProviderImpl impl);
 }
