@@ -110,8 +110,14 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
         @Override
         public void draw(@NonNull Canvas canvas) {
-            Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
-            Canvas tempCanvas = new Canvas(bitmap);
+            // Sometimes, SyetemUI doens't create the bitmap on time which causes
+            // the size of the bitmap to be 0 triggering a crash.
+            try {
+                Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
+                Canvas tempCanvas = new Canvas(bitmap);
+            } catch (e IllegalArgumentException) {
+                Log.e("SliderQSTileViewImpl", "Invalid width or height for creating Bitmap: width=" + width + ", height=" + height);
+            }
             shape.draw(tempCanvas);
             canvas.drawBitmap(bitmap, 0, 0, new Paint());
         }
