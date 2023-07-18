@@ -44,6 +44,8 @@ import com.android.systemui.plugins.qs.QSIconView;
 import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.qs.tileimpl.QSTileViewImpl;
 
+import android.util.Log;
+
 public class SliderQSTileViewImpl extends QSTileViewImpl {
 
     private PercentageDrawable percentageDrawable;
@@ -110,10 +112,17 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
         @Override
         public void draw(@NonNull Canvas canvas) {
-            Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
-            Canvas tempCanvas = new Canvas(bitmap);
-            shape.draw(tempCanvas);
-            canvas.drawBitmap(bitmap, 0, 0, new Paint());
+            // Sometimes, SyetemUI doens't create the bitmap on time which causes
+            // the size of the bitmap to be 0 triggering a crash.
+            try {
+                Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
+                Canvas tempCanvas = new Canvas(bitmap);
+                shape.draw(tempCanvas);
+                canvas.drawBitmap(bitmap, 0, 0, new Paint());
+            } catch (IllegalArgumentException e) {
+                Log.e("SliderQSTileViewImpl", "Invalid width or height for creating Bitmap");
+                return;
+            } 
         }
 
         @Override
