@@ -19,7 +19,6 @@ package com.statix.android.systemui.elmyra.actions
 import android.content.Context
 import android.os.PowerManager
 import android.os.SystemClock
-import android.view.IWindowManager
 import android.view.WindowManagerGlobal
 
 class PowerMenuAction(context: Context) : Action(context) {
@@ -28,7 +27,10 @@ class PowerMenuAction(context: Context) : Action(context) {
 
     override fun run() {
         if (!pm.isInteractive()) {
-            pm.wakeUp(SystemClock.uptimeMillis(), PowerManager.WAKE_REASON_GESTURE, "com.statix.android.systemui.elmyra:GESTURE")
+            pm.wakeUp(
+                SystemClock.uptimeMillis(),
+                PowerManager.WAKE_REASON_GESTURE,
+                "com.statix.android.systemui.elmyra:GESTURE")
         }
 
         wm.showGlobalActions()

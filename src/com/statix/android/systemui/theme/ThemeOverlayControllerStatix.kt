@@ -10,9 +10,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Handler
 import android.os.UserManager
-
 import com.android.systemui.broadcast.BroadcastDispatcher
-import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.dump.DumpManager
@@ -25,12 +23,12 @@ import com.android.systemui.statusbar.policy.DeviceProvisionedController
 import com.android.systemui.theme.ThemeOverlayApplier
 import com.android.systemui.theme.ThemeOverlayController
 import com.android.systemui.util.settings.SecureSettings
-
 import java.util.concurrent.Executor
-
 import javax.inject.Inject
 
-class ThemeOverlayControllerStatix @Inject constructor(
+class ThemeOverlayControllerStatix
+@Inject
+constructor(
     private val context: Context,
     broadcastDispatcher: BroadcastDispatcher,
     @Background bgHandler: Handler,
@@ -47,33 +45,34 @@ class ThemeOverlayControllerStatix @Inject constructor(
     @Main resources: Resources,
     wakefulnessLifecycle: WakefulnessLifecycle,
     private val configurationController: ConfigurationController,
-) : ThemeOverlayController(
-    context,
-    broadcastDispatcher,
-    bgHandler,
-    mainExecutor,
-    bgExecutor,
-    themeOverlayApplier,
-    secureSettings,
-    wallpaperManager,
-    userManager,
-    deviceProvisionedController,
-    userTracker,
-    dumpManager,
-    featureFlags,
-    resources,
-    wakefulnessLifecycle,
-) {
+) :
+    ThemeOverlayController(
+        context,
+        broadcastDispatcher,
+        bgHandler,
+        mainExecutor,
+        bgExecutor,
+        themeOverlayApplier,
+        secureSettings,
+        wallpaperManager,
+        userManager,
+        deviceProvisionedController,
+        userTracker,
+        dumpManager,
+        featureFlags,
+        resources,
+        wakefulnessLifecycle,
+    ) {
 
-    private val darkConfigurationListener = object : ConfigurationListener {
-        override fun onUiModeChanged() {
-            reevaluateSystemTheme(true /* forceReload */)
+    private val darkConfigurationListener =
+        object : ConfigurationListener {
+            override fun onUiModeChanged() {
+                reevaluateSystemTheme(true /* forceReload */)
+            }
         }
-    }
 
     override fun start() {
         super.start()
         configurationController.addCallback(darkConfigurationListener)
     }
-
 }

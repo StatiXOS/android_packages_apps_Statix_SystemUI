@@ -17,13 +17,11 @@
 package com.statix.android.systemui.elmyra.actions
 
 import android.content.Context
-
 import com.android.systemui.statusbar.policy.FlashlightController
 
-class FlashlightAction constructor(
-    context: Context,
-    private val flashlightController: FlashlightController
-) : Action(context) {
+class FlashlightAction
+constructor(context: Context, private val flashlightController: FlashlightController) :
+    Action(context) {
     private var enabled = false
 
     override fun canRun() = flashlightController.hasFlashlight()

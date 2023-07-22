@@ -6,16 +6,14 @@
 package com.statix.android.systemui.biometrics
 
 import android.os.RemoteException
-
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider
-
 import com.google.hardware.biometrics.fingerprint.IFingerprintExt
-
 import javax.inject.Inject
 
-class StatixUdfpsTouchProvider @Inject constructor(
-    private val fingerprintExtProvider: FingerprintExtProvider
-) : AlternateUdfpsTouchProvider {
+class StatixUdfpsTouchProvider
+@Inject
+constructor(private val fingerprintExtProvider: FingerprintExtProvider) :
+    AlternateUdfpsTouchProvider {
 
     private var fingerprintExt: IFingerprintExt? = null
 
@@ -50,5 +48,4 @@ class StatixUdfpsTouchProvider @Inject constructor(
             fingerprintExt = null
         }
     }
-
 }

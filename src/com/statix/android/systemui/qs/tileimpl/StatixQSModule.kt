@@ -17,7 +17,6 @@
 package com.statix.android.systemui.qs.tileimpl
 
 import com.android.systemui.qs.tileimpl.QSTileImpl
-
 import com.statix.android.systemui.qs.tiles.BluetoothDialogTile
 import com.statix.android.systemui.qs.tiles.CaffeineTile
 import com.statix.android.systemui.qs.tiles.DataSwitchTile
@@ -62,7 +61,6 @@ interface StatixQSModule {
     @IntoMap
     @StringKey(GloveModeTile.TILE_SPEC)
     fun bindGloveModeTile(gloveModeTile: GloveModeTile): QSTileImpl<*>
-
 
     /** Inject PowerShareTile into tileMap in QSModule */
     @Binds

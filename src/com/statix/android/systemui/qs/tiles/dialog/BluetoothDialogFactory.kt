@@ -23,21 +23,19 @@ import android.util.Log
 import android.view.View
 import com.android.systemui.animation.DialogLaunchAnimator
 import com.android.systemui.dagger.SysUISingleton
-import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.statusbar.policy.BluetoothController
-import java.util.concurrent.Executor
 import javax.inject.Inject
 
 private const val TAG = "BluetoothDialogFactory"
 private val DEBUG = Log.isLoggable(TAG, Log.DEBUG)
 
-/**
- * Factory to create [BluetoothDialog] objects.
- */
+/** Factory to create [BluetoothDialog] objects. */
 @SysUISingleton
-class BluetoothDialogFactory @Inject constructor(
+class BluetoothDialogFactory
+@Inject
+constructor(
     @Main private val handler: Handler,
     private val context: Context,
     private val dialogLaunchAnimator: DialogLaunchAnimator,
@@ -49,21 +47,25 @@ class BluetoothDialogFactory @Inject constructor(
     }
 
     /** Creates a [BluetoothDialog]. The dialog will be animated from [view] if it is not null. */
-    fun create(
-        aboveStatusBar: Boolean,
-        view: View?
-    ) {
+    fun create(aboveStatusBar: Boolean, view: View?) {
         if (bluetoothDialog != null) {
             if (DEBUG) {
                 Log.d(TAG, "BluetoothDialog is showing, do not create it twice.")
             }
             return
         } else {
-            bluetoothDialog = BluetoothDialog(context, this, aboveStatusBar, handler,
-                    activityStarter, dialogLaunchAnimator, bluetoothController)
+            bluetoothDialog =
+                BluetoothDialog(
+                    context,
+                    this,
+                    aboveStatusBar,
+                    handler,
+                    activityStarter,
+                    dialogLaunchAnimator,
+                    bluetoothController)
             if (view != null) {
-                dialogLaunchAnimator.showFromView(bluetoothDialog!!, view,
-                    animateBackgroundBoundsChange = true)
+                dialogLaunchAnimator.showFromView(
+                    bluetoothDialog!!, view, animateBackgroundBoundsChange = true)
             } else {
                 bluetoothDialog?.show()
             }

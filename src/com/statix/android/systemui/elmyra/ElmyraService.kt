@@ -19,46 +19,32 @@ package com.statix.android.systemui.elmyra
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.IntentFilter
 import android.database.ContentObserver
-import android.net.Uri
-import android.os.Handler
-import android.os.Looper
-import android.os.UserHandle
-import android.provider.Settings
 import android.hardware.location.ContextHubClient
 import android.hardware.location.ContextHubClientCallback
 import android.hardware.location.ContextHubManager
 import android.hardware.location.NanoAppMessage
+import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
+import android.os.UserHandle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.Settings
 import android.util.Log
-import androidx.preference.PreferenceManager
-
-import com.google.protobuf.nano.MessageNano
-
 import com.android.systemui.assist.AssistManager
 import com.android.systemui.statusbar.policy.FlashlightController
-
-import com.statix.android.systemui.elmyra.R
+import com.google.protobuf.nano.MessageNano
 import com.statix.android.systemui.elmyra.actions.*
 import com.statix.android.systemui.elmyra.proto.nano.ContextHubMessages
-import com.statix.android.systemui.elmyra.TAG
-import com.statix.android.systemui.elmyra.getAction
-import com.statix.android.systemui.elmyra.getSensitivity
-import com.statix.android.systemui.elmyra.getEnabled
-import com.statix.android.systemui.elmyra.getAllowScreenOff
-import com.statix.android.systemui.elmyra.uriForAction
-import com.statix.android.systemui.elmyra.uriForEnabled
-import com.statix.android.systemui.elmyra.uriForScreenOff
-import com.statix.android.systemui.elmyra.uriForSensitivity
 
 private const val NANOAPP_ID = 0x476f6f676c00100eL
 private const val REJECT_COOLDOWN_TIME = 1000 // ms
 
-class ElmyraService constructor(
+class ElmyraService
+constructor(
     private val context: Context,
     private val assistManager: AssistManager,
     private val flashlightController: FlashlightController,
@@ -90,34 +76,49 @@ class ElmyraService constructor(
         Log.i(TAG, "Initializing CHRE gesture")
 
         val manager = context.getSystemService("contexthub") as ContextHubManager
-        client = manager.createClient(manager.contextHubs[0], object : ContextHubClientCallback() {
-            override fun onMessageFromNanoApp(client: ContextHubClient, msg: NanoAppMessage) {
-                // Ignore other nanoapps
-                if (msg.nanoAppId != NANOAPP_ID) {
-                    return
-                }
+        client =
+            manager.createClient(
+                manager.contextHubs[0],
+                object : ContextHubClientCallback() {
+                    override fun onMessageFromNanoApp(
+                        client: ContextHubClient,
+                        msg: NanoAppMessage
+                    ) {
+                        // Ignore other nanoapps
+                        if (msg.nanoAppId != NANOAPP_ID) {
+                            return
+                        }
 
-                when (msg.messageType) {
-                    MessageType.GESTURE_DETECTED.id -> {
-                        val detectedMsg = ContextHubMessages.GestureDetected.parseFrom(msg.messageBody)
-                        onGestureDetected(detectedMsg)
+                        when (msg.messageType) {
+                            MessageType.GESTURE_DETECTED.id -> {
+                                val detectedMsg =
+                                    ContextHubMessages.GestureDetected.parseFrom(msg.messageBody)
+                                onGestureDetected(detectedMsg)
+                            }
+                            MessageType.GESTURE_PROGRESS.id -> {
+                                val progressMsg =
+                                    ContextHubMessages.GestureProgress.parseFrom(msg.messageBody)
+                                onGestureProgress(progressMsg)
+                            }
+
+                            // Fallback for other unexpected messages
+                            else ->
+                                Log.w(
+                                    TAG,
+                                    "Received unknown message of type ${msg.messageType}: $msg")
+                        }
                     }
-                    MessageType.GESTURE_PROGRESS.id -> {
-                        val progressMsg = ContextHubMessages.GestureProgress.parseFrom(msg.messageBody)
-                        onGestureProgress(progressMsg)
+
+                    override fun onNanoAppAborted(
+                        client: ContextHubClient,
+                        nanoappId: Long,
+                        error: Int
+                    ) {
+                        if (nanoappId == NANOAPP_ID) {
+                            Log.e(TAG, "Elmyra CHRE nanoapp aborted: $error")
+                        }
                     }
-
-                    // Fallback for other unexpected messages
-                    else -> Log.w(TAG, "Received unknown message of type ${msg.messageType}: $msg")
-                }
-            }
-
-            override fun onNanoAppAborted(client: ContextHubClient, nanoappId: Long, error: Int) {
-                if (nanoappId == NANOAPP_ID) {
-                    Log.e(TAG, "Elmyra CHRE nanoapp aborted: $error")
-                }
-            }
-        })
+                })
 
         updateAction()
         updateSensitivity()
@@ -126,10 +127,14 @@ class ElmyraService constructor(
 
         // Only register for changes after initial pref updates
         val settingsObserver = SettingsObserver(Handler(Looper.getMainLooper()))
-        context.contentResolver.registerContentObserver(uriForAction, false, settingsObserver, UserHandle.USER_CURRENT)
-        context.contentResolver.registerContentObserver(uriForEnabled, false, settingsObserver, UserHandle.USER_CURRENT)
-        context.contentResolver.registerContentObserver(uriForScreenOff, false, settingsObserver, UserHandle.USER_CURRENT)
-        context.contentResolver.registerContentObserver(uriForSensitivity, false, settingsObserver, UserHandle.USER_CURRENT)
+        context.contentResolver.registerContentObserver(
+            uriForAction, false, settingsObserver, UserHandle.USER_CURRENT)
+        context.contentResolver.registerContentObserver(
+            uriForEnabled, false, settingsObserver, UserHandle.USER_CURRENT)
+        context.contentResolver.registerContentObserver(
+            uriForScreenOff, false, settingsObserver, UserHandle.USER_CURRENT)
+        context.contentResolver.registerContentObserver(
+            uriForSensitivity, false, settingsObserver, UserHandle.USER_CURRENT)
     }
 
     private fun createAction(key: String): Action {
@@ -140,7 +145,6 @@ class ElmyraService constructor(
             "power_menu" -> PowerMenuAction(context)
             "flashlight" -> FlashlightAction(context, flashlightController)
             "screen" -> ScreenAction(context)
-
             else -> DummyAction(context)
         }
     }
@@ -156,9 +160,10 @@ class ElmyraService constructor(
         action = createAction(key)
 
         // For settings
-        putBoolean(context.contentResolver, context.getString(
-                R.string.pref_key_allow_screen_off_action_forced),
-                !action.canRunWhenScreenOff())
+        putBoolean(
+            context.contentResolver,
+            context.getString(R.string.pref_key_allow_screen_off_action_forced),
+            !action.canRunWhenScreenOff())
     }
 
     private fun updateEnabled() {
@@ -177,10 +182,11 @@ class ElmyraService constructor(
 
         // Listen if either condition *can't* run when screen is off
         if (!allowScreenOff || !action.canRunWhenScreenOff()) {
-            val filter = IntentFilter().apply {
-                addAction(Intent.ACTION_SCREEN_ON)
-                addAction(Intent.ACTION_SCREEN_OFF)
-            }
+            val filter =
+                IntentFilter().apply {
+                    addAction(Intent.ACTION_SCREEN_ON)
+                    addAction(Intent.ACTION_SCREEN_OFF)
+                }
 
             if (!screenRegistered) {
                 Log.i(TAG, "Listening to screen on/off events")
@@ -227,8 +233,12 @@ class ElmyraService constructor(
     }
 
     private fun onGestureDetected(msg: ContextHubMessages.GestureDetected) {
-        Log.i(TAG, "Gesture detected hostSuspended=${msg.hostSuspended} hapticConsumed=${msg.hapticConsumed}")
-        Log.d(TAG, "Gesture detected: canRunAction: ${action.canRun()}, action: ${getAction(context)}")
+        Log.i(
+            TAG,
+            "Gesture detected hostSuspended=${msg.hostSuspended} hapticConsumed=${msg.hapticConsumed}")
+        Log.d(
+            TAG,
+            "Gesture detected: canRunAction: ${action.canRun()}, action: ${getAction(context)}")
 
         if (action.canRun()) {
             if (!msg.hapticConsumed) {
@@ -261,7 +271,7 @@ class ElmyraService constructor(
 
     inner class SettingsObserver(handler: Handler) : ContentObserver(handler) {
         override fun onChange(selfChange: Boolean, uri: Uri) {
-            when(uri) {
+            when (uri) {
                 uriForEnabled -> updateEnabled()
                 // Action might change screen callback behavior
                 uriForAction -> {
@@ -274,30 +284,34 @@ class ElmyraService constructor(
         }
     }
 
-    private val screenCallback = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (enabled) {
-                when (intent?.action) {
-                    Intent.ACTION_SCREEN_ON -> {
-                        Log.i(TAG, "Enabling gesture due to screen on")
-                        enableGesture()
-                    }
-                    // Disable gesture entirely to save power
-                    Intent.ACTION_SCREEN_OFF -> {
-                        Log.i(TAG, "Disabling gesture due to screen off")
-                        disableGesture()
+    private val screenCallback =
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (enabled) {
+                    when (intent?.action) {
+                        Intent.ACTION_SCREEN_ON -> {
+                            Log.i(TAG, "Enabling gesture due to screen on")
+                            enableGesture()
+                        }
+                        // Disable gesture entirely to save power
+                        Intent.ACTION_SCREEN_OFF -> {
+                            Log.i(TAG, "Disabling gesture due to screen off")
+                            disableGesture()
+                        }
                     }
                 }
             }
         }
-    }
 
     companion object {
         // Vibration effects from HapticFeedbackConstants
         // Duplicated because we can't use performHapticFeedback in a background service
         private val vibEdgeRelease = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
-        private val vibEdgeSqueeze = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
-        private val vibReject = VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK)
-        private val uriForScreenOffForced = Settings.System.getUriFor("elmyra_allow_screen_off_action_forced")
+        private val vibEdgeSqueeze =
+            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+        private val vibReject =
+            VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK)
+        private val uriForScreenOffForced =
+            Settings.System.getUriFor("elmyra_allow_screen_off_action_forced")
     }
 }

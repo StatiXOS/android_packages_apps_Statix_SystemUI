@@ -16,7 +16,6 @@
 
 package com.statix.android.systemui.elmyra.actions
 
-import android.app.StatusBarManager
 import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
@@ -28,14 +27,16 @@ class CameraAction(context: Context) : Action(context) {
 
     override fun run() {
         if (!pm.isInteractive()) {
-            pm.wakeUp(SystemClock.uptimeMillis(), PowerManager.WAKE_REASON_GESTURE,
-                    "com.statix.android.systemui.elmyra:GESTURE")
+            pm.wakeUp(
+                SystemClock.uptimeMillis(),
+                PowerManager.WAKE_REASON_GESTURE,
+                "com.statix.android.systemui.elmyra:GESTURE")
         }
 
-        val intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE).apply {
-            addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or
-                    Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
+        val intent =
+            Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE).apply {
+                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
         context.startActivity(intent)
     }
 }

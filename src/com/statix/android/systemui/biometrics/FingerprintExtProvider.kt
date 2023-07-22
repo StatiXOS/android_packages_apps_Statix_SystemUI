@@ -7,9 +7,7 @@ package com.statix.android.systemui.biometrics
 
 import android.os.IBinder
 import android.os.ServiceManager
-
 import com.google.hardware.biometrics.fingerprint.IFingerprintExt
-
 import javax.inject.Inject
 
 class FingerprintExtProvider @Inject constructor() {
@@ -28,7 +26,7 @@ class FingerprintExtProvider @Inject constructor() {
     }
 
     companion object {
-        const val FINGERPRINT_EXT_SERVICE: String = "android.hardware.biometrics.fingerprint.IFingerprint/default"
+        const val FINGERPRINT_EXT_SERVICE: String =
+            "android.hardware.biometrics.fingerprint.IFingerprint/default"
     }
-
 }
