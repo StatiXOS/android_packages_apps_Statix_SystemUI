@@ -37,15 +37,11 @@ package com.statix.android.systemui.smartpixels;
 
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY;
 
-import android.Manifest;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -56,7 +52,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.UserHandle;
-import android.os.UserManager;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -133,20 +128,22 @@ public class SmartPixelsService extends Service {
         final int handlerStartCounter = startCounter;
         final Handler handler = new Handler();
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (view == null || destroyed || handlerStartCounter != startCounter) {
-                    return;
-                } else if (pm.isInteractive()) {
-                    updatePattern();
-                    view.invalidate();
-                }
-                if (!destroyed) {
-                    handler.postDelayed(this, Grids.ShiftTimeouts[mShiftTimeout]);
-                }
-            }
-        }, Grids.ShiftTimeouts[mShiftTimeout]);
+        handler.postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (view == null || destroyed || handlerStartCounter != startCounter) {
+                            return;
+                        } else if (pm.isInteractive()) {
+                            updatePattern();
+                            view.invalidate();
+                        }
+                        if (!destroyed) {
+                            handler.postDelayed(this, Grids.ShiftTimeouts[mShiftTimeout]);
+                        }
+                    }
+                },
+                Grids.ShiftTimeouts[mShiftTimeout]);
     }
 
     public void stopFilter() {
@@ -182,8 +179,7 @@ public class SmartPixelsService extends Service {
         windowManager.updateViewLayout(view, params);
     }
 
-    private WindowManager.LayoutParams getLayoutParams()
-    {
+    private WindowManager.LayoutParams getLayoutParams() {
         Point displaySize = new Point();
         windowManager.getDefaultDisplay().getRealSize(displaySize);
         Point windowSize = new Point();
@@ -193,21 +189,21 @@ public class SmartPixelsService extends Service {
         displaySize.x += displaySize.x - windowSize.x + (mStatusBarHeight * 2);
         displaySize.y += displaySize.y - windowSize.y + (mStatusBarHeight * 2);
 
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                displaySize.x,
-                displaySize.y,
-                0,
-                0,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE |
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS |
-                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSPARENT
-        );
+        WindowManager.LayoutParams params =
+                new WindowManager.LayoutParams(
+                        displaySize.x,
+                        displaySize.y,
+                        0,
+                        0,
+                        WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN
+                                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                                | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                        PixelFormat.TRANSPARENT);
 
         // Use the rounded corners overlay to hide it from screenshots. See 132c9f514.
         params.privateFlags |= WindowManager.LayoutParams.PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY;
@@ -218,8 +214,9 @@ public class SmartPixelsService extends Service {
     }
 
     private int getShift() {
-        long shift = (System.currentTimeMillis() / Grids.ShiftTimeouts[mShiftTimeout]) % Grids.GridSize;
-        return Grids.GridShift[(int)shift];
+        long shift =
+                (System.currentTimeMillis() / Grids.ShiftTimeouts[mShiftTimeout]) % Grids.GridSize;
+        return Grids.GridShift[(int) shift];
     }
 
     private void updatePattern() {
@@ -235,11 +232,17 @@ public class SmartPixelsService extends Service {
     }
 
     private void updateSettings() {
-        mPattern = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.SMART_PIXELS_PATTERN,
-                5, UserHandle.USER_CURRENT);
-        mShiftTimeout = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.SMART_PIXELS_SHIFT_TIMEOUT,
-                4, UserHandle.USER_CURRENT);
+        mPattern =
+                Settings.System.getIntForUser(
+                        mContext.getContentResolver(),
+                        Settings.System.SMART_PIXELS_PATTERN,
+                        5,
+                        UserHandle.USER_CURRENT);
+        mShiftTimeout =
+                Settings.System.getIntForUser(
+                        mContext.getContentResolver(),
+                        Settings.System.SMART_PIXELS_SHIFT_TIMEOUT,
+                        4,
+                        UserHandle.USER_CURRENT);
     }
 }

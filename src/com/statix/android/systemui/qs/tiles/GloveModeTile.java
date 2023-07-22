@@ -27,8 +27,6 @@ import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 
-import java.util.NoSuchElementException;
-
 import javax.inject.Inject;
 
 public class GloveModeTile extends QSTileImpl<BooleanState> {
@@ -46,10 +44,16 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
             MetricsLogger metricsLogger,
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
-            QSLogger qsLogger
-    ) {
-        super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger);
+            QSLogger qsLogger) {
+        super(
+                host,
+                backgroundLooper,
+                mainHandler,
+                falsingManager,
+                metricsLogger,
+                statusBarStateController,
+                activityStarter,
+                qsLogger);
         mHardwareManager = LineageHardwareManager.getInstance(mContext);
     }
 
@@ -67,7 +71,8 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
 
     @Override
     public void handleClick(@Nullable View view) {
-        boolean enabled = mHardwareManager.get(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY);
+        boolean enabled =
+                mHardwareManager.get(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY);
         mHardwareManager.set(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY, !enabled);
         refreshState();
     }
@@ -105,6 +110,5 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    public void handleSetListening(boolean listening) {
-    }
+    public void handleSetListening(boolean listening) {}
 }

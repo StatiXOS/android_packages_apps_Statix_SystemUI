@@ -7,10 +7,10 @@ package com.statix.android.systemui;
 
 import android.content.Context;
 
-import com.statix.android.systemui.dagger.DaggerGlobalRootComponentStatix;
-
 import com.android.systemui.SystemUIInitializer;
 import com.android.systemui.dagger.GlobalRootComponent;
+
+import com.statix.android.systemui.dagger.DaggerGlobalRootComponentStatix;
 
 public class SystemUIStatixInitializer extends SystemUIInitializer {
 

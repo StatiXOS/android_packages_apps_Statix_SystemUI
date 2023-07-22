@@ -59,7 +59,8 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
     private static final String CHANNEL_ID = "powershare";
     private static final int NOTIFICATION_ID = 273298;
 
-    private static final String POWERSHARE_SERVICE_NAME = "vendor.lineage.powershare.IPowerShare/default";
+    private static final String POWERSHARE_SERVICE_NAME =
+            "vendor.lineage.powershare.IPowerShare/default";
 
     @Inject
     public PowerShareTile(
@@ -72,10 +73,16 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
             ActivityStarter activityStarter,
             QSLogger qsLogger,
             BatteryController batteryController,
-            Lazy<CentralSurfaces> centralSurfacesLazy
-    ) {
-        super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger);
+            Lazy<CentralSurfaces> centralSurfacesLazy) {
+        super(
+                host,
+                backgroundLooper,
+                mainHandler,
+                falsingManager,
+                metricsLogger,
+                statusBarStateController,
+                activityStarter,
+                qsLogger);
         mPowerShare = getPowerShare();
         if (mPowerShare == null) {
             return;
@@ -85,9 +92,11 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         mBatteryController = batteryController;
         mNotificationManager = mContext.getSystemService(NotificationManager.class);
 
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
-                mContext.getString(R.string.quick_settings_powershare_label),
-                NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel notificationChannel =
+                new NotificationChannel(
+                        CHANNEL_ID,
+                        mContext.getString(R.string.quick_settings_powershare_label),
+                        NotificationManager.IMPORTANCE_DEFAULT);
         mNotificationManager.createNotificationChannel(notificationChannel);
 
         Notification.Builder builder = new Notification.Builder(mContext, CHANNEL_ID);
@@ -104,7 +113,12 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
 
     public void initialize() {
         if (isAvailable()) {
-            mAmbientContainer = (AmbientIndicationContainer) mCentralSurfacesLazy.get().getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
+            mAmbientContainer =
+                    (AmbientIndicationContainer)
+                            mCentralSurfacesLazy
+                                    .get()
+                                    .getNotificationShadeWindowView()
+                                    .findViewById(R.id.ambient_indication_container);
         }
     }
 
@@ -228,8 +242,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
     }
 
     @Override
-    public void handleSetListening(boolean listening) {
-    }
+    public void handleSetListening(boolean listening) {}
 
     private synchronized IPowerShare getPowerShare() {
         try {

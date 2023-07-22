@@ -21,7 +21,6 @@
 
 package com.statix.android.systemui.qs.tiles;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -29,7 +28,6 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
-
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -63,10 +61,17 @@ public class BluetoothDialogTile extends BluetoothTile {
             ActivityStarter activityStarter,
             QSLogger qsLogger,
             BluetoothController bluetoothController,
-            BluetoothDialogFactory bluetoothDialogFactory
-    ) {
-        super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger, bluetoothController);
+            BluetoothDialogFactory bluetoothDialogFactory) {
+        super(
+                host,
+                backgroundLooper,
+                mainHandler,
+                falsingManager,
+                metricsLogger,
+                statusBarStateController,
+                activityStarter,
+                qsLogger,
+                bluetoothController);
         mHandler = mainHandler;
         mBluetoothDialogFactory = bluetoothDialogFactory;
     }

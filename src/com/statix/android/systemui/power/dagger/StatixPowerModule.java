@@ -26,13 +26,11 @@ import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
 import dagger.Binds;
 import dagger.Module;
 
-
 /** Dagger Module for code in the power package. */
 @Module(
         includes = {
-                PowerRepositoryModule.class,
-        }
-)
+            PowerRepositoryModule.class,
+        })
 public interface StatixPowerModule {
     /** */
     @Binds

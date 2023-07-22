@@ -19,127 +19,143 @@ import android.provider.Settings;
 import android.util.Log;
 
 public class SmartPixelsReceiver extends BroadcastReceiver {
-   private static final String TAG = "SmartPixelsReceiver";
+    private static final String TAG = "SmartPixelsReceiver";
 
-   private Context mContext;
-   private Handler mHandler;
-   private ContentResolver mResolver;
-   private final PowerManager mPowerManager;
-   private SettingsObserver mSettingsObserver;
-   private Intent mSmartPixelsService;
-   private IntentFilter mFilter;
+    private Context mContext;
+    private Handler mHandler;
+    private ContentResolver mResolver;
+    private final PowerManager mPowerManager;
+    private SettingsObserver mSettingsObserver;
+    private Intent mSmartPixelsService;
+    private IntentFilter mFilter;
 
-   private boolean mEnabled;
-   private boolean mOnPowerSave;
-   private boolean mPowerSave;
-   private boolean mServiceRunning = false;
-   private boolean mRegisteredReceiver = false;
+    private boolean mEnabled;
+    private boolean mOnPowerSave;
+    private boolean mPowerSave;
+    private boolean mServiceRunning = false;
+    private boolean mRegisteredReceiver = false;
 
-   public SmartPixelsReceiver(Context context) {
-       mContext = context;
-       mHandler = new Handler();
-       mResolver = mContext.getContentResolver();
-       mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-       mSmartPixelsService = new Intent(mContext,
-               com.statix.android.systemui.smartpixels.SmartPixelsService.class);
+    public SmartPixelsReceiver(Context context) {
+        mContext = context;
+        mHandler = new Handler();
+        mResolver = mContext.getContentResolver();
+        mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        mSmartPixelsService =
+                new Intent(
+                        mContext, com.statix.android.systemui.smartpixels.SmartPixelsService.class);
 
-       mFilter = new IntentFilter();
-       mFilter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
-       mFilter.addAction(Intent.ACTION_USER_FOREGROUND);
+        mFilter = new IntentFilter();
+        mFilter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
+        mFilter.addAction(Intent.ACTION_USER_FOREGROUND);
 
-       initiateSettingsObserver();
-   }
+        initiateSettingsObserver();
+    }
 
-   private void registerReceiver() {
-       mContext.registerReceiver(this, mFilter);
-       mRegisteredReceiver = true;
-   }
+    private void registerReceiver() {
+        mContext.registerReceiver(this, mFilter);
+        mRegisteredReceiver = true;
+    }
 
-   private void unregisterReceiver() {
-       mContext.unregisterReceiver(this);
-       mRegisteredReceiver = false;
-   }
+    private void unregisterReceiver() {
+        mContext.unregisterReceiver(this);
+        mRegisteredReceiver = false;
+    }
 
-   private void initiateSettingsObserver() {
-       mSettingsObserver = new SettingsObserver(mHandler);
-       mSettingsObserver.observe();
-       mSettingsObserver.update();
-   }
+    private void initiateSettingsObserver() {
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe();
+        mSettingsObserver.update();
+    }
 
-   private class SettingsObserver extends ContentObserver {
-       SettingsObserver(Handler handler) {
-           super(handler);
-       }
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
 
-       void observe() {
-           mResolver.registerContentObserver(Settings.System.getUriFor(
-                   Settings.System.SMART_PIXELS_ENABLE),
-                   false, this, UserHandle.USER_ALL);
-           mResolver.registerContentObserver(Settings.System.getUriFor(
-                   Settings.System.SMART_PIXELS_ON_POWER_SAVE),
-                   false, this, UserHandle.USER_ALL);
-           mResolver.registerContentObserver(Settings.System.getUriFor(
-                   Settings.System.SMART_PIXELS_PATTERN),
-                   false, this, UserHandle.USER_ALL);
-           mResolver.registerContentObserver(Settings.System.getUriFor(
-                   Settings.System.SMART_PIXELS_SHIFT_TIMEOUT),
-                   false, this, UserHandle.USER_ALL);
-           update();
-       }
+        void observe() {
+            mResolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SMART_PIXELS_ENABLE),
+                    false,
+                    this,
+                    UserHandle.USER_ALL);
+            mResolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SMART_PIXELS_ON_POWER_SAVE),
+                    false,
+                    this,
+                    UserHandle.USER_ALL);
+            mResolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SMART_PIXELS_PATTERN),
+                    false,
+                    this,
+                    UserHandle.USER_ALL);
+            mResolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SMART_PIXELS_SHIFT_TIMEOUT),
+                    false,
+                    this,
+                    UserHandle.USER_ALL);
+            update();
+        }
 
-       @Override
-       public void onChange(boolean selfChange) {
-           update();
-       }
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
 
-       public void update() {
-           mEnabled = (Settings.System.getIntForUser(
-                   mResolver, Settings.System.SMART_PIXELS_ENABLE,
-                   0, UserHandle.USER_CURRENT) == 1);
-           mOnPowerSave = (Settings.System.getIntForUser(
-                   mResolver, Settings.System.SMART_PIXELS_ON_POWER_SAVE,
-                   0, UserHandle.USER_CURRENT) == 1);
-           mPowerSave = mPowerManager.isPowerSaveMode();
+        public void update() {
+            mEnabled =
+                    (Settings.System.getIntForUser(
+                                    mResolver,
+                                    Settings.System.SMART_PIXELS_ENABLE,
+                                    0,
+                                    UserHandle.USER_CURRENT)
+                            == 1);
+            mOnPowerSave =
+                    (Settings.System.getIntForUser(
+                                    mResolver,
+                                    Settings.System.SMART_PIXELS_ON_POWER_SAVE,
+                                    0,
+                                    UserHandle.USER_CURRENT)
+                            == 1);
+            mPowerSave = mPowerManager.isPowerSaveMode();
 
-           if (mEnabled || mOnPowerSave) {
-               if (!mRegisteredReceiver)
-                   registerReceiver();
-           } else if (mRegisteredReceiver) {
-               unregisterReceiver();
-           }
+            if (mEnabled || mOnPowerSave) {
+                if (!mRegisteredReceiver) registerReceiver();
+            } else if (mRegisteredReceiver) {
+                unregisterReceiver();
+            }
 
-           if (!mEnabled && mOnPowerSave) {
-               if (mPowerSave && !mServiceRunning) {
-                   mContext.startService(mSmartPixelsService);
-                   mServiceRunning = true;
-                   Log.d(TAG, "Started Smart Pixels Service by Power Save enable");
-               } else if (!mPowerSave && mServiceRunning) {
-                   mContext.stopService(mSmartPixelsService);
-                   mServiceRunning = false;
-                   Log.d(TAG, "Stopped Smart Pixels Service by Power Save disable");
-               } else if (mPowerSave && mServiceRunning) {
-                   mContext.stopService(mSmartPixelsService);
-                   mContext.startService(mSmartPixelsService);
-                   Log.d(TAG, "Restarted Smart Pixels Service by Power Save enable");
-               }
-           } else if (mEnabled && !mServiceRunning) {
-               mContext.startService(mSmartPixelsService);
-               mServiceRunning = true;
-               Log.d(TAG, "Started Smart Pixels Service by enable");
-           } else if (!mEnabled && mServiceRunning) {
-               mContext.stopService(mSmartPixelsService);
-               mServiceRunning = false;
-               Log.d(TAG, "Stopped Smart Pixels Service by disable");
-           } else if (mEnabled && mServiceRunning) {
-               mContext.stopService(mSmartPixelsService);
-               mContext.startService(mSmartPixelsService);
-               Log.d(TAG, "Restarted Smart Pixels Service");
-           }
-       }
-   }
+            if (!mEnabled && mOnPowerSave) {
+                if (mPowerSave && !mServiceRunning) {
+                    mContext.startService(mSmartPixelsService);
+                    mServiceRunning = true;
+                    Log.d(TAG, "Started Smart Pixels Service by Power Save enable");
+                } else if (!mPowerSave && mServiceRunning) {
+                    mContext.stopService(mSmartPixelsService);
+                    mServiceRunning = false;
+                    Log.d(TAG, "Stopped Smart Pixels Service by Power Save disable");
+                } else if (mPowerSave && mServiceRunning) {
+                    mContext.stopService(mSmartPixelsService);
+                    mContext.startService(mSmartPixelsService);
+                    Log.d(TAG, "Restarted Smart Pixels Service by Power Save enable");
+                }
+            } else if (mEnabled && !mServiceRunning) {
+                mContext.startService(mSmartPixelsService);
+                mServiceRunning = true;
+                Log.d(TAG, "Started Smart Pixels Service by enable");
+            } else if (!mEnabled && mServiceRunning) {
+                mContext.stopService(mSmartPixelsService);
+                mServiceRunning = false;
+                Log.d(TAG, "Stopped Smart Pixels Service by disable");
+            } else if (mEnabled && mServiceRunning) {
+                mContext.stopService(mSmartPixelsService);
+                mContext.startService(mSmartPixelsService);
+                Log.d(TAG, "Restarted Smart Pixels Service");
+            }
+        }
+    }
 
-   @Override
-   public void onReceive(final Context context, Intent intent) {
-       mSettingsObserver.update();
-   }
+    @Override
+    public void onReceive(final Context context, Intent intent) {
+        mSettingsObserver.update();
+    }
 }

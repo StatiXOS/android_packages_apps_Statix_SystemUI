@@ -13,10 +13,8 @@ import android.util.DisplayMetrics;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.logging.MetricsLogger;
-
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
-
 import com.android.systemui.InitController;
 import com.android.systemui.accessibility.floatingmenu.AccessibilityFloatingMenuController;
 import com.android.systemui.animation.ActivityLaunchAnimator;
@@ -96,7 +94,6 @@ import com.android.systemui.util.WallpaperController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.MessageRouter;
 import com.android.systemui.volume.VolumeComponent;
-
 import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.StartingSurface;
 
@@ -208,27 +205,97 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             AlternateBouncerInteractor alternateBouncerInteractor,
             UserTracker userTracker,
             Provider<FingerprintManager> fingerprintManagerProvider) {
-        super(context, notificationsController, fragmentService, lightBarController, autoHideController,
-            statusBarWindowController, statusBarWindowStateController, keyguardUpdateMonitor, statusBarSignalPolicy,
-            pulseExpansionHandler, notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController,
-            headsUpManagerPhone, dynamicPrivacyController, falsingManager, falsingCollector, broadcastDispatcher,
-            notificationGutsManager, notificationLogger, notificationInterruptStateProvider,
-            shadeExpansionStateManager, keyguardViewMediator, displayMetrics,
-            metricsLogger, uiBgExecutor, notificationMediaManager, lockScreenUserManager, remoteInputManager,
-            userSwitcherController, batteryController, colorExtractor, screenLifecycle,
-            wakefulnessLifecycle, statusBarStateController, bubblesOptional, deviceProvisionedController,
-            navigationBarController, accessibilityFloatingMenuController, assistManagerLazy,
-            configurationController, notificationShadeWindowController, dozeParameters, scrimController, lockscreenWallpaperLazy,
-            biometricUnlockControllerLazy, dozeServiceHost, powerManager, screenPinningRequest,
-            dozeScrimController, volumeComponent, commandQueue, centralSurfacesComponentFactory, pluginManager, shadeController,
-            statusBarKeyguardViewManager, viewMediatorCallback, initController, timeTickHandler, pluginDependencyProvider,
-            keyguardDismissUtil, extensionController, userInfoControllerImpl, phoneStatusBarPolicy, keyguardIndicationController,
-            demoModeController, notificationShadeDepthControllerLazy, statusBarTouchableRegionManager, notificationIconAreaController,
-            brightnessSliderFactory, screenOffAnimationController, wallpaperController, ongoingCallController,
-            statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags, keyguardUnlockAnimationController,
-            delayableExecutor, messageRouter, wallpaperManager, startingSurfaceOptional, activityLaunchAnimator,
-            jankMonitor, deviceStateManager, wiredChargingRippleController, dreamManager, cameraLauncherLazy, lightRevealScrimViewModelLazy,
-            alternateBouncerInteractor, userTracker, fingerprintManagerProvider);
+        super(
+                context,
+                notificationsController,
+                fragmentService,
+                lightBarController,
+                autoHideController,
+                statusBarWindowController,
+                statusBarWindowStateController,
+                keyguardUpdateMonitor,
+                statusBarSignalPolicy,
+                pulseExpansionHandler,
+                notificationWakeUpCoordinator,
+                keyguardBypassController,
+                keyguardStateController,
+                headsUpManagerPhone,
+                dynamicPrivacyController,
+                falsingManager,
+                falsingCollector,
+                broadcastDispatcher,
+                notificationGutsManager,
+                notificationLogger,
+                notificationInterruptStateProvider,
+                shadeExpansionStateManager,
+                keyguardViewMediator,
+                displayMetrics,
+                metricsLogger,
+                uiBgExecutor,
+                notificationMediaManager,
+                lockScreenUserManager,
+                remoteInputManager,
+                userSwitcherController,
+                batteryController,
+                colorExtractor,
+                screenLifecycle,
+                wakefulnessLifecycle,
+                statusBarStateController,
+                bubblesOptional,
+                deviceProvisionedController,
+                navigationBarController,
+                accessibilityFloatingMenuController,
+                assistManagerLazy,
+                configurationController,
+                notificationShadeWindowController,
+                dozeParameters,
+                scrimController,
+                lockscreenWallpaperLazy,
+                biometricUnlockControllerLazy,
+                dozeServiceHost,
+                powerManager,
+                screenPinningRequest,
+                dozeScrimController,
+                volumeComponent,
+                commandQueue,
+                centralSurfacesComponentFactory,
+                pluginManager,
+                shadeController,
+                statusBarKeyguardViewManager,
+                viewMediatorCallback,
+                initController,
+                timeTickHandler,
+                pluginDependencyProvider,
+                keyguardDismissUtil,
+                extensionController,
+                userInfoControllerImpl,
+                phoneStatusBarPolicy,
+                keyguardIndicationController,
+                demoModeController,
+                notificationShadeDepthControllerLazy,
+                statusBarTouchableRegionManager,
+                notificationIconAreaController,
+                brightnessSliderFactory,
+                screenOffAnimationController,
+                wallpaperController,
+                ongoingCallController,
+                statusBarHideIconsForBouncerManager,
+                lockscreenShadeTransitionController,
+                featureFlags,
+                keyguardUnlockAnimationController,
+                delayableExecutor,
+                messageRouter,
+                wallpaperManager,
+                startingSurfaceOptional,
+                activityLaunchAnimator,
+                jankMonitor,
+                deviceStateManager,
+                wiredChargingRippleController,
+                dreamManager,
+                cameraLauncherLazy,
+                lightRevealScrimViewModelLazy,
+                alternateBouncerInteractor,
+                userTracker,
+                fingerprintManagerProvider);
     }
-
 }

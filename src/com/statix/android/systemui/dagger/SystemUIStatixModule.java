@@ -11,7 +11,6 @@ import static com.android.systemui.Dependency.LEAK_REPORT_EMAIL_NAME;
 import android.content.Context;
 import android.hardware.SensorPrivacyManager;
 import android.os.Handler;
-import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
 
@@ -20,28 +19,21 @@ import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.battery.BatterySaverModule;
 import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
-import com.android.systemui.biometrics.UdfpsDisplayModeProvider;
-import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
-import com.android.systemui.dagger.qualifiers.Background;
-import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.demomode.DemoModeController;
+import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
-import com.android.systemui.dump.DumpManager;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
-import com.android.systemui.power.EnhancedEstimates;
 import com.android.systemui.qs.dagger.QSModule;
-import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
-import com.android.systemui.screenshot.ReferenceScreenshotModule;
 import com.android.systemui.rotationlock.RotationLockModule;
+import com.android.systemui.screenshot.ReferenceScreenshotModule;
 import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
 import com.android.systemui.shade.ShadeController;
 import com.android.systemui.shade.ShadeControllerImpl;
@@ -72,35 +64,36 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
 
-import com.statix.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl;
 import com.statix.android.systemui.biometrics.FingerprintExtProvider;
+import com.statix.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl;
 import com.statix.android.systemui.biometrics.StatixUdfpsTouchProvider;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
-import com.statix.android.systemui.qs.tileimpl.StatixQSModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
+import com.statix.android.systemui.qs.tileimpl.StatixQSModule;
 import com.statix.android.systemui.statusbar.KeyguardIndicationControllerStatix;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
-
-import javax.inject.Named;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {
-        AospPolicyModule.class,
-        BatterySaverModule.class,
-        GestureModule.class,
-        MediaModule.class,
-        QSModule.class,
-        ReferenceScreenshotModule.class,
-        RotationLockModule.class,
-        StatixPowerModule.class,
-        StatixQSModule.class,
-        VolumeModule.class,
-        StatusBarEventsModule.class
-})
+import javax.inject.Named;
+
+@Module(
+        includes = {
+            AospPolicyModule.class,
+            BatterySaverModule.class,
+            GestureModule.class,
+            MediaModule.class,
+            QSModule.class,
+            ReferenceScreenshotModule.class,
+            RotationLockModule.class,
+            StatixPowerModule.class,
+            StatixQSModule.class,
+            VolumeModule.class,
+            StatusBarEventsModule.class
+        })
 public abstract class SystemUIStatixModule {
 
     @SysUISingleton
@@ -127,8 +120,8 @@ public abstract class SystemUIStatixModule {
     @SysUISingleton
     static IndividualSensorPrivacyController provideIndividualSensorPrivacyController(
             SensorPrivacyManager sensorPrivacyManager) {
-        IndividualSensorPrivacyController spC = new IndividualSensorPrivacyControllerImpl(
-                sensorPrivacyManager);
+        IndividualSensorPrivacyController spC =
+                new IndividualSensorPrivacyControllerImpl(sensorPrivacyManager);
         spC.init();
         return spC;
     }
@@ -171,8 +164,7 @@ public abstract class SystemUIStatixModule {
                 handler,
                 accessibilityManagerWrapper,
                 uiEventLogger,
-                shadeExpansionStateManager
-        );
+                shadeExpansionStateManager);
     }
 
     @Binds
@@ -180,7 +172,9 @@ public abstract class SystemUIStatixModule {
 
     @Provides
     @SysUISingleton
-    static Recents provideRecents(Context context, RecentsImplementation recentsImplementation,
+    static Recents provideRecents(
+            Context context,
+            RecentsImplementation recentsImplementation,
             CommandQueue commandQueue) {
         return new Recents(context, recentsImplementation, commandQueue);
     }
@@ -210,7 +204,8 @@ public abstract class SystemUIStatixModule {
     public abstract QSFactory bindQSFactory(QSFactoryImplStatix qsFactoryImpl);
 
     @Binds
-    abstract ControlsTileResourceConfiguration bindControlsTileResourceConfiguration(StatixControlsTileResourceConfigurationImpl configuration);
+    abstract ControlsTileResourceConfiguration bindControlsTileResourceConfiguration(
+            StatixControlsTileResourceConfigurationImpl configuration);
 
     @SysUISingleton
     @Provides
@@ -224,11 +219,14 @@ public abstract class SystemUIStatixModule {
     }
 
     @Binds
-    abstract ThemeOverlayController provideThemeOverlayController(ThemeOverlayControllerStatix themeOverlayController);
+    abstract ThemeOverlayController provideThemeOverlayController(
+            ThemeOverlayControllerStatix themeOverlayController);
 
     @Binds
-    abstract KeyguardIndicationController bindKeyguardIndicationController(KeyguardIndicationControllerStatix impl);
+    abstract KeyguardIndicationController bindKeyguardIndicationController(
+            KeyguardIndicationControllerStatix impl);
 
     @Binds
-    abstract FingerprintInteractiveToAuthProvider bindFingerprintInteractiveToAuthProviderImpl(FingerprintInteractiveToAuthProviderImpl impl);
+    abstract FingerprintInteractiveToAuthProvider bindFingerprintInteractiveToAuthProviderImpl(
+            FingerprintInteractiveToAuthProviderImpl impl);
 }

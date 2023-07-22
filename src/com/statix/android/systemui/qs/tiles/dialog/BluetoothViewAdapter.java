@@ -17,20 +17,16 @@
 
 package com.statix.android.systemui.qs.tiles.dialog;
 
-import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,15 +38,11 @@ import com.android.settingslib.Utils;
 import com.android.settingslib.bluetooth.CachedBluetoothDevice;
 import com.android.systemui.R;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * Adapter for showing bluetooth devices.
- */
-public class BluetoothViewAdapter extends
-        RecyclerView.Adapter<BluetoothViewAdapter.BluetoothViewHolder> {
+/** Adapter for showing bluetooth devices. */
+public class BluetoothViewAdapter
+        extends RecyclerView.Adapter<BluetoothViewAdapter.BluetoothViewHolder> {
 
     private static final String TAG = "BluetoothViewAdapter";
 
@@ -59,8 +51,7 @@ public class BluetoothViewAdapter extends
     private static final String KEY_DEVICE_ADDRESS = "device_address";
     private static final String EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args";
 
-    @Nullable
-    private List<CachedBluetoothDevice> mDevices;
+    @Nullable private List<CachedBluetoothDevice> mDevices;
     protected int mDevicesCount;
     protected int mMaxDevicesCount = BluetoothDialog.MAX_DEVICES_COUNT;
     private CachedBluetoothDevice mActiveDevice;
@@ -75,11 +66,11 @@ public class BluetoothViewAdapter extends
     }
 
     @Override
-    public BluetoothViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup,
-            int viewType) {
+    public BluetoothViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         mContext = viewGroup.getContext();
-        mHolderView = LayoutInflater.from(mContext).inflate(R.layout.bluetooth_list_item,
-                viewGroup, false);
+        mHolderView =
+                LayoutInflater.from(mContext)
+                        .inflate(R.layout.bluetooth_list_item, viewGroup, false);
         return new BluetoothViewHolder(mHolderView, mDialog);
     }
 
@@ -128,9 +119,7 @@ public class BluetoothViewAdapter extends
         return mDevicesCount;
     }
 
-    /**
-     * ViewHolder for binding bluetooth view.
-     */
+    /** ViewHolder for binding bluetooth view. */
     static class BluetoothViewHolder extends RecyclerView.ViewHolder {
 
         final LinearLayout mContainerLayout;
@@ -160,8 +149,9 @@ public class BluetoothViewAdapter extends
             mBluetoothEndIcon = view.requireViewById(R.id.bluetooth_end_icon);
             mBackgroundOn = mContext.getDrawable(R.drawable.settingslib_switch_bar_bg_on);
 
-            TypedArray typedArray = mContext.obtainStyledAttributes(
-                    new int[]{android.R.attr.selectableItemBackground});
+            TypedArray typedArray =
+                    mContext.obtainStyledAttributes(
+                            new int[] {android.R.attr.selectableItemBackground});
             try {
                 mBackgroundOff = typedArray.getDrawable(0 /* index */);
             } finally {
@@ -176,47 +166,56 @@ public class BluetoothViewAdapter extends
             }
             mBluetoothListLayout.setVisibility(View.VISIBLE);
             mBluetoothListLayout.setBackground(isActive ? mBackgroundOn : mBackgroundOff);
-            mBluetoothListLayout.setOnClickListener(v -> {
-                if (isActive) {
-                    device.disconnect();
-                } else if (device.isConnected()) {
-                    device.setActive();
-                } else {
-                    device.connect();
-                }
-            });
+            mBluetoothListLayout.setOnClickListener(
+                    v -> {
+                        if (isActive) {
+                            device.disconnect();
+                        } else if (device.isConnected()) {
+                            device.setActive();
+                        } else {
+                            device.connect();
+                        }
+                    });
 
             // device icon
             mBluetoothIcon.setImageDrawable(device.getDrawableWithDescription().first);
 
             // title
             mBluetoothTitleText.setText(device.getName());
-            mBluetoothTitleText.setTextAppearance(isActive
-                    ? R.style.TextAppearance_InternetDialog_Active
-                    : R.style.TextAppearance_InternetDialog);
+            mBluetoothTitleText.setTextAppearance(
+                    isActive
+                            ? R.style.TextAppearance_InternetDialog_Active
+                            : R.style.TextAppearance_InternetDialog);
 
             // summary
             String summary = device.getConnectionSummary();
             boolean showSummary = !TextUtils.isEmpty(summary);
             if (showSummary) {
                 mBluetoothSummaryText.setText(summary);
-                mBluetoothSummaryText.setTextAppearance(isActive
-                        ? R.style.TextAppearance_InternetDialog_Secondary_Active
-                        : R.style.TextAppearance_InternetDialog_Secondary);
+                mBluetoothSummaryText.setTextAppearance(
+                        isActive
+                                ? R.style.TextAppearance_InternetDialog_Secondary_Active
+                                : R.style.TextAppearance_InternetDialog_Secondary);
             }
             mBluetoothSummaryText.setVisibility(showSummary ? View.VISIBLE : View.GONE);
 
-            int iconColor = isActive ? mContext.getColor(R.color.connected_network_primary_color)
-                    : Utils.getColorAttrDefaultColor(mContext, android.R.attr.colorControlNormal);
+            int iconColor =
+                    isActive
+                            ? mContext.getColor(R.color.connected_network_primary_color)
+                            : Utils.getColorAttrDefaultColor(
+                                    mContext, android.R.attr.colorControlNormal);
             mBluetoothEndIcon.setColorFilter(iconColor);
 
             final Bundle args = new Bundle();
             args.putString(KEY_DEVICE_ADDRESS, device.getAddress());
-            mBluetoothEndIcon.setOnClickListener(v -> {
-                mDialog.startActivity(new Intent(DEVICE_DETAIL_INTENT)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args), v);
-            });
+            mBluetoothEndIcon.setOnClickListener(
+                    v -> {
+                        mDialog.startActivity(
+                                new Intent(DEVICE_DETAIL_INTENT)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        .putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args),
+                                v);
+                    });
         }
     }
 }

@@ -12,11 +12,11 @@ import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import java.util.Locale;
-import java.util.NoSuchElementException;
-
 import vendor.google.google_battery.ChargingStage;
 import vendor.google.google_battery.IGoogleBattery;
+
+import java.util.Locale;
+import java.util.NoSuchElementException;
 
 public class AdaptiveChargingManager {
 
@@ -41,15 +41,21 @@ public class AdaptiveChargingManager {
     }
 
     public String formatTimeToFull(long j) {
-        return DateFormat.format(DateFormat.getBestDateTimePattern(getLocale(), DateFormat.is24HourFormat(mContext) ? "Hm" : "hma"), j).toString();
+        return DateFormat.format(
+                        DateFormat.getBestDateTimePattern(
+                                getLocale(), DateFormat.is24HourFormat(mContext) ? "Hm" : "hma"),
+                        j)
+                .toString();
     }
 
     public boolean hasAdaptiveChargingFeature() {
-        return mContext.getPackageManager().hasSystemFeature("com.google.android.feature.ADAPTIVE_CHARGING");
+        return mContext.getPackageManager()
+                .hasSystemFeature("com.google.android.feature.ADAPTIVE_CHARGING");
     }
 
     public boolean isAvailable() {
-        return hasAdaptiveChargingFeature() && DeviceConfig.getBoolean("adaptive_charging", "adaptive_charging_enabled", true);
+        return hasAdaptiveChargingFeature()
+                && DeviceConfig.getBoolean("adaptive_charging", "adaptive_charging_enabled", true);
     }
 
     public boolean getEnabled() {
@@ -69,7 +75,7 @@ public class AdaptiveChargingManager {
     }
 
     public static boolean isStageActiveOrEnabled(String stage) {
-       return isStageActive(stage) || isStageEnabled(stage);
+        return isStageActive(stage) || isStageEnabled(stage);
     }
 
     public static boolean isActive(String state, int seconds) {
@@ -93,15 +99,16 @@ public class AdaptiveChargingManager {
     }
 
     public void queryStatus(final AdaptiveChargingStatusReceiver adaptiveChargingStatusReceiver) {
-        IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() {
-                @Override
-                public final void binderDied() {
-                    if (DEBUG) {
-                        Log.d("AdaptiveChargingManager", "serviceDied");
+        IBinder.DeathRecipient deathRecipient =
+                new IBinder.DeathRecipient() {
+                    @Override
+                    public final void binderDied() {
+                        if (DEBUG) {
+                            Log.d("AdaptiveChargingManager", "serviceDied");
+                        }
+                        adaptiveChargingStatusReceiver.onDestroyInterface();
                     }
-                    adaptiveChargingStatusReceiver.onDestroyInterface();
-                }
-            };
+                };
         IGoogleBattery googBatteryIntf = initHalInterface(deathRecipient);
         if (googBatteryIntf == null) {
             adaptiveChargingStatusReceiver.onDestroyInterface();
@@ -117,7 +124,8 @@ public class AdaptiveChargingManager {
         adaptiveChargingStatusReceiver.onDestroyInterface();
     }
 
-    private static void destroyHalInterface(IGoogleBattery iGoogleBattery, IBinder.DeathRecipient deathRecipient) {
+    private static void destroyHalInterface(
+            IGoogleBattery iGoogleBattery, IBinder.DeathRecipient deathRecipient) {
         if (DEBUG) {
             Log.d("AdaptiveChargingManager", "destroyHalInterface");
         }
@@ -131,7 +139,10 @@ public class AdaptiveChargingManager {
             Log.d("AdaptiveChargingManager", "initHalInterface");
         }
         try {
-            IBinder binder = Binder.allowBlocking(ServiceManager.waitForDeclaredService("vendor.google.google_battery.IGoogleBattery/default"));
+            IBinder binder =
+                    Binder.allowBlocking(
+                            ServiceManager.waitForDeclaredService(
+                                    "vendor.google.google_battery.IGoogleBattery/default"));
             IGoogleBattery batteryInterface = null;
             if (binder != null) {
                 batteryInterface = IGoogleBattery.Stub.asInterface(binder);
@@ -145,5 +156,4 @@ public class AdaptiveChargingManager {
             return null;
         }
     }
-
 }

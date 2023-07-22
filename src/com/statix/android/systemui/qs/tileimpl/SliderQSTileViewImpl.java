@@ -34,6 +34,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -44,8 +45,6 @@ import com.android.systemui.plugins.qs.QSIconView;
 import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.qs.tileimpl.QSTileViewImpl;
 
-import android.util.Log;
-
 public class SliderQSTileViewImpl extends QSTileViewImpl {
 
     private PercentageDrawable percentageDrawable;
@@ -53,7 +52,12 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private SettingObserver mSettingObserver;
     private boolean enabled = false;
 
-    public SliderQSTileViewImpl(Context context, QSIconView icon, boolean collapsed, View.OnTouchListener touchListener, String settingKey) {
+    public SliderQSTileViewImpl(
+            Context context,
+            QSIconView icon,
+            boolean collapsed,
+            View.OnTouchListener touchListener,
+            String settingKey) {
         super(context, icon, collapsed);
         if (touchListener != null && !settingKey.isEmpty()) {
             mSettingsKey = settingKey;
@@ -62,7 +66,12 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
             updatePercentBackground(false /* default */);
             mSettingObserver = new SettingObserver(new Handler(Looper.getMainLooper()));
             setOnTouchListener(touchListener);
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(settingKey), false, mSettingObserver, UserHandle.USER_CURRENT);
+            mContext.getContentResolver()
+                    .registerContentObserver(
+                            Settings.System.getUriFor(settingKey),
+                            false,
+                            mSettingObserver,
+                            UserHandle.USER_CURRENT);
             enabled = true;
         }
     }
@@ -77,7 +86,8 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
     private void updatePercentBackground(boolean active) {
         percentageDrawable.setTint(active ? Color.WHITE : Color.BLACK);
-        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{colorBackgroundDrawable, percentageDrawable});
+        LayerDrawable layerDrawable =
+                new LayerDrawable(new Drawable[] {colorBackgroundDrawable, percentageDrawable});
         setBackground(layerDrawable);
     }
 
@@ -99,11 +109,13 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
         private PercentageDrawable() {
             shape = mContext.getDrawable(R.drawable.qs_tile_background_shape);
-            mCurrentPercent = Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
+            mCurrentPercent =
+                    Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
         }
 
         synchronized void updatePercent() {
-            mCurrentPercent = Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
+            mCurrentPercent =
+                    Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
         }
 
         @Override
@@ -121,7 +133,11 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
             // Sometimes, SyetemUI doens't create the bitmap on time which causes
             // the size of the bitmap to be 0 triggering a crash.
             try {
-                Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
+                Bitmap bitmap =
+                        Bitmap.createBitmap(
+                                Math.round(shape.getBounds().width() * mCurrentPercent),
+                                shape.getBounds().height(),
+                                Bitmap.Config.ARGB_8888);
                 Canvas tempCanvas = new Canvas(bitmap);
                 shape.draw(tempCanvas);
                 canvas.drawBitmap(bitmap, 0, 0, new Paint());

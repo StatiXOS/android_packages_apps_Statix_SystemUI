@@ -35,7 +35,8 @@ import com.android.systemui.statusbar.phone.CentralSurfaces
 import com.android.systemui.util.wakelock.DelayedWakeLock
 import com.android.systemui.util.wakelock.WakeLock
 
-class AmbientIndicationContainer(private val context: Context, attrs: AttributeSet) : AutoReinflateContainer(context, attrs), DozeReceiver, StatusBarStateController.StateListener, NotificationMediaManager.MediaListener {
+class AmbientIndicationContainer(private val context: Context, attrs: AttributeSet) :
+    AutoReinflateContainer(context, attrs), DozeReceiver, StatusBarStateController.StateListener, NotificationMediaManager.MediaListener {
 
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val iconBounds: Rect = Rect()
