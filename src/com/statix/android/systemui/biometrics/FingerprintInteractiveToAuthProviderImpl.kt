@@ -18,23 +18,30 @@ package com.statix.android.systemui.biometrics
 
 import android.content.Context
 import android.provider.Settings
-
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider
-
 import javax.inject.Inject
 
-class FingerprintInteractiveToAuthProviderImpl @Inject constructor(private val context: Context) : FingerprintInteractiveToAuthProvider {
+class FingerprintInteractiveToAuthProviderImpl @Inject constructor(private val context: Context) :
+    FingerprintInteractiveToAuthProvider {
 
-    private val defaultValue = if (context.getResources().getBoolean(
-                com.android.internal.R.bool.config_performantAuthDefault)) 1 else 0
+    private val defaultValue =
+        if (context
+            .getResources()
+            .getBoolean(com.android.internal.R.bool.config_performantAuthDefault))
+            1
+        else 0
 
     override fun isEnabled(userId: Int): Boolean {
-        var value = Settings.Secure.getIntForUser(context.contentResolver,
-                Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED, -1, userId)
+        var value =
+            Settings.Secure.getIntForUser(
+                context.contentResolver, Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED, -1, userId)
         if (value == -1) {
             value = defaultValue
-            Settings.Secure.putIntForUser(context.contentResolver,
-                    Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED, value, userId)
+            Settings.Secure.putIntForUser(
+                context.contentResolver,
+                Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
+                value,
+                userId)
         }
         return value == 0
     }

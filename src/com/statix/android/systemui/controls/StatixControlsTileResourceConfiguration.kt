@@ -6,20 +6,20 @@
 package com.statix.android.systemui.controls
 
 import android.content.ComponentName
-
+import com.android.systemui.R
 import com.android.systemui.controls.controller.ControlsController
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration
 import com.android.systemui.dagger.SysUISingleton
-import com.android.systemui.R
-
 import javax.inject.Inject
 
 @SysUISingleton
-class StatixControlsTileResourceConfigurationImpl @Inject constructor(
+class StatixControlsTileResourceConfigurationImpl
+@Inject
+constructor(
     private val controlsController: ControlsController,
-): ControlsTileResourceConfiguration {
+) : ControlsTileResourceConfiguration {
 
-   val componentName: ComponentName
+    val componentName: ComponentName
         get() = controlsController.getPreferredSelection().componentName
 
     override fun getTileImageId(): Int {
@@ -39,5 +39,4 @@ class StatixControlsTileResourceConfigurationImpl @Inject constructor(
     companion object {
         const val GOOGLE_HOME_PACKAGE: String = "com.google.android.apps.chromecast.app"
     }
-
 }

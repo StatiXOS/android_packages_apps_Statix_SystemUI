@@ -16,14 +16,12 @@
 
 package com.statix.android.systemui.elmyra.actions
 
-import android.app.StatusBarManager
 import android.content.Context
 import android.os.Bundle
-import android.os.ServiceManager
-
 import com.android.systemui.assist.AssistManager
 
-class AssistantAction constructor(context: Context, private val assistManager: AssistManager) : Action(context) {
+class AssistantAction constructor(context: Context, private val assistManager: AssistManager) :
+    Action(context) {
     override fun run() {
         assistManager.startAssist(Bundle())
     }

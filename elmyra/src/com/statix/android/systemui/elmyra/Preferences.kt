@@ -29,23 +29,31 @@ val uriForSensitivity = Settings.System.getUriFor("elmyra_sensitivity")
 fun Boolean.toInt() = if (this) 1 else 0
 
 fun getEnabled(context: Context): Boolean {
-    return getBoolean(context.contentResolver, context.getString(R.string.pref_key_enabled),
-            context.resources.getBoolean(R.bool.default_enabled))
+    return getBoolean(
+        context.contentResolver,
+        context.getString(R.string.pref_key_enabled),
+        context.resources.getBoolean(R.bool.default_enabled))
 }
 
 fun getAction(context: Context): String {
-    val curAction = Settings.System.getString(context.contentResolver, context.getString(R.string.pref_key_action))
-    return if (curAction == null) { context.getString(R.string.default_action) } else { curAction }
+    val curAction =
+        Settings.System.getString(
+            context.contentResolver, context.getString(R.string.pref_key_action))
+    return curAction ?: context.getString(R.string.default_action)
 }
 
 fun getAllowScreenOff(context: Context): Boolean {
-    return getBoolean(context.contentResolver, context.getString(R.string.pref_key_allow_screen_off),
-            context.resources.getBoolean(R.bool.default_allow_screen_off))
+    return getBoolean(
+        context.contentResolver,
+        context.getString(R.string.pref_key_allow_screen_off),
+        context.resources.getBoolean(R.bool.default_allow_screen_off))
 }
 
 fun getSensitivity(context: Context): Int {
-    return Settings.System.getInt(context.contentResolver, context.getString(R.string.pref_key_sensitivity),
-            context.resources.getInteger(R.integer.default_sensitivity))
+    return Settings.System.getInt(
+        context.contentResolver,
+        context.getString(R.string.pref_key_sensitivity),
+        context.resources.getInteger(R.integer.default_sensitivity))
 }
 
 fun getActionName(context: Context): String {
@@ -59,5 +67,5 @@ fun putBoolean(contentResolver: ContentResolver, key: String, value: Boolean) {
 }
 
 fun getBoolean(contentResolver: ContentResolver, key: String, def_value: Boolean): Boolean {
-    return if (Settings.System.getInt(contentResolver, key, def_value.toInt()) == 1) { true } else { false }
+    return Settings.System.getInt(contentResolver, key, def_value.toInt()) == 1
 }

@@ -25,9 +25,13 @@ class ScreenAction(context: Context) : Action(context) {
 
     override fun run() {
         if (pm.isInteractive()) {
-            pm.goToSleep(SystemClock.uptimeMillis(), PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0)
+            pm.goToSleep(
+                SystemClock.uptimeMillis(), PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0)
         } else {
-            pm.wakeUp(SystemClock.uptimeMillis(), PowerManager.WAKE_REASON_GESTURE, "com.statix.android.systemui.elmyra:GESTURE")
+            pm.wakeUp(
+                SystemClock.uptimeMillis(),
+                PowerManager.WAKE_REASON_GESTURE,
+                "com.statix.android.systemui.elmyra:GESTURE")
         }
     }
 }
