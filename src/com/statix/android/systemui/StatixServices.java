@@ -13,7 +13,6 @@ import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.statusbar.phone.CentralSurfaces;
 import com.android.systemui.statusbar.policy.FlashlightController;
 
@@ -22,13 +21,10 @@ import com.statix.android.systemui.ambient.AmbientIndicationService;
 import com.statix.android.systemui.elmyra.ElmyraService;
 import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import dagger.Lazy;
 
 @SysUISingleton
 public class StatixServices extends VendorServices {
@@ -41,7 +37,12 @@ public class StatixServices extends VendorServices {
     private final FlashlightController mFlashlightController;
 
     @Inject
-    public StatixServices(Context context, AlarmManager alarmManager, AssistManager assistManager, CentralSurfaces centralSurfaces, FlashlightController flashlightController) {
+    public StatixServices(
+            Context context,
+            AlarmManager alarmManager,
+            AssistManager assistManager,
+            CentralSurfaces centralSurfaces,
+            FlashlightController flashlightController) {
         super();
         mAlarmManager = alarmManager;
         mAssistManager = assistManager;
@@ -53,12 +54,19 @@ public class StatixServices extends VendorServices {
     @Override
     public void start() {
         addService(new SmartPixelsReceiver(mContext));
-        if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub") && mContext.getPackageManager().hasSystemFeature("android.hardware.sensor.assist")) {
+        if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub")
+                && mContext.getPackageManager()
+                        .hasSystemFeature("android.hardware.sensor.assist")) {
             addService(new ElmyraService(mContext, mAssistManager, mFlashlightController));
         }
-        AmbientIndicationContainer ambientIndicationContainer = (AmbientIndicationContainer) mCentralSurfaces.getNotificationShadeWindowView().findViewById(R.id.ambient_indication_container);
+        AmbientIndicationContainer ambientIndicationContainer =
+                (AmbientIndicationContainer)
+                        mCentralSurfaces
+                                .getNotificationShadeWindowView()
+                                .findViewById(R.id.ambient_indication_container);
         ambientIndicationContainer.initializeView(mCentralSurfaces);
-        addService(new AmbientIndicationService(mContext, ambientIndicationContainer, mAlarmManager));
+        addService(
+                new AmbientIndicationService(mContext, ambientIndicationContainer, mAlarmManager));
     }
 
     @Override
@@ -75,5 +83,4 @@ public class StatixServices extends VendorServices {
             mServices.add(obj);
         }
     }
-
 }

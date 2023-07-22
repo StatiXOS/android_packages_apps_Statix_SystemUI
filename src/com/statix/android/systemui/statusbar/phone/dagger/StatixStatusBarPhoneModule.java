@@ -27,22 +27,17 @@ import dagger.Module;
 import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 
-/**
- * Dagger Module providing {@link StatixCentralSurfacesImpl}.
- */
+/** Dagger Module providing {@link StatixCentralSurfacesImpl}. */
 @Module
 public interface StatixStatusBarPhoneModule {
-    /**
-     * Start StatixCentralSurfacesImpl on startup.
-     */
+    /** Start StatixCentralSurfacesImpl on startup. */
     @Binds
     @IntoMap
     @ClassKey(CentralSurfaces.class)
-    abstract CoreStartable bindsCoreStartableCentralSrufaces(StatixCentralSurfacesImpl statusBarStatix);
+    abstract CoreStartable bindsCoreStartableCentralSrufaces(
+            StatixCentralSurfacesImpl statusBarStatix);
 
-    /**
-     * Provides our instance of CentralSurfaces which is considered optional.
-     */
+    /** Provides our instance of CentralSurfaces which is considered optional. */
     @Binds
     @SysUISingleton
     CentralSurfaces bindsCentralSurfaces(StatixCentralSurfacesImpl impl);

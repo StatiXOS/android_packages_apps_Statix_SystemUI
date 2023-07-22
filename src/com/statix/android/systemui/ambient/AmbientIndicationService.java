@@ -34,18 +34,24 @@ public class AmbientIndicationService extends BroadcastReceiver {
     private final AlarmManager mAlarmManager;
     private final AmbientIndicationContainer mAmbientIndicationContainer;
     private final Context mContext;
-    private final KeyguardUpdateMonitorCallback mCallback = new KeyguardUpdateMonitorCallback() {
-        @Override
-        public void onUserSwitchComplete(int i) {
-            onUserSwitched();
-        }
-    };
+    private final KeyguardUpdateMonitorCallback mCallback =
+            new KeyguardUpdateMonitorCallback() {
+                @Override
+                public void onUserSwitchComplete(int i) {
+                    onUserSwitched();
+                }
+            };
     private final AlarmManager.OnAlarmListener mHideIndicationListener;
 
-    private static final String HIDE_AMBIENT_ACTION = "com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE";
-    private static final String SHOW_AMBIENT_ACTION = "com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW";
+    private static final String HIDE_AMBIENT_ACTION =
+            "com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE";
+    private static final String SHOW_AMBIENT_ACTION =
+            "com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW";
 
-    public AmbientIndicationService(Context context, AmbientIndicationContainer ambientIndicationContainer, AlarmManager alarmManager) {
+    public AmbientIndicationService(
+            Context context,
+            AmbientIndicationContainer ambientIndicationContainer,
+            AlarmManager alarmManager) {
         mContext = context;
         mAmbientIndicationContainer = ambientIndicationContainer;
         mAlarmManager = alarmManager;
@@ -57,8 +63,14 @@ public class AmbientIndicationService extends BroadcastReceiver {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SHOW_AMBIENT_ACTION);
         intentFilter.addAction(HIDE_AMBIENT_ACTION);
-        mContext.registerReceiverAsUser(this, UserHandle.ALL, intentFilter, "com.google.android.ambientindication.permission.AMBIENT_INDICATION", null);
-        ((KeyguardUpdateMonitor) Dependency.get(KeyguardUpdateMonitor.class)).registerCallback(mCallback);
+        mContext.registerReceiverAsUser(
+                this,
+                UserHandle.ALL,
+                intentFilter,
+                "com.google.android.ambientindication.permission.AMBIENT_INDICATION",
+                null);
+        ((KeyguardUpdateMonitor) Dependency.get(KeyguardUpdateMonitor.class))
+                .registerCallback(mCallback);
     }
 
     @Override
@@ -72,18 +84,42 @@ public class AmbientIndicationService extends BroadcastReceiver {
                 mAmbientIndicationContainer.hideAmbientMusic();
                 Log.i("AmbientIndication", "Hiding ambient indication.");
             } else if (action.equals(SHOW_AMBIENT_ACTION)) {
-                long min = Math.min(Math.max(intent.getLongExtra("com.google.android.ambientindication.extra.TTL_MILLIS", 180000L), 0L), 180000L);
-                boolean booleanExtra = intent.getBooleanExtra("com.google.android.ambientindication.extra.SKIP_UNLOCK", false);
-                int intExtra = intent.getIntExtra("com.google.android.ambientindication.extra.ICON_OVERRIDE", 0);
-                String stringExtra = intent.getStringExtra("com.google.android.ambientindication.extra.ICON_DESCRIPTION");
+                long min =
+                        Math.min(
+                                Math.max(
+                                        intent.getLongExtra(
+                                                "com.google.android.ambientindication.extra.TTL_MILLIS",
+                                                180000L),
+                                        0L),
+                                180000L);
+                boolean booleanExtra =
+                        intent.getBooleanExtra(
+                                "com.google.android.ambientindication.extra.SKIP_UNLOCK", false);
+                int intExtra =
+                        intent.getIntExtra(
+                                "com.google.android.ambientindication.extra.ICON_OVERRIDE", 0);
+                String stringExtra =
+                        intent.getStringExtra(
+                                "com.google.android.ambientindication.extra.ICON_DESCRIPTION");
                 mAmbientIndicationContainer.setAmbientMusic(
-                        intent.getCharSequenceExtra("com.google.android.ambientindication.extra.TEXT").toString(),
-                        (PendingIntent) intent.getParcelableExtra("com.google.android.ambientindication.extra.OPEN_INTENT"),
-                        (PendingIntent) intent.getParcelableExtra("com.google.android.ambientindication.extra.FAVORITING_INTENT"),
+                        intent.getCharSequenceExtra(
+                                        "com.google.android.ambientindication.extra.TEXT")
+                                .toString(),
+                        (PendingIntent)
+                                intent.getParcelableExtra(
+                                        "com.google.android.ambientindication.extra.OPEN_INTENT"),
+                        (PendingIntent)
+                                intent.getParcelableExtra(
+                                        "com.google.android.ambientindication.extra.FAVORITING_INTENT"),
                         booleanExtra,
                         intExtra,
                         stringExtra);
-                mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + min, "AmbientIndication", mHideIndicationListener, null);
+                mAlarmManager.setExact(
+                        2,
+                        SystemClock.elapsedRealtime() + min,
+                        "AmbientIndication",
+                        mHideIndicationListener,
+                        null);
                 Log.i("AmbientIndication", "Showing ambient indication.");
             }
         }
@@ -92,7 +128,11 @@ public class AmbientIndicationService extends BroadcastReceiver {
     private boolean verifyAmbientApiVersion(Intent intent) {
         int intExtra = intent.getIntExtra("com.google.android.ambientindication.extra.VERSION", 0);
         if (intExtra != 1) {
-            Log.e("AmbientIndication", "AmbientIndicationApi.EXTRA_VERSION is 1, but received an intent with version " + intExtra + ", dropping intent.");
+            Log.e(
+                    "AmbientIndication",
+                    "AmbientIndicationApi.EXTRA_VERSION is 1, but received an intent with version "
+                            + intExtra
+                            + ", dropping intent.");
             return false;
         }
         return true;

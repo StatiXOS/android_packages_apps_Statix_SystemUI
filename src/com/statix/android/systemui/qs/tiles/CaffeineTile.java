@@ -10,13 +10,10 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
-import android.content.IntentFilter;
-import android.database.ContentObserver;
-import android.net.Uri;
 import android.os.PowerManager;
-import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.view.View;
 
@@ -24,20 +21,20 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.android.systemui.qs.QSHost;
-import com.android.systemui.plugins.qs.QSTile.BooleanState;
-import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.R;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.FalsingManager;
+import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
+import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.logging.QSLogger;
+import com.android.systemui.qs.tileimpl.QSTileImpl;
 
 import javax.inject.Inject;
 
-/** Quick settings tile: Caffeine **/
+/** Quick settings tile: Caffeine * */
 public class CaffeineTile extends QSTileImpl<BooleanState> {
 
     public static final String TILE_SPEC = "caffeine";
@@ -56,12 +53,19 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
             MetricsLogger metricsLogger,
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
-            QSLogger qsLogger
-    ) {
-        super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger);
-        mWakeLock = ((PowerManager) mContext.getSystemService(Context.POWER_SERVICE)).newWakeLock(
-                PowerManager.FULL_WAKE_LOCK, "CaffeineTile");
+            QSLogger qsLogger) {
+        super(
+                host,
+                backgroundLooper,
+                mainHandler,
+                falsingManager,
+                metricsLogger,
+                statusBarStateController,
+                activityStarter,
+                qsLogger);
+        mWakeLock =
+                ((PowerManager) mContext.getSystemService(Context.POWER_SERVICE))
+                        .newWakeLock(PowerManager.FULL_WAKE_LOCK, "CaffeineTile");
         mReceiver.init();
     }
 
@@ -105,8 +109,11 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
 
     @Override
     public Intent getLongClickIntent() {
-        return new Intent().setComponent(new ComponentName(
-            "com.android.settings", "com.android.settings.Settings$DisplaySettingsActivity"));
+        return new Intent()
+                .setComponent(
+                        new ComponentName(
+                                "com.android.settings",
+                                "com.android.settings.Settings$DisplaySettingsActivity"));
     }
 
     @Override
@@ -122,13 +129,13 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
         state.label = mContext.getString(R.string.quick_settings_caffeine_label);
         if (state.value) {
             state.slash.isSlashed = false;
-            state.contentDescription =  mContext.getString(
-                    R.string.accessibility_quick_settings_caffeine_on);
+            state.contentDescription =
+                    mContext.getString(R.string.accessibility_quick_settings_caffeine_on);
             state.state = Tile.STATE_ACTIVE;
         } else {
             state.slash.isSlashed = true;
-            state.contentDescription =  mContext.getString(
-                    R.string.accessibility_quick_settings_caffeine_off);
+            state.contentDescription =
+                    mContext.getString(R.string.accessibility_quick_settings_caffeine_off);
             state.state = Tile.STATE_INACTIVE;
         }
     }

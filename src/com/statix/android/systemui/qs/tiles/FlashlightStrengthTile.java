@@ -7,11 +7,10 @@ import android.hardware.camera2.CameraCharacteristics.Key;
 import android.hardware.camera2.CameraManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -30,7 +29,6 @@ import com.android.systemui.statusbar.policy.FlashlightController;
 
 import com.statix.android.systemui.qs.tileimpl.TouchableQSTile;
 
-import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 public class FlashlightStrengthTile extends FlashlightTile implements TouchableQSTile {
@@ -53,52 +51,60 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
     private float mCurrentPercent;
     private boolean mClicked = true;
 
-    @Nullable
-    private String mCameraId;
+    @Nullable private String mCameraId;
 
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
-        float initX = 0;
-        float initPct = 0;
-        boolean moved = false;
+    private View.OnTouchListener mTouchListener =
+            new View.OnTouchListener() {
+                float initX = 0;
+                float initPct = 0;
+                boolean moved = false;
 
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (!mSupportsSettingFlashLevel)
-                return false;
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (!mSupportsSettingFlashLevel) return false;
 
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN: {
-                    initX = motionEvent.getX();
-                    initPct = initX / view.getWidth();
-                    mClicked = false;
-                    return true;
-                }
-                case MotionEvent.ACTION_MOVE: {
-                    float newPct = motionEvent.getX() / view.getWidth();
-                    float deltaPct = Math.abs(newPct - initPct);
-                    if (deltaPct > .03f) {
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                        moved = true;
-                        mCurrentPercent = Math.max(0.01f, Math.min(newPct, 1));
-                        Settings.System.putFloat(mContext.getContentResolver(), FLASHLIGHT_BRIGHTNESS_SETTING, mCurrentPercent);
-                        handleClick(view);
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            {
+                                initX = motionEvent.getX();
+                                initPct = initX / view.getWidth();
+                                mClicked = false;
+                                return true;
+                            }
+                        case MotionEvent.ACTION_MOVE:
+                            {
+                                float newPct = motionEvent.getX() / view.getWidth();
+                                float deltaPct = Math.abs(newPct - initPct);
+                                if (deltaPct > .03f) {
+                                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                                    moved = true;
+                                    mCurrentPercent = Math.max(0.01f, Math.min(newPct, 1));
+                                    Settings.System.putFloat(
+                                            mContext.getContentResolver(),
+                                            FLASHLIGHT_BRIGHTNESS_SETTING,
+                                            mCurrentPercent);
+                                    handleClick(view);
+                                }
+                                return true;
+                            }
+                        case MotionEvent.ACTION_UP:
+                            {
+                                if (moved) {
+                                    moved = false;
+                                    Settings.System.putFloat(
+                                            mContext.getContentResolver(),
+                                            FLASHLIGHT_BRIGHTNESS_SETTING,
+                                            mCurrentPercent);
+                                } else {
+                                    mClicked = true;
+                                    handleClick(view);
+                                }
+                                return true;
+                            }
                     }
                     return true;
                 }
-                case MotionEvent.ACTION_UP: {
-                    if (moved) {
-                        moved = false;
-                        Settings.System.putFloat(mContext.getContentResolver(), FLASHLIGHT_BRIGHTNESS_SETTING, mCurrentPercent);
-                    } else {
-                        mClicked = true;
-                        handleClick(view);
-                    }
-                    return true;
-                }
-            }
-            return true;
-        }
-    };
+            };
 
     @Inject
     public FlashlightStrengthTile(
@@ -110,19 +116,28 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
             QSLogger qsLogger,
-            FlashlightController flashlightController
-    ) {
-        super(host, backgroundLooper, mainHandler, falsingManager,
-              metricsLogger, statusBarStateController, activityStarter,
-              qsLogger, flashlightController);
+            FlashlightController flashlightController) {
+        super(
+                host,
+                backgroundLooper,
+                mainHandler,
+                falsingManager,
+                metricsLogger,
+                statusBarStateController,
+                activityStarter,
+                qsLogger,
+                flashlightController);
         mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
         mFlashlightController = flashlightController;
         mHandler = mainHandler;
         try {
             mCameraId = getCameraId();
-            CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(mCameraId);
-            mSupportsSettingFlashLevel = flashlightController.isAvailable() && mCameraId != null &&
-                    characteristics.get(FLASHLIGHT_MAX_BRIGHTNESS_CHARACTERISTIC) > 1;
+            CameraCharacteristics characteristics =
+                    mCameraManager.getCameraCharacteristics(mCameraId);
+            mSupportsSettingFlashLevel =
+                    flashlightController.isAvailable()
+                            && mCameraId != null
+                            && characteristics.get(FLASHLIGHT_MAX_BRIGHTNESS_CHARACTERISTIC) > 1;
             mMaxLevel = (int) characteristics.get(FLASHLIGHT_MAX_BRIGHTNESS_CHARACTERISTIC);
             mDefaultLevel = (int) characteristics.get(FLASHLIGHT_DEFAULT_BRIGHTNESS_CHARACTERISTIC);
         } catch (CameraAccessException | NullPointerException e) {
@@ -132,8 +147,12 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
             mMaxLevel = 1;
             mDefaultLevel = 0;
         }
-        float defaultPercent = ((float) mDefaultLevel)/((float) mMaxLevel);
-        mCurrentPercent = Settings.System.getFloat(mContext.getContentResolver(), FLASHLIGHT_BRIGHTNESS_SETTING, defaultPercent);
+        float defaultPercent = ((float) mDefaultLevel) / ((float) mMaxLevel);
+        mCurrentPercent =
+                Settings.System.getFloat(
+                        mContext.getContentResolver(),
+                        FLASHLIGHT_BRIGHTNESS_SETTING,
+                        defaultPercent);
     }
 
     @Override
@@ -166,14 +185,15 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
         refreshState(newState);
     }
 
-
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         super.handleUpdateState(state, arg);
         if (mSupportsSettingFlashLevel) {
-            state.label = String.format("%s - %s%%",
-                mHost.getContext().getString(R.string.quick_settings_flashlight_label),
-                Math.round(mCurrentPercent *100f));
+            state.label =
+                    String.format(
+                            "%s - %s%%",
+                            mHost.getContext().getString(R.string.quick_settings_flashlight_label),
+                            Math.round(mCurrentPercent * 100f));
         }
     }
 
@@ -183,8 +203,10 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
             CameraCharacteristics c = mCameraManager.getCameraCharacteristics(id);
             Boolean flashAvailable = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
             Integer lensFacing = c.get(CameraCharacteristics.LENS_FACING);
-            if (flashAvailable != null && flashAvailable
-                    && lensFacing != null && lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
+            if (flashAvailable != null
+                    && flashAvailable
+                    && lensFacing != null
+                    && lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
                 return id;
             }
         }

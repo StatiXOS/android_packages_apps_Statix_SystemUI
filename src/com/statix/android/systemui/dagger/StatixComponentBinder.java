@@ -24,10 +24,12 @@ import dagger.Module;
 /**
  * Dagger Module that collects related sub-modules together.
  *
- * See {@link ContextComponentResolver}
+ * <p>See {@link ContextComponentResolver}
  */
-@Module(includes = {DefaultActivityBinder.class,
-                    DefaultBroadcastReceiverBinder.class,
-                    StatixServiceBinder.class})
-public abstract class StatixComponentBinder {
-}
+@Module(
+        includes = {
+            DefaultActivityBinder.class,
+            DefaultBroadcastReceiverBinder.class,
+            StatixServiceBinder.class
+        })
+public abstract class StatixComponentBinder {}

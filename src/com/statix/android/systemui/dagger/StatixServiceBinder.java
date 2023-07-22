@@ -34,9 +34,7 @@ import dagger.Module;
 import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 
-/**
- * Services that are injectable should go here.
- */
+/** Services that are injectable should go here. */
 @Module
 public abstract class StatixServiceBinder {
     /** */
