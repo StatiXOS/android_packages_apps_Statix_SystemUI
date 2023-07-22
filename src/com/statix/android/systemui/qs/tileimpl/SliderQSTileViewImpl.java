@@ -49,22 +49,28 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private PercentageDrawable percentageDrawable;
     private String mSettingsKey;
     private SettingObserver mSettingObserver;
+    private boolean enabled = false;
 
     public SliderQSTileViewImpl(Context context, QSIconView icon, boolean collapsed, View.OnTouchListener touchListener, String settingKey) {
         super(context, icon, collapsed);
-        mSettingsKey = settingKey;
-        percentageDrawable = new PercentageDrawable();
-        percentageDrawable.setAlpha(64);
-        updatePercentBackground(false /* default */);
-        mSettingObserver = new SettingObserver(new Handler(Looper.getMainLooper()));
-        setOnTouchListener(touchListener);
-        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(settingKey), false, mSettingObserver, UserHandle.USER_CURRENT);
+        if (touchListener != null && !settingKey.isEmpty()) {
+            mSettingsKey = settingKey;
+            percentageDrawable = new PercentageDrawable();
+            percentageDrawable.setAlpha(64);
+            updatePercentBackground(false /* default */);
+            mSettingObserver = new SettingObserver(new Handler(Looper.getMainLooper()));
+            setOnTouchListener(touchListener);
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(settingKey), false, mSettingObserver, UserHandle.USER_CURRENT);
+            enabled = true;
+        }
     }
 
     @Override
     public void handleStateChanged(QSTile.State state) {
         super.handleStateChanged(state);
-        updatePercentBackground(state.state == STATE_ACTIVE);
+        if (enabled) {
+            updatePercentBackground(state.state == STATE_ACTIVE);
+        }
     }
 
     private void updatePercentBackground(boolean active) {
@@ -110,10 +116,24 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
         @Override
         public void draw(@NonNull Canvas canvas) {
+<<<<<<< PATCH SET (702ffb StatixSystemUI: Finally fix the 1% fill on the flashlight qs)
+            // Sometimes, SyetemUI doens't create the bitmap on time which causes
+            // the size of the bitmap to be 0 triggering a crash.
+            try {
+                Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
+                Canvas tempCanvas = new Canvas(bitmap);
+                shape.draw(tempCanvas);
+                canvas.drawBitmap(bitmap, 0, 0, new Paint());
+            } catch (IllegalArgumentException e) {
+                Log.e("SliderQSTileViewImpl", "Invalid width or height for creating Bitmap");
+                return;
+            }
+=======
             Bitmap bitmap = Bitmap.createBitmap(Math.round(shape.getBounds().width() * mCurrentPercent), shape.getBounds().height(), Bitmap.Config.ARGB_8888);
             Canvas tempCanvas = new Canvas(bitmap);
             shape.draw(tempCanvas);
             canvas.drawBitmap(bitmap, 0, 0, new Paint());
+>>>>>>> BASE      (352fbd Remove unused Dependency class)
         }
 
         @Override

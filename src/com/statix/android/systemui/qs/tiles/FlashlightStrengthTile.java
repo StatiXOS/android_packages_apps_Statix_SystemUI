@@ -11,6 +11,7 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -125,6 +126,7 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
             mMaxLevel = (int) characteristics.get(FLASHLIGHT_MAX_BRIGHTNESS_CHARACTERISTIC);
             mDefaultLevel = (int) characteristics.get(FLASHLIGHT_DEFAULT_BRIGHTNESS_CHARACTERISTIC);
         } catch (CameraAccessException | NullPointerException e) {
+            Log.d("FlashlightStrengthTile", "Setting to non-controllable defaults");
             mCameraId = null;
             mSupportsSettingFlashLevel = false;
             mMaxLevel = 1;
@@ -136,7 +138,7 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
 
     @Override
     public View.OnTouchListener getTouchListener() {
-        return mTouchListener;
+        return mSupportsSettingFlashLevel ? mTouchListener : null;
     }
 
     @Override
