@@ -27,10 +27,12 @@ import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
+import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
+import com.android.systemui.settings.UserTracker;
 import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
@@ -108,7 +110,9 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             DeviceConfigProxy deviceConfigProxy,
             KeyguardLogger keyguardLogger,
             AlternateBouncerInteractor alternateBouncerInteractor,
-            AlarmManager alarmManager) {
+            AlarmManager alarmManager,
+	    UserTracker userTracker,
+	    FeatureFlags flags) {
         super(
                 context,
                 mainLooper,
@@ -132,7 +136,9 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
                 faceHelpMessageDeferral,
                 keyguardLogger,
                 alternateBouncerInteractor,
-                alarmManager);
+                alarmManager,
+		userTracker,
+		flags);
         mBroadcastReceiver =
                 new BroadcastReceiver() {
                     @Override

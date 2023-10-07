@@ -25,6 +25,7 @@ import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.qs.QSHost;
+import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.statusbar.policy.BatteryController;
@@ -49,11 +50,11 @@ public class SmartPixelsTile extends QSTileImpl<BooleanState>
     private boolean mSmartPixelsEnable;
     private boolean mSmartPixelsOnPowerSave;
     private boolean mLowPowerMode;
-    private boolean mListening;
 
     @Inject
     public SmartPixelsTile(
             QSHost host,
+            QsEventLogger qsEventLogger,
             @Background Looper backgroundLooper,
             @Main Handler mainHandler,
             FalsingManager falsingManager,
@@ -64,6 +65,7 @@ public class SmartPixelsTile extends QSTileImpl<BooleanState>
             BatteryController batteryController) {
         super(
                 host,
+                qsEventLogger,
                 backgroundLooper,
                 mainHandler,
                 falsingManager,

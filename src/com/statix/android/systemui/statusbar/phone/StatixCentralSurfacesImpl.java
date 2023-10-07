@@ -19,6 +19,7 @@ import com.android.systemui.InitController;
 import com.android.systemui.accessibility.floatingmenu.AccessibilityFloatingMenuController;
 import com.android.systemui.animation.ActivityLaunchAnimator;
 import com.android.systemui.assist.AssistManager;
+import com.android.systemui.biometrics.AuthRippleController;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.charging.WiredChargingRippleController;
 import com.android.systemui.classifier.FalsingCollector;
@@ -36,6 +37,8 @@ import com.android.systemui.keyguard.WakefulnessLifecycle;
 import com.android.systemui.keyguard.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.keyguard.ui.viewmodel.LightRevealScrimViewModel;
 import com.android.systemui.navigationbar.NavigationBarController;
+import com.android.systemui.notetask.NoteTaskController;
+import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.PluginDependencyProvider;
 import com.android.systemui.plugins.PluginManager;
@@ -45,7 +48,9 @@ import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.shade.CameraLauncher;
 import com.android.systemui.shade.ShadeController;
 import com.android.systemui.shade.ShadeExpansionStateManager;
+import com.android.systemui.shade.ShadeLogger;
 import com.android.systemui.statusbar.CommandQueue;
+import com.android.systemui.statusbar.LightRevealScrim;
 import com.android.systemui.statusbar.LockscreenShadeTransitionController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 import com.android.systemui.statusbar.NotificationMediaManager;
@@ -54,6 +59,7 @@ import com.android.systemui.statusbar.NotificationShadeDepthController;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
 import com.android.systemui.statusbar.PulseExpansionHandler;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
+import com.android.systemui.statusbar.core.StatusBarInitializer;
 import com.android.systemui.statusbar.notification.DynamicPrivacyController;
 import com.android.systemui.statusbar.notification.NotificationWakeUpCoordinator;
 import com.android.systemui.statusbar.notification.init.NotificationsController;
@@ -119,6 +125,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             FragmentService fragmentService,
             LightBarController lightBarController,
             AutoHideController autoHideController,
+            StatusBarInitializer statusBarInitializer,
             StatusBarWindowController statusBarWindowController,
             StatusBarWindowStateController statusBarWindowStateController,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
@@ -139,6 +146,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             KeyguardViewMediator keyguardViewMediator,
             DisplayMetrics displayMetrics,
             MetricsLogger metricsLogger,
+            ShadeLogger shadeLogger,
             @UiBackground Executor uiBgExecutor,
             NotificationMediaManager notificationMediaManager,
             NotificationLockscreenUserManager lockScreenUserManager,
@@ -150,6 +158,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             WakefulnessLifecycle wakefulnessLifecycle,
             SysuiStatusBarStateController statusBarStateController,
             Optional<Bubbles> bubblesOptional,
+            Lazy<NoteTaskController> noteTaskControllerLazy,
             DeviceProvisionedController deviceProvisionedController,
             NavigationBarController navigationBarController,
             AccessibilityFloatingMenuController accessibilityFloatingMenuController,
@@ -160,6 +169,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             ScrimController scrimController,
             Lazy<LockscreenWallpaper> lockscreenWallpaperLazy,
             Lazy<BiometricUnlockController> biometricUnlockControllerLazy,
+            AuthRippleController authRippleController,
             DozeServiceHost dozeServiceHost,
             PowerManager powerManager,
             ScreenPinningRequest screenPinningRequest,
@@ -202,15 +212,18 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             IDreamManager dreamManager,
             Lazy<CameraLauncher> cameraLauncherLazy,
             Lazy<LightRevealScrimViewModel> lightRevealScrimViewModelLazy,
+            LightRevealScrim lightRevealScrim,
             AlternateBouncerInteractor alternateBouncerInteractor,
             UserTracker userTracker,
-            Provider<FingerprintManager> fingerprintManagerProvider) {
+            Provider<FingerprintManager> fingerprintManagerProvider,
+            ActivityStarter activityStarter) {
         super(
                 context,
                 notificationsController,
                 fragmentService,
                 lightBarController,
                 autoHideController,
+                statusBarInitializer,
                 statusBarWindowController,
                 statusBarWindowStateController,
                 keyguardUpdateMonitor,
@@ -231,6 +244,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 keyguardViewMediator,
                 displayMetrics,
                 metricsLogger,
+                shadeLogger,
                 uiBgExecutor,
                 notificationMediaManager,
                 lockScreenUserManager,
@@ -242,6 +256,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 wakefulnessLifecycle,
                 statusBarStateController,
                 bubblesOptional,
+                noteTaskControllerLazy,
                 deviceProvisionedController,
                 navigationBarController,
                 accessibilityFloatingMenuController,
@@ -252,6 +267,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 scrimController,
                 lockscreenWallpaperLazy,
                 biometricUnlockControllerLazy,
+                authRippleController,
                 dozeServiceHost,
                 powerManager,
                 screenPinningRequest,
@@ -294,8 +310,10 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 dreamManager,
                 cameraLauncherLazy,
                 lightRevealScrimViewModelLazy,
+                lightRevealScrim,
                 alternateBouncerInteractor,
                 userTracker,
-                fingerprintManagerProvider);
+                fingerprintManagerProvider,
+                activityStarter);
     }
 }

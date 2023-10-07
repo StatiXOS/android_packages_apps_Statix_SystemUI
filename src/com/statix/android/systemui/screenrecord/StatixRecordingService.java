@@ -138,7 +138,7 @@ public class StatixRecordingService extends RecordingService {
         Bundle extras = new Bundle();
         extras.putString(
                 Notification.EXTRA_SUBSTITUTE_APP_NAME,
-                getResources().getString(R.string.screenrecord_name));
+                getResources().getString(R.string.screenrecord_title));
 
         Notification.Builder builder =
                 new Notification.Builder(this, CHANNEL_ID)
