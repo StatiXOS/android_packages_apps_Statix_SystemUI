@@ -49,12 +49,6 @@
     <!-- Home controls -->
     <string name="home_controls_tile_title">Home</string>
 
-    <!-- Bluetooth dialog -->
-    <string name="turn_on_bluetooth">Bluetooth</string>
-    <string name="bluetooth_is_off">Bluetooth is off</string>
-    <string name="tap_a_device_to_connect">Tap a device to connect/disconnect</string>
-
     <!-- Adaptive charging -->
     <string name="adaptive_charging_time_estimate">%1$s • Adaptive charging • Full by %2$s</string>
-
 </resources>
