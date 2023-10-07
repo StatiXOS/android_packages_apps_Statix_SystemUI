@@ -24,6 +24,7 @@ import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.qs.QSHost;
+import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 
@@ -33,11 +34,12 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
 
     public static final String TILE_SPEC = "glovemode";
 
-    private LineageHardwareManager mHardwareManager;
+    private final LineageHardwareManager mHardwareManager;
 
     @Inject
     public GloveModeTile(
             QSHost host,
+            QsEventLogger qsEventLogger,
             @Background Looper backgroundLooper,
             @Main Handler mainHandler,
             FalsingManager falsingManager,
@@ -47,6 +49,7 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
             QSLogger qsLogger) {
         super(
                 host,
+                qsEventLogger,
                 backgroundLooper,
                 mainHandler,
                 falsingManager,

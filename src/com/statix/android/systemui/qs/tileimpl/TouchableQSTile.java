@@ -5,7 +5,7 @@ import android.view.View;
 // For use with SliderQSTileViewImpl
 public interface TouchableQSTile {
 
-    public View.OnTouchListener getTouchListener();
+    View.OnTouchListener getTouchListener();
 
-    public String getSettingsSystemKey();
+    String getSettingsSystemKey();
 }

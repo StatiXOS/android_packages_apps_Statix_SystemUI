@@ -36,6 +36,7 @@ import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.qs.QSHost;
+import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.qs.tileimpl.QSTileImpl.ResourceIcon;
@@ -47,7 +48,7 @@ import javax.inject.Inject;
 public class DataSwitchTile extends QSTileImpl<BooleanState> {
 
     private boolean mCanSwitch = true;
-    private MyCallStateListener mPhoneStateListener;
+    private final MyCallStateListener mPhoneStateListener;
     private boolean mRegistered = false;
     private int mSimCount = 0;
 
@@ -60,8 +61,8 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
                     refreshState();
                 }
             };
-    private SubscriptionManager mSubscriptionManager;
-    private TelephonyManager mTelephonyManager;
+    private final SubscriptionManager mSubscriptionManager;
+    private final TelephonyManager mTelephonyManager;
 
     class MyCallStateListener extends PhoneStateListener {
         MyCallStateListener() {}
@@ -75,6 +76,7 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
     @Inject
     public DataSwitchTile(
             QSHost host,
+            QsEventLogger qsEventLogger,
             @Background Looper backgroundLooper,
             @Main Handler mainHandler,
             FalsingManager falsingManager,
@@ -84,6 +86,7 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
             QSLogger qsLogger) {
         super(
                 host,
+                qsEventLogger,
                 backgroundLooper,
                 mainHandler,
                 falsingManager,
@@ -188,7 +191,7 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         boolean activeSIMZero;
         if (arg == null) {
-            int defaultPhoneId = mSubscriptionManager.getDefaultDataPhoneId();
+            int defaultPhoneId = mSubscriptionManager.getPreferredDataSubscriptionId();
             Log.d(TAG, "default data phone id=" + defaultPhoneId);
             activeSIMZero = defaultPhoneId == 0;
         } else {
@@ -196,26 +199,26 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
         }
         updateSimCount();
         switch (mSimCount) {
-            case 1:
+            case 1 -> {
                 state.icon =
                         ResourceIcon.get(
                                 activeSIMZero
                                         ? R.drawable.ic_qs_data_switch_1
                                         : R.drawable.ic_qs_data_switch_2);
                 state.value = false;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 state.icon =
                         ResourceIcon.get(
                                 activeSIMZero
                                         ? R.drawable.ic_qs_data_switch_1
                                         : R.drawable.ic_qs_data_switch_2);
                 state.value = true;
-                break;
-            default:
+            }
+            default -> {
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_data_switch_1);
                 state.value = false;
-                break;
+            }
         }
         if (mSimCount < 2) {
             state.state = 0;
@@ -245,9 +248,9 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
      */
     private void toggleMobileDataEnabled() {
         // Get opposite slot 2 ^ 3 = 1, 1 ^ 3 = 2
-        int subId = mSubscriptionManager.getDefaultDataSubscriptionId() ^ 3;
+        int subId = mSubscriptionManager.getPreferredDataSubscriptionId() ^ 3;
         final TelephonyManager telephonyManager = mTelephonyManager.createForSubscriptionId(subId);
-        telephonyManager.setDataEnabled(true);
+        telephonyManager.enableDataConnectivity();
         mSubscriptionManager.setDefaultDataSubId(subId);
         Log.d(TAG, "Enabled subID: " + subId);
 
@@ -259,7 +262,7 @@ public class DataSwitchTile extends QSTileImpl<BooleanState> {
                 if (subInfo.getSubscriptionId() != subId && !subInfo.isOpportunistic()) {
                     mTelephonyManager
                             .createForSubscriptionId(subInfo.getSubscriptionId())
-                            .setDataEnabled(false);
+                            .disableDataConnectivity();
                     Log.d(TAG, "Disabled subID: " + subInfo.getSubscriptionId());
                 }
             }
