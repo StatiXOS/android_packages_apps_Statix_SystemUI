@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Whether or not lockscreen shortcuts can be customized -->
+    <bool name="custom_lockscreen_shortcuts_enabled">true</bool>
+
     <!-- SystemUIInitializer component -->
     <string name="config_systemUIFactoryComponent" translatable="false">com.statix.android.systemui.SystemUIStatixInitializer</string>
 
