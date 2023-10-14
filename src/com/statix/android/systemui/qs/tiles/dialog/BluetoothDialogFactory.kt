@@ -21,11 +21,13 @@ import android.content.Context
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import com.android.settingslib.bluetooth.LocalBluetoothManager
 import com.android.systemui.animation.DialogLaunchAnimator
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.statusbar.policy.BluetoothController
+import javax.annotation.Nullable
 import javax.inject.Inject
 
 private const val TAG = "BluetoothDialogFactory"
@@ -40,7 +42,8 @@ constructor(
     private val context: Context,
     private val dialogLaunchAnimator: DialogLaunchAnimator,
     private val activityStarter: ActivityStarter,
-    private val bluetoothController: BluetoothController
+    private val bluetoothController: BluetoothController,
+    @Nullable private val localBluetoothManager: LocalBluetoothManager,
 ) {
     companion object {
         var bluetoothDialog: BluetoothDialog? = null
@@ -62,7 +65,9 @@ constructor(
                     handler,
                     activityStarter,
                     dialogLaunchAnimator,
-                    bluetoothController)
+                    bluetoothController,
+                    localBluetoothManager,
+                )
             if (view != null) {
                 dialogLaunchAnimator.showFromView(
                     bluetoothDialog!!, view, animateBackgroundBoundsChange = true)
