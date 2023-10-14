@@ -68,7 +68,8 @@ public class AmbientIndicationService extends BroadcastReceiver {
                 UserHandle.ALL,
                 intentFilter,
                 "com.google.android.ambientindication.permission.AMBIENT_INDICATION",
-                null);
+                null,
+                Context.RECEIVER_EXPORTED);
         ((KeyguardUpdateMonitor) Dependency.get(KeyguardUpdateMonitor.class))
                 .registerCallback(mCallback);
     }

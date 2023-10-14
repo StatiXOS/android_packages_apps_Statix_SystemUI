@@ -76,6 +76,7 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
 
     fun initializeView(centralSurfaces: CentralSurfaces) {
         this.centralSurfaces = centralSurfaces
+        wakeLock = DelayedWakeLock(handler, WakeLock.createPartial(context, wakeLockLogger, "AmbientIndication"))
         addInflateListener {
             textView = findViewById(R.id.ambient_indication_text)!!
             iconView = findViewById(R.id.ambient_indication_icon)!!
@@ -92,7 +93,6 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
             textView.setOnClickListener { _ -> onTextClick() }
             iconView.setOnClickListener { _ -> onIconClick() }
         }
-        wakeLock = DelayedWakeLock(handler, WakeLock.createPartial(context, wakeLockLogger, "AmbientIndication"))
         addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> updateBottomSpacing() }
     }
 
