@@ -168,8 +168,9 @@ public class BluetoothDialog extends SystemUIDialog implements Window.Callback {
         mSettingsButton = mDialogView.requireViewById(R.id.settings_button);
         mBackgroundOn = mContext.getDrawable(R.drawable.settingslib_switch_bar_bg_on);
 
-        try(TypedArray typedArray = mContext.obtainStyledAttributes(
-                new int[] {android.R.attr.selectableItemBackground})) {
+        try (TypedArray typedArray =
+                mContext.obtainStyledAttributes(
+                        new int[] {android.R.attr.selectableItemBackground})) {
             mBackgroundOff = typedArray.getDrawable(0 /* index */);
         }
 
@@ -194,7 +195,6 @@ public class BluetoothDialog extends SystemUIDialog implements Window.Callback {
                 });
         mBluetoothRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mBluetoothRecyclerView.setAdapter(mAdapter);
-
     }
 
     @Override
@@ -256,7 +256,8 @@ public class BluetoothDialog extends SystemUIDialog implements Window.Callback {
         mDivider.setVisibility(showProgress ? View.GONE : View.VISIBLE);
 
         // devices
-        Collection<CachedBluetoothDevice> devices = mLocalBluetoothManager.getCachedDeviceManager().getCachedDevicesCopy();
+        Collection<CachedBluetoothDevice> devices =
+                mLocalBluetoothManager.getCachedDeviceManager().getCachedDevicesCopy();
         if (!enabled || devices == null) {
             mBluetoothRecyclerView.setVisibility(View.GONE);
             mSeeAllLayout.setVisibility(View.GONE);

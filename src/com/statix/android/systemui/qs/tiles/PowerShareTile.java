@@ -33,12 +33,10 @@ import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
-import com.android.systemui.statusbar.phone.CentralSurfaces;
+import com.android.systemui.shade.NotificationShadeWindowView;
 import com.android.systemui.statusbar.policy.BatteryController;
 
 import com.statix.android.systemui.ambient.AmbientIndicationContainer;
-
-import dagger.Lazy;
 
 import vendor.lineage.powershare.IPowerShare;
 
@@ -52,7 +50,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
     public static final String TILE_SPEC = "powershare";
 
     private final IPowerShare mPowerShare;
-    private Lazy<CentralSurfaces> mCentralSurfacesLazy;
+    private NotificationShadeWindowView mNotificationShadeWindowView;
     private AmbientIndicationContainer mAmbientContainer;
     private BatteryController mBatteryController;
     private NotificationManager mNotificationManager;
@@ -75,7 +73,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
             ActivityStarter activityStarter,
             QSLogger qsLogger,
             BatteryController batteryController,
-            Lazy<CentralSurfaces> centralSurfacesLazy) {
+            NotificationShadeWindowView notificationShadeWindowView) {
         super(
                 host,
                 qsEventLogger,
@@ -90,7 +88,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         if (mPowerShare == null) {
             return;
         }
-        mCentralSurfacesLazy = centralSurfacesLazy;
+        mNotificationShadeWindowView = notificationShadeWindowView;
 
         mBatteryController = batteryController;
         mNotificationManager = mContext.getSystemService(NotificationManager.class);
@@ -118,10 +116,8 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         if (isAvailable()) {
             mAmbientContainer =
                     (AmbientIndicationContainer)
-                            mCentralSurfacesLazy
-                                    .get()
-                                    .getNotificationShadeWindowView()
-                                    .findViewById(R.id.ambient_indication_container);
+                            mNotificationShadeWindowView.findViewById(
+                                    R.id.ambient_indication_container);
         }
     }
 

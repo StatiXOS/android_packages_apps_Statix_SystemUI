@@ -13,7 +13,8 @@ import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.dagger.SysUISingleton;
-import com.android.systemui.statusbar.phone.CentralSurfaces;
+import com.android.systemui.shade.NotificationShadeWindowView;
+import com.android.systemui.shade.ShadeViewController;
 import com.android.systemui.statusbar.policy.FlashlightController;
 
 import com.statix.android.systemui.ambient.AmbientIndicationContainer;
@@ -32,7 +33,8 @@ public class StatixServices extends VendorServices {
     private final ArrayList<Object> mServices = new ArrayList<>();
     private final AlarmManager mAlarmManager;
     private final AssistManager mAssistManager;
-    private final CentralSurfaces mCentralSurfaces;
+    private final ShadeViewController mShadeViewController;
+    private final NotificationShadeWindowView mNotificationShadeWindowView;
     private final Context mContext;
     private final FlashlightController mFlashlightController;
 
@@ -41,14 +43,16 @@ public class StatixServices extends VendorServices {
             Context context,
             AlarmManager alarmManager,
             AssistManager assistManager,
-            CentralSurfaces centralSurfaces,
-            FlashlightController flashlightController) {
+            FlashlightController flashlightController,
+            ShadeViewController shadeViewController,
+            NotificationShadeWindowView notificationShadeWindowView) {
         super();
         mAlarmManager = alarmManager;
         mAssistManager = assistManager;
-        mCentralSurfaces = centralSurfaces;
         mContext = context;
         mFlashlightController = flashlightController;
+        mShadeViewController = shadeViewController;
+        mNotificationShadeWindowView = notificationShadeWindowView;
     }
 
     @Override
@@ -61,10 +65,9 @@ public class StatixServices extends VendorServices {
         }
         AmbientIndicationContainer ambientIndicationContainer =
                 (AmbientIndicationContainer)
-                        mCentralSurfaces
-                                .getNotificationShadeWindowView()
-                                .findViewById(R.id.ambient_indication_container);
-        ambientIndicationContainer.initializeView(mCentralSurfaces);
+                        mNotificationShadeWindowView.findViewById(
+                                R.id.ambient_indication_container);
+        ambientIndicationContainer.initializeView(mShadeViewController);
         addService(
                 new AmbientIndicationService(mContext, ambientIndicationContainer, mAlarmManager));
     }

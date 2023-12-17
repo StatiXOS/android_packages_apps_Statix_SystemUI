@@ -25,6 +25,7 @@ import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
+import com.android.systemui.globalactions.ShutdownUiModule;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
@@ -36,8 +37,6 @@ import com.android.systemui.rotationlock.RotationLockModule;
 import com.android.systemui.scene.SceneContainerFrameworkModule;
 import com.android.systemui.screenshot.ReferenceScreenshotModule;
 import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
-import com.android.systemui.shade.ShadeController;
-import com.android.systemui.shade.ShadeControllerImpl;
 import com.android.systemui.shade.ShadeExpansionStateManager;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.KeyguardIndicationController;
@@ -64,6 +63,7 @@ import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.volume.dagger.VolumeModule;
+import com.android.systemui.wallpapers.dagger.WallpaperModule;
 
 import com.statix.android.systemui.biometrics.FingerprintExtProvider;
 import com.statix.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl;
@@ -91,10 +91,12 @@ import javax.inject.Named;
             ReferenceScreenshotModule.class,
             RotationLockModule.class,
             SceneContainerFrameworkModule.class,
+            ShutdownUiModule.class,
             StatixPowerModule.class,
             StatixQSModule.class,
             VolumeModule.class,
-            StatusBarEventsModule.class
+            StatusBarEventsModule.class,
+            WallpaperModule.class
         })
 public abstract class SystemUIStatixModule {
 
@@ -130,9 +132,6 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract DockManager bindDockManager(DockManagerImpl dockManager);
-
-    @Binds
-    abstract ShadeController provideShadeController(ShadeControllerImpl shadeController);
 
     @SysUISingleton
     @Provides

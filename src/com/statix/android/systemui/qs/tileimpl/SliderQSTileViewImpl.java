@@ -144,7 +144,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
             } catch (IllegalArgumentException e) {
                 Log.e("SliderQSTileViewImpl", "Invalid width or height for creating Bitmap");
                 return;
-            } 
+            }
         }
 
         @Override

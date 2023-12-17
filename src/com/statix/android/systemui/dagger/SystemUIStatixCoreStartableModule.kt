@@ -47,6 +47,9 @@ import com.android.systemui.settings.dagger.MultiUserUtilsModule
 import com.android.systemui.shortcut.ShortcutKeyDispatcher
 import com.android.systemui.statusbar.notification.InstantAppNotifier
 import com.android.systemui.statusbar.phone.KeyguardLiftController
+import com.android.systemui.statusbar.phone.LockscreenWallpaper
+import com.android.systemui.statusbar.phone.ScrimController
+import com.android.systemui.statusbar.phone.StatusBarHeadsUpChangeListener
 import com.android.systemui.stylus.StylusUsiPowerStartable
 import com.android.systemui.temporarydisplay.chipbar.ChipbarCoordinator
 import com.android.systemui.theme.ThemeOverlayController
@@ -62,7 +65,7 @@ import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 
 /** Collection of {@link CoreStartable}s that should be run on AOSP. */
-@Module(includes = [MultiUserUtilsModule::class, StartControlsStartableModule::class, StartBinderLoggerModule::class,])
+@Module(includes = [MultiUserUtilsModule::class, StartControlsStartableModule::class, StartBinderLoggerModule::class])
 abstract class SystemUIStatixCoreStartableModule {
     /** Inject into AuthController. */
     @Binds
@@ -199,7 +202,7 @@ abstract class SystemUIStatixCoreStartableModule {
     @Binds
     @IntoMap
     @ClassKey(MediaOutputSwitcherDialogUI::class)
-    abstract fun MediaOutputSwitcherDialogUI(sysui: MediaOutputSwitcherDialogUI): CoreStartable
+    abstract fun bindMediaOutputSwitcherDialogUI(sysui: MediaOutputSwitcherDialogUI): CoreStartable
 
     /** Inject into VolumeUI. */
     @Binds
@@ -281,4 +284,22 @@ abstract class SystemUIStatixCoreStartableModule {
     @IntoMap
     @ClassKey(DreamMonitor::class)
     abstract fun bindDreamMonitor(sysui: DreamMonitor): CoreStartable
+
+
+    /** Inject into LocskcreenWallpaper. */
+    @Binds
+    @IntoMap
+    @ClassKey(LockscreenWallpaper::class)
+    abstract fun bindLockscreenWallpaper(lockscreenWallpaper: LockscreenWallpaper): CoreStartable
+
+    /** Inject into ScrimController. */
+    @Binds
+    @IntoMap
+    @ClassKey(ScrimController::class)
+    abstract fun bindScrimController(scrimController: ScrimController): CoreStartable
+
+    @Binds
+    @IntoMap
+    @ClassKey(StatusBarHeadsUpChangeListener::class)
+    abstract fun bindStatusBarHeadsUpChangeListener(impl: StatusBarHeadsUpChangeListener): CoreStartable
 }

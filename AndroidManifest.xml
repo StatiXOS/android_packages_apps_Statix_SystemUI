@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/*
- * Copyright (C) 2014 Google Inc.
- * Copyright (C) 2022 StatiXOS
- * SPDX-License-Identifer: Apache-2.0
- */
+ Copyright (C) 2014 Google Inc.
+ Copyright (C) 2022 StatiXOS
+ SPDX-License-Identifer: Apache-2.0
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
-        package="com.android.systemui"
-        android:sharedUserId="android.uid.systemui"
-        xmlns:tools="http://schemas.android.com/tools"
-        coreApp="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    coreApp="true"
+    package="com.android.systemui"
+    android:sharedUserId="android.uid.systemui">
 
-    <original-package android:name="com.android.systemui"/>
+    <original-package android:name="com.android.systemui" />
 
     <!-- DataSwitch tile -->
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
 
     <!-- Elmyra -->
     <uses-permission android:name="android.permission.ACCESS_CONTEXT_HUB" />
-    <permission android:name="com.google.sensor.elmyra.permission.USE_RAW_SENSOR"
+    <permission
+        android:name="com.google.sensor.elmyra.permission.USE_RAW_SENSOR"
         android:protectionLevel="preinstalled|signature" />
     <uses-permission android:name="com.google.sensor.elmyra.permission.USE_RAW_SENSOR" />
 
     <!-- Now Playing -->
-    <permission android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION" android:protectionLevel="signature|system"/>
-    <uses-permission android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION"/>
+    <permission
+        android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION"
+        android:protectionLevel="signature|system" />
+    <uses-permission android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION" />
 
     <application
-        tools:replace="android:appComponentFactory"
-        android:appComponentFactory=".SystemUIAppComponentFactory">
+        android:appComponentFactory=".PhoneSystemUIAppComponentFactory"
+        tools:replace="android:appComponentFactory">
 
         <!-- Smart Pixels -->
-        <service android:name="com.statix.android.systemui.smartpixels.SmartPixelsService"
-            android:exported="true"
-            android:enabled="true" />
+        <service
+            android:name="com.statix.android.systemui.smartpixels.SmartPixelsService"
+            android:enabled="true"
+            android:exported="true" />
 
     </application>
 
