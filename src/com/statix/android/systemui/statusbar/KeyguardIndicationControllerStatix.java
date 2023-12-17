@@ -22,6 +22,8 @@ import com.android.settingslib.fuelgauge.BatteryStatus;
 import com.android.systemui.R;
 import com.android.systemui.biometrics.AuthController;
 import com.android.systemui.biometrics.FaceHelpMessageDeferral;
+import com.android.systemui.bouncer.domain.interactor.AlternateBouncerInteractor;
+import com.android.systemui.bouncer.domain.interactor.BouncerMessageInteractor;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Background;
@@ -29,7 +31,8 @@ import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.keyguard.ScreenLifecycle;
-import com.android.systemui.keyguard.domain.interactor.AlternateBouncerInteractor;
+import com.android.systemui.keyguard.domain.interactor.KeyguardInteractor;
+import com.android.systemui.keyguard.util.IndicationHelper;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.settings.UserTracker;
@@ -112,7 +115,10 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             AlternateBouncerInteractor alternateBouncerInteractor,
             AlarmManager alarmManager,
             UserTracker userTracker,
-            FeatureFlags flags) {
+            BouncerMessageInteractor bouncerMessageInteractor,
+            FeatureFlags flags,
+            IndicationHelper indicationHelper,
+            KeyguardInteractor keyguardInteractor) {
         super(
                 context,
                 mainLooper,
@@ -138,7 +144,10 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
                 alternateBouncerInteractor,
                 alarmManager,
                 userTracker,
-                flags);
+                bouncerMessageInteractor,
+                flags,
+                indicationHelper,
+                keyguardInteractor);
         mBroadcastReceiver =
                 new BroadcastReceiver() {
                     @Override
