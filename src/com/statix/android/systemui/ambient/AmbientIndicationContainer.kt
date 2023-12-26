@@ -338,11 +338,9 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
     override fun onDozingChanged(isDozing: Boolean) {
         dozing = isDozing
         updateVisibility()
-        if (this::textView.isInitialized) {
-            textView.let {
-                it.isEnabled = !isDozing
-                updateColors()
-            }
+        textView.let {
+            it.isEnabled = !isDozing
+            updateColors()
         }
     }
 
