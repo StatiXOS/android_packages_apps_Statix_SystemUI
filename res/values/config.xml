@@ -9,9 +9,6 @@
     <!-- Whether or not long-pressing on keyguard will display to customize lockscreen -->
     <bool name="long_press_keyguard_customize_lockscreen_enabled">true</bool>
 
-    <!-- SystemUIInitializer component -->
-    <string name="config_systemUIFactoryComponent" translatable="false">com.statix.android.systemui.SystemUIStatixInitializer</string>
-
     <!-- Tiles native to Statix System UI. Order should match "quick_settings_tiles_default" -->
     <string name="quick_settings_tiles_stock" translatable="false">
         internet,bt,flashlight,dnd,alarm,airplane,controls,wallet,rotation,battery,cast,screenrecord,mictoggle,cameratoggle,location,hotspot,inversion,saver,dark,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling,powershare,caffeine,glovemode,nfc,smartpixels,dataswitch

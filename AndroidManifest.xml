@@ -29,7 +29,7 @@
     <uses-permission android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION" />
 
     <application
-        android:appComponentFactory=".PhoneSystemUIAppComponentFactory"
+        android:appComponentFactory="com.statix.android.systemui.StatixSystemUIAppComponentFactory"
         tools:replace="android:appComponentFactory">
 
         <!-- Smart Pixels -->
