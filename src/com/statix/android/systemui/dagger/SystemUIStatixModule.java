@@ -25,6 +25,7 @@ import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
+import com.android.systemui.globalactions.GlobalActionsModule;
 import com.android.systemui.globalactions.ShutdownUiModule;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
@@ -86,6 +87,7 @@ import javax.inject.Named;
             AospPolicyModule.class,
             BatterySaverModule.class,
             GestureModule.class,
+            GlobalActionsModule.class,
             MediaModule.class,
             QSModule.class,
             ReferenceScreenshotModule.class,
