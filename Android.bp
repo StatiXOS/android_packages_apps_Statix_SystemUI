@@ -56,6 +56,12 @@ android_library {
     kotlincflags: ["-Xjvm-default=enable"],
 
     plugins: ["dagger2-compiler"],
+
+    errorprone: {
+        javacflags: [
+            "-Xep:ArrayToString:WARN",
+        ],
+    },
 }
 
 android_app {
