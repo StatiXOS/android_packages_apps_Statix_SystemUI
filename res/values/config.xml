@@ -54,4 +54,7 @@
         <item><xliff:g id="id">@android/status_bar_sensors_off</xliff:g></item>
     </string-array>
 
+    <!-- Power menu -->
+    <integer name="power_menu_max_columns">3</integer>
+
 </resources>

@@ -22,6 +22,7 @@ license {
 
 android_library {
     name: "StatixSystemUI-res",
+    min_sdk_version: "current",
     manifest: "AndroidManifest.xml",
     resource_dirs: [
         "res",
@@ -33,6 +34,7 @@ android_library {
 
 android_library {
     name: "StatixSystemUI-core",
+    min_sdk_version: "current",
     srcs: [
         "src/**/*.kt",
         "src/**/*.java",
@@ -70,6 +72,7 @@ android_library {
 
 android_app {
     name: "StatixSystemUI",
+    min_sdk_version: "current",
     defaults: ["platform_app_defaults"],
     static_libs: [
         "StatixSystemUI-core",
@@ -93,5 +96,5 @@ android_app {
     ],
     overrides: [
         "SystemUI",
-    ],
+    ],	
 }

@@ -6,4 +6,8 @@
 
     <!-- Bluetooth dialog -->
     <dimen name="bluetooth_dialog_active_device_bottom_margin">4dp</dimen>
+
+    <!-- Global actions -->
+    <!-- Shift quick access wallet down in Global Actions when Controls are unavailable -->
+    <dimen name="global_actions_wallet_top_margin">40dp</dimen>
 </resources>
