@@ -1,0 +1,4 @@
+<resources>
+    <!-- Power menu -->
+    <integer name="power_menu_max_columns">4</integer>
+</resources>
