@@ -59,7 +59,11 @@ android_library {
 
     errorprone: {
         javacflags: [
+            "-XepDisableWarningsInGeneratedCode",
             "-Xep:ArrayToString:WARN",
+            "-Xep:FieldCanBeLocal:WARN",
+            "-Xep:MissingSuperCall:ERROR",
+            "-Xep:ReferenceEquality:ERROR",
         ],
     },
 }
