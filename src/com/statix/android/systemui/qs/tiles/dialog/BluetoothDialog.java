@@ -76,22 +76,16 @@ public class BluetoothDialog extends SystemUIDialog implements Window.Callback {
     private Context mContext;
     private Handler mHandler;
     private View mDialogView;
-    private TextView mBluetoothDialogTitle;
     private TextView mBluetoothDialogSubTitle;
-    private TextView mBluetoothToggleText;
     private Switch mBluetoothToggle;
     private ProgressBar mProgressBar;
     private View mDivider;
-    private LinearLayout mTurnOnLayout;
     private LinearLayout mSeeAllLayout;
     private RecyclerView mBluetoothRecyclerView;
     private Button mDoneButton;
     private Button mSettingsButton;
     private DialogLaunchAnimator mDialogLaunchAnimator;
     private ActivityStarter mActivityStarter;
-
-    private Drawable mBackgroundOn;
-    private Drawable mBackgroundOff;
 
     private final LocalBluetoothManager mLocalBluetoothManager;
 
@@ -155,24 +149,14 @@ public class BluetoothDialog extends SystemUIDialog implements Window.Callback {
         window.setContentView(mDialogView);
         window.setWindowAnimations(R.style.Animation_InternetDialog);
 
-        mBluetoothDialogTitle = mDialogView.requireViewById(R.id.bluetooth_dialog_title);
         mBluetoothDialogSubTitle = mDialogView.requireViewById(R.id.bluetooth_dialog_subtitle);
         mProgressBar = mDialogView.requireViewById(R.id.bluetooth_progress);
         mDivider = mDialogView.requireViewById(R.id.divider);
         mBluetoothToggle = mDialogView.requireViewById(R.id.bluetooth_toggle);
-        mBluetoothToggleText = mDialogView.requireViewById(R.id.bluetooth_toggle_title);
         mBluetoothRecyclerView = mDialogView.requireViewById(R.id.bluetooth_list_layout);
         mSeeAllLayout = mDialogView.requireViewById(R.id.see_all_layout);
-        mTurnOnLayout = mDialogView.requireViewById(R.id.turn_on_bluetooth_layout);
         mDoneButton = mDialogView.requireViewById(R.id.done_button);
         mSettingsButton = mDialogView.requireViewById(R.id.settings_button);
-        mBackgroundOn = mContext.getDrawable(R.drawable.settingslib_switch_bar_bg_on);
-
-        try (TypedArray typedArray =
-                mContext.obtainStyledAttributes(
-                        new int[] {android.R.attr.selectableItemBackground})) {
-            mBackgroundOff = typedArray.getDrawable(0 /* index */);
-        }
 
         mBluetoothToggle.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {

@@ -83,7 +83,7 @@ public class BluetoothViewAdapter
         boolean isActive = mActiveDevice != null && position == 0;
         if (isActive) {
             device = mActiveDevice;
-        } else if (device == mActiveDevice) {
+        } else if (device.equals(mActiveDevice)) {
             device = mDevices.get(0);
         }
         viewHolder.onBind(device, isActive);
@@ -95,7 +95,7 @@ public class BluetoothViewAdapter
      * @param devices the updated bluetooth devices.
      */
     public void setBluetoothDevices(List<CachedBluetoothDevice> devices) {
-        if (mDevices != devices) {
+        if (!mDevices.equals(devices)) {
             mDevices = devices;
             mDevicesCount = Math.min(devices.size(), mMaxDevicesCount);
             notifyDataSetChanged();
@@ -103,7 +103,7 @@ public class BluetoothViewAdapter
     }
 
     public void setActiveDevice(@Nullable CachedBluetoothDevice device) {
-        if (mActiveDevice != device) {
+        if (!mActiveDevice.equals(device)) {
             mActiveDevice = device;
             notifyDataSetChanged();
         }
