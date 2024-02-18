@@ -166,7 +166,11 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
         var updatePill = true
         indicationTextMode = 1
         var text = ambientMusicText
-        val textVisible = textView.visibility == View.VISIBLE
+        val textVisible = if (textView.isInitialized) {
+                textView.visibility == View.VISIBLE
+            } else {
+                return
+            }
         var icon: Drawable? =
             if (textVisible) {
                 ambientMusicNoteIcon
