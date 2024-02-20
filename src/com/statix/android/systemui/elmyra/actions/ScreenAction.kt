@@ -31,7 +31,8 @@ class ScreenAction(context: Context) : Action(context) {
             pm.wakeUp(
                 SystemClock.uptimeMillis(),
                 PowerManager.WAKE_REASON_GESTURE,
-                "com.statix.android.systemui.elmyra:GESTURE")
+                "com.statix.android.systemui.elmyra:GESTURE",
+            )
         }
     }
 }

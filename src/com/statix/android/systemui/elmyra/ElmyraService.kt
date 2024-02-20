@@ -118,7 +118,8 @@ constructor(
                             Log.e(TAG, "Elmyra CHRE nanoapp aborted: $error")
                         }
                     }
-                })
+                },
+            )
 
         updateAction()
         updateSensitivity()
@@ -128,13 +129,29 @@ constructor(
         // Only register for changes after initial pref updates
         val settingsObserver = SettingsObserver(Handler(Looper.getMainLooper()))
         context.contentResolver.registerContentObserver(
-            uriForAction, false, settingsObserver, UserHandle.USER_CURRENT)
+            uriForAction,
+            false,
+            settingsObserver,
+            UserHandle.USER_CURRENT,
+        )
         context.contentResolver.registerContentObserver(
-            uriForEnabled, false, settingsObserver, UserHandle.USER_CURRENT)
+            uriForEnabled,
+            false,
+            settingsObserver,
+            UserHandle.USER_CURRENT,
+        )
         context.contentResolver.registerContentObserver(
-            uriForScreenOff, false, settingsObserver, UserHandle.USER_CURRENT)
+            uriForScreenOff,
+            false,
+            settingsObserver,
+            UserHandle.USER_CURRENT,
+        )
         context.contentResolver.registerContentObserver(
-            uriForSensitivity, false, settingsObserver, UserHandle.USER_CURRENT)
+            uriForSensitivity,
+            false,
+            settingsObserver,
+            UserHandle.USER_CURRENT,
+        )
     }
 
     private fun createAction(key: String): Action {
@@ -163,7 +180,8 @@ constructor(
         putBoolean(
             context.contentResolver,
             context.getString(R.string.pref_key_allow_screen_off_action_forced),
-            !action.canRunWhenScreenOff())
+            !action.canRunWhenScreenOff(),
+        )
     }
 
     private fun updateEnabled() {
@@ -235,7 +253,8 @@ constructor(
     private fun onGestureDetected(msg: ContextHubMessages.GestureDetected) {
         Log.i(
             TAG,
-            "Gesture detected hostSuspended=${msg.hostSuspended} hapticConsumed=${msg.hapticConsumed}")
+            "Gesture detected hostSuspended=${msg.hostSuspended} hapticConsumed=${msg.hapticConsumed}",
+        )
         Log.d(
             TAG,
             "Gesture detected: canRunAction: ${action.canRun()}, action: ${getAction(context)}")

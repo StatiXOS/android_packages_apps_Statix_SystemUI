@@ -34,14 +34,19 @@ class FingerprintInteractiveToAuthProviderImpl @Inject constructor(private val c
     override fun isEnabled(userId: Int): Boolean {
         var value =
             Settings.Secure.getIntForUser(
-                context.contentResolver, Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED, -1, userId)
+                context.contentResolver,
+                Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
+                -1,
+                userId,
+            )
         if (value == -1) {
             value = defaultValue
             Settings.Secure.putIntForUser(
                 context.contentResolver,
                 Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
                 value,
-                userId)
+                userId,
+            )
         }
         return value == 0
     }

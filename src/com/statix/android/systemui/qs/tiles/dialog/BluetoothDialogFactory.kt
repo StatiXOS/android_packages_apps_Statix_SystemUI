@@ -70,7 +70,10 @@ constructor(
                 )
             if (view != null) {
                 dialogLaunchAnimator.showFromView(
-                    bluetoothDialog!!, view, animateBackgroundBoundsChange = true)
+                    bluetoothDialog!!,
+                    view,
+                    animateBackgroundBoundsChange = true,
+                )
             } else {
                 bluetoothDialog?.show()
             }

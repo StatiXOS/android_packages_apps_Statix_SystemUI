@@ -13,9 +13,12 @@ import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.dagger.SysUISingleton;
+import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.power.domain.interactor.PowerInteractor;
 import com.android.systemui.shade.NotificationShadeWindowView;
 import com.android.systemui.shade.ShadeViewController;
 import com.android.systemui.statusbar.policy.FlashlightController;
+import com.android.systemui.util.wakelock.WakeLockLogger;
 
 import com.statix.android.systemui.ambient.AmbientIndicationContainer;
 import com.statix.android.systemui.ambient.AmbientIndicationService;
@@ -31,28 +34,38 @@ import javax.inject.Inject;
 public class StatixServices extends VendorServices {
 
     private final ArrayList<Object> mServices = new ArrayList<>();
+    private final ActivityStarter mActivityStarter;
     private final AlarmManager mAlarmManager;
     private final AssistManager mAssistManager;
-    private final ShadeViewController mShadeViewController;
-    private final NotificationShadeWindowView mNotificationShadeWindowView;
-    private final Context mContext;
     private final FlashlightController mFlashlightController;
+    private final NotificationShadeWindowView mNotificationShadeWindowView;
+    private final PowerInteractor mPowerInteractor;
+    private final ShadeViewController mShadeViewController;
+    private final WakeLockLogger mWakelockLogger;
+
+    private final Context mContext;
 
     @Inject
     public StatixServices(
             Context context,
+            ActivityStarter activityStarter,
             AlarmManager alarmManager,
             AssistManager assistManager,
             FlashlightController flashlightController,
+            NotificationShadeWindowView notificationShadeWindowView,
+            PowerInteractor powerInteractor,
             ShadeViewController shadeViewController,
-            NotificationShadeWindowView notificationShadeWindowView) {
+            WakeLockLogger wakeLockLogger) {
         super();
+        mActivityStarter = activityStarter;
         mAlarmManager = alarmManager;
         mAssistManager = assistManager;
         mContext = context;
         mFlashlightController = flashlightController;
-        mShadeViewController = shadeViewController;
         mNotificationShadeWindowView = notificationShadeWindowView;
+        mPowerInteractor = powerInteractor;
+        mShadeViewController = shadeViewController;
+        mWakelockLogger = wakeLockLogger;
     }
 
     @Override
@@ -67,7 +80,8 @@ public class StatixServices extends VendorServices {
                 (AmbientIndicationContainer)
                         mNotificationShadeWindowView.findViewById(
                                 R.id.ambient_indication_container);
-        ambientIndicationContainer.initializeView(mShadeViewController);
+        ambientIndicationContainer.initializeView(
+                mShadeViewController, mPowerInteractor, mActivityStarter, mWakelockLogger);
         addService(
                 new AmbientIndicationService(mContext, ambientIndicationContainer, mAlarmManager));
     }

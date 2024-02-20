@@ -15,9 +15,8 @@ import javax.inject.Inject
 @SysUISingleton
 class StatixControlsTileResourceConfigurationImpl
 @Inject
-constructor(
-    private val controlsController: ControlsController,
-) : ControlsTileResourceConfiguration {
+constructor(private val controlsController: ControlsController) :
+    ControlsTileResourceConfiguration {
 
     private val componentName: ComponentName
         get() = controlsController.getPreferredSelection().componentName
