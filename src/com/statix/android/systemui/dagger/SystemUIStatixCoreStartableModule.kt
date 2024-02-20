@@ -65,7 +65,13 @@ import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 
 /** Collection of {@link CoreStartable}s that should be run on AOSP. */
-@Module(includes = [MultiUserUtilsModule::class, StartControlsStartableModule::class, StartBinderLoggerModule::class])
+@Module(
+    includes =
+        [
+            MultiUserUtilsModule::class,
+            StartControlsStartableModule::class,
+            StartBinderLoggerModule::class,
+        ])
 abstract class SystemUIStatixCoreStartableModule {
     /** Inject into AuthController. */
     @Binds
@@ -285,7 +291,6 @@ abstract class SystemUIStatixCoreStartableModule {
     @ClassKey(DreamMonitor::class)
     abstract fun bindDreamMonitor(sysui: DreamMonitor): CoreStartable
 
-
     /** Inject into LocskcreenWallpaper. */
     @Binds
     @IntoMap
@@ -301,5 +306,7 @@ abstract class SystemUIStatixCoreStartableModule {
     @Binds
     @IntoMap
     @ClassKey(StatusBarHeadsUpChangeListener::class)
-    abstract fun bindStatusBarHeadsUpChangeListener(impl: StatusBarHeadsUpChangeListener): CoreStartable
+    abstract fun bindStatusBarHeadsUpChangeListener(
+        impl: StatusBarHeadsUpChangeListener
+    ): CoreStartable
 }

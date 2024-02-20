@@ -5,8 +5,8 @@
 
 package com.statix.android.systemui.theme
 
-import android.app.WallpaperManager
 import android.app.UiModeManager
+import android.app.WallpaperManager
 import android.content.Context
 import android.content.res.Resources
 import android.os.Handler

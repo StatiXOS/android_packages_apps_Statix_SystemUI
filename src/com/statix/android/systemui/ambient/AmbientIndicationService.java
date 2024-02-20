@@ -55,7 +55,7 @@ public class AmbientIndicationService extends BroadcastReceiver {
         mContext = context;
         mAmbientIndicationContainer = ambientIndicationContainer;
         mAlarmManager = alarmManager;
-        mHideIndicationListener = () -> mAmbientIndicationContainer.hideAmbientMusic();
+        mHideIndicationListener = mAmbientIndicationContainer::hideAmbientMusic;
         start();
     }
 

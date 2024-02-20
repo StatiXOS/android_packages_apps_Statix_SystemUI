@@ -22,11 +22,11 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import com.android.app.animation.Interpolators.DECELERATE_QUINT
+import com.android.app.animation.Interpolators.LINEAR_OUT_SLOW_IN
 import com.android.systemui.AutoReinflateContainer
 import com.android.systemui.Dependency
 import com.android.systemui.R
-import com.android.app.animation.Interpolators.DECELERATE_QUINT
-import com.android.app.animation.Interpolators.LINEAR_OUT_SLOW_IN
 import com.android.systemui.doze.DozeReceiver
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.plugins.statusbar.StatusBarStateController
@@ -37,7 +37,6 @@ import com.android.systemui.statusbar.StatusBarState
 import com.android.systemui.util.wakelock.DelayedWakeLock
 import com.android.systemui.util.wakelock.WakeLock
 import com.android.systemui.util.wakelock.WakeLockLogger
-import javax.inject.Inject
 
 class AmbientIndicationContainer(private val context: Context, attrs: AttributeSet) :
     AutoReinflateContainer(context, attrs),
@@ -45,14 +44,11 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
     StatusBarStateController.StateListener,
     NotificationMediaManager.MediaListener {
 
-    @Inject
-    lateinit var activityStarter: ActivityStarter
+    private var activityStarter: ActivityStarter? = null
 
-    @Inject
-    lateinit var wakeLockLogger: WakeLockLogger
+    private var wakeLockLogger: WakeLockLogger? = null
 
-    @Inject
-    lateinit var powerInteractor: PowerInteractor
+    private var powerInteractor: PowerInteractor? = null
 
     private lateinit var shadeViewController: ShadeViewController
     private val handler: Handler = Handler(Looper.getMainLooper())
@@ -80,12 +76,19 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
     private lateinit var textView: TextView
     private var reverseChargingMessage: String = ""
 
-    fun initializeView(shadeViewController: ShadeViewController) {
+    fun initializeView(
+        shadeViewController: ShadeViewController,
+        powerInteractor: PowerInteractor,
+        activityStarter: ActivityStarter,
+        wakelockLogger: WakeLockLogger,
+    ) {
+        this.activityStarter = activityStarter
+        this.powerInteractor = powerInteractor
+        this.wakeLockLogger = wakelockLogger
         this.shadeViewController = shadeViewController
-        wakeLock = DelayedWakeLock(
-            handler,
-            WakeLock.createPartial(context, wakeLockLogger, "AmbientIndication")
-        )
+        wakeLock =
+            DelayedWakeLock(
+                handler, WakeLock.createPartial(context, wakeLockLogger, "AmbientIndication"))
         addInflateListener {
             textView = findViewById(R.id.ambient_indication_text)!!
             iconView = findViewById(R.id.ambient_indication_icon)!!
@@ -127,15 +130,14 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
         favoriteIntent: PendingIntent?,
         skipUnlock: Boolean,
         iconOverride: Int,
-        iconDescription: String?
+        iconDescription: String?,
     ) {
         if (this.ambientMusicText != text ||
             this.openIntent != openIntent ||
             this.favoritingIntent != favoriteIntent ||
             this.iconOverride != iconOverride ||
             this.ambientSkipUnlock != skipUnlock ||
-            this.iconDescription != iconDescription
-        ) {
+            this.iconDescription != iconDescription) {
             this.ambientMusicText = text
             this.openIntent = openIntent
             this.favoritingIntent = favoriteIntent
@@ -166,11 +168,7 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
         var updatePill = true
         indicationTextMode = 1
         var text = ambientMusicText
-        val textVisible = if (textView.isInitialized) {
-                textView.visibility == View.VISIBLE
-            } else {
-                return
-            }
+        val textVisible = textView?.visibility == View.VISIBLE
         var icon: Drawable? =
             if (textVisible) {
                 ambientMusicNoteIcon
@@ -210,7 +208,7 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
                     ambientMusicNoteIconSize
                 } else {
                     ambientIndicationIconSize
-                }
+                },
             )
             drawableWrapper =
                 object : DrawableWrapper(icon) {
@@ -232,14 +230,14 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
                 textView.paddingStart,
                 textView.paddingTop,
                 endPadding,
-                textView.paddingBottom
+                textView.paddingBottom,
             )
         } else {
             textView.setPaddingRelative(
                 textView.paddingStart,
                 textView.paddingTop,
                 0,
-                textView.paddingBottom
+                textView.paddingBottom,
             )
         }
         iconView.setImageDrawable(drawableWrapper)
@@ -304,9 +302,7 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
             bottomMarginPx = marginBottom
             (layoutParams as FrameLayout.LayoutParams).bottomMargin = bottomMarginPx
         }
-        shadeViewController.setAmbientIndicationTop(
-            top, textView.visibility == View.VISIBLE
-        )
+        shadeViewController.setAmbientIndicationTop(top, textView.visibility == View.VISIBLE)
     }
 
     fun hideAmbientMusic() {
@@ -315,24 +311,18 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
 
     private fun onTextClick() {
         openIntent?.let {
-            powerInteractor.wakeUpIfDozing(
-                "AMBIENT_MUSIC_CLICK",
-                PowerManager.WAKE_REASON_GESTURE
-            )
+            powerInteractor?.wakeUpIfDozing("AMBIENT_MUSIC_CLICK", PowerManager.WAKE_REASON_GESTURE)
             if (ambientSkipUnlock) {
                 sendBroadcastWithoutDismissingKeyguard(it)
             } else {
-                activityStarter.startPendingIntentDismissingKeyguard(openIntent)
+                activityStarter?.startPendingIntentDismissingKeyguard(it)
             }
         }
     }
 
     private fun onIconClick() {
         favoritingIntent?.let {
-            powerInteractor.wakeUpIfDozing(
-                "AMBIENT_MUSIC_CLICK",
-                PowerManager.WAKE_REASON_GESTURE
-            )
+            powerInteractor?.wakeUpIfDozing("AMBIENT_MUSIC_CLICK", PowerManager.WAKE_REASON_GESTURE)
             sendBroadcastWithoutDismissingKeyguard(it)
             return
         }
@@ -403,11 +393,12 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
     }
 
     private fun updateVisibility() {
-        visibility = if (barState == StatusBarState.KEYGUARD) {
-            View.VISIBLE
-        } else {
-            View.INVISIBLE
-        }
+        visibility =
+            if (barState == StatusBarState.KEYGUARD) {
+                View.VISIBLE
+            } else {
+                View.INVISIBLE
+            }
     }
 
     override fun onPrimaryMetadataOrStateChanged(mediaMetadata: MediaMetadata?, mediaState: Int) {

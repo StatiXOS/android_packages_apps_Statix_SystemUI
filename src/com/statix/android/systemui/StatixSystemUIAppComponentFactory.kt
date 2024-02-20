@@ -26,6 +26,6 @@ import com.android.systemui.SystemUIAppComponentFactoryBase
  *
  * @see SystemUIAppComponentFactoryBase
  */
-class StatixSystemUIAppComponentFactory : SystemUIAppComponentFactoryBase()  {
+class StatixSystemUIAppComponentFactory : SystemUIAppComponentFactoryBase() {
     override fun createSystemUIInitializer(context: Context) = SystemUIStatixInitializer(context)
 }
