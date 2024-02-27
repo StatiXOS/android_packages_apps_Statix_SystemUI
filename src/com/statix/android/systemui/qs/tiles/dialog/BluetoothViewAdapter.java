@@ -95,7 +95,7 @@ public class BluetoothViewAdapter
      * @param devices the updated bluetooth devices.
      */
     public void setBluetoothDevices(List<CachedBluetoothDevice> devices) {
-        if (!mDevices.equals(devices)) {
+        if (mDevices ==  null || !mDevices.equals(devices)) {
             mDevices = devices;
             mDevicesCount = Math.min(devices.size(), mMaxDevicesCount);
             notifyDataSetChanged();
@@ -103,7 +103,7 @@ public class BluetoothViewAdapter
     }
 
     public void setActiveDevice(@Nullable CachedBluetoothDevice device) {
-        if (!mActiveDevice.equals(device)) {
+        if (mActiveDevice == null || !mActiveDevice.equals(device)) {
             mActiveDevice = device;
             notifyDataSetChanged();
         }
