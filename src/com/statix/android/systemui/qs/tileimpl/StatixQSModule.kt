@@ -17,7 +17,6 @@
 package com.statix.android.systemui.qs.tileimpl
 
 import com.android.systemui.qs.tileimpl.QSTileImpl
-import com.statix.android.systemui.qs.tiles.BluetoothDialogTile
 import com.statix.android.systemui.qs.tiles.CaffeineTile
 import com.statix.android.systemui.qs.tiles.DataSwitchTile
 import com.statix.android.systemui.qs.tiles.FlashlightStrengthTile
@@ -31,12 +30,6 @@ import dagger.multibindings.StringKey
 
 @Module
 interface StatixQSModule {
-
-    /** Inject BluetoothDialogTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(BluetoothDialogTile.TILE_SPEC)
-    fun bindBluetoothDialogTile(bluetoothDialogTile: BluetoothDialogTile): QSTileImpl<*>
 
     /** Inject CaffeineTile into tileMap in QSModule */
     @Binds
