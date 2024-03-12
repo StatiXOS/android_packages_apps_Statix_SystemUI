@@ -63,7 +63,6 @@ import com.android.systemui.statusbar.NotificationPresenter;
 import com.android.systemui.statusbar.NotificationRemoteInputManager;
 import com.android.systemui.statusbar.NotificationShadeDepthController;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
-import com.android.systemui.statusbar.NotificationShelfController;
 import com.android.systemui.statusbar.PulseExpansionHandler;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.core.StatusBarInitializer;
@@ -177,7 +176,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             ConfigurationController configurationController,
             NotificationShadeWindowController notificationShadeWindowController,
             Lazy<NotificationShadeWindowViewController> notificationShadeWindowViewControllerLazy,
-            NotificationShelfController notificationShelfController,
             NotificationStackScrollLayoutController notificationStackScrollLayoutController,
             Lazy<NotificationPresenter> notificationPresenterLazy,
             NotificationExpansionRepository notificationExpansionRepository,
@@ -283,7 +281,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 configurationController,
                 notificationShadeWindowController,
                 notificationShadeWindowViewControllerLazy,
-                notificationShelfController,
                 notificationStackScrollLayoutController,
                 notificationPresenterLazy,
                 notificationExpansionRepository,
