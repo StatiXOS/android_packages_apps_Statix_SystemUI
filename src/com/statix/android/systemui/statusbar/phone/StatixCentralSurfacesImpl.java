@@ -90,7 +90,6 @@ import com.android.systemui.statusbar.phone.StatusBarHideIconsForBouncerManager;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy;
 import com.android.systemui.statusbar.phone.StatusBarTouchableRegionManager;
-import com.android.systemui.statusbar.phone.dagger.CentralSurfacesComponent;
 import com.android.systemui.statusbar.phone.ongoingcall.OngoingCallController;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
@@ -187,7 +186,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             DozeScrimController dozeScrimController,
             VolumeComponent volumeComponent,
             CommandQueue commandQueue,
-            CentralSurfacesComponent.Factory centralSurfacesComponentFactory,
             PluginManager pluginManager,
             ShadeController shadeController,
             StatusBarKeyguardViewManager statusBarKeyguardViewManager,
@@ -290,7 +288,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 dozeScrimController,
                 volumeComponent,
                 commandQueue,
-                centralSurfacesComponentFactory,
                 pluginManager,
                 shadeController,
                 statusBarKeyguardViewManager,
