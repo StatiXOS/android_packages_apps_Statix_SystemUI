@@ -13,7 +13,6 @@ import android.hardware.SensorPrivacyManager;
 
 import com.android.keyguard.KeyguardViewController;
 import com.android.systemui.battery.BatterySaverModule;
-import com.android.systemui.biometrics.AlternateUdfpsTouchProvider;
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
 import com.android.systemui.dagger.SysUISingleton;
@@ -188,17 +187,6 @@ public abstract class SystemUIStatixModule {
     @Binds
     abstract ControlsTileResourceConfiguration bindControlsTileResourceConfiguration(
             StatixControlsTileResourceConfigurationImpl configuration);
-
-    @SysUISingleton
-    @Provides
-    @Nullable
-    static AlternateUdfpsTouchProvider bindUdfpsTouchProvider(FingerprintExtProvider provider) {
-        if (provider.getExtension() == null) {
-            return null;
-        } else {
-            return new StatixUdfpsTouchProvider(provider);
-        }
-    }
 
     @Binds
     abstract ThemeOverlayController provideThemeOverlayController(
