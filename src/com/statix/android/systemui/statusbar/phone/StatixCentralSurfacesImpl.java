@@ -82,7 +82,6 @@ import com.android.systemui.statusbar.phone.DozeServiceHost;
 import com.android.systemui.statusbar.phone.HeadsUpManagerPhone;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.statusbar.phone.LightBarController;
-import com.android.systemui.statusbar.phone.LockscreenWallpaper;
 import com.android.systemui.statusbar.phone.NotificationIconAreaController;
 import com.android.systemui.statusbar.phone.PhoneStatusBarPolicy;
 import com.android.systemui.statusbar.phone.ScreenOffAnimationController;
@@ -179,7 +178,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             Lazy<NotificationPresenter> notificationPresenterLazy,
             DozeParameters dozeParameters,
             ScrimController scrimController,
-            Lazy<LockscreenWallpaper> lockscreenWallpaperLazy,
             Lazy<BiometricUnlockController> biometricUnlockControllerLazy,
             AuthRippleController authRippleController,
             DozeServiceHost dozeServiceHost,
@@ -283,7 +281,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 notificationPresenterLazy,
                 dozeParameters,
                 scrimController,
-                lockscreenWallpaperLazy,
                 biometricUnlockControllerLazy,
                 authRippleController,
                 dozeServiceHost,
