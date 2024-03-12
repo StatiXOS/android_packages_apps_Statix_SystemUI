@@ -68,7 +68,6 @@ import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.core.StatusBarInitializer;
 import com.android.systemui.statusbar.notification.DynamicPrivacyController;
 import com.android.systemui.statusbar.notification.NotificationWakeUpCoordinator;
-import com.android.systemui.statusbar.notification.data.repository.NotificationExpansionRepository;
 import com.android.systemui.statusbar.notification.init.NotificationsController;
 import com.android.systemui.statusbar.notification.interruption.NotificationInterruptStateProvider;
 import com.android.systemui.statusbar.notification.logging.NotificationLogger;
@@ -178,7 +177,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             Lazy<NotificationShadeWindowViewController> notificationShadeWindowViewControllerLazy,
             NotificationStackScrollLayoutController notificationStackScrollLayoutController,
             Lazy<NotificationPresenter> notificationPresenterLazy,
-            NotificationExpansionRepository notificationExpansionRepository,
             DozeParameters dozeParameters,
             ScrimController scrimController,
             Lazy<LockscreenWallpaper> lockscreenWallpaperLazy,
@@ -283,7 +281,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 notificationShadeWindowViewControllerLazy,
                 notificationStackScrollLayoutController,
                 notificationPresenterLazy,
-                notificationExpansionRepository,
                 dozeParameters,
                 scrimController,
                 lockscreenWallpaperLazy,
