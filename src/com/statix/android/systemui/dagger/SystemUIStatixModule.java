@@ -24,7 +24,6 @@ import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.navigationbar.NavigationBarControllerModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
-import com.android.systemui.power.dagger.PowerModule;
 import com.android.systemui.qs.dagger.QSModule;
 import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.Recents;
@@ -98,7 +97,6 @@ import javax.inject.Named;
         MediaModule.class,
         MultiUserUtilsModule.class,
         NavigationBarControllerModule.class,
-        PowerModule.class,
         QSModule.class,
         ShadeModule.class,
         StatixPowerModule.class,
