@@ -40,7 +40,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.systemui.R;
+import com.statix.android.systemui.res.R;
 import com.android.systemui.plugins.qs.QSIconView;
 import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.qs.tileimpl.QSTileViewImpl;
@@ -54,11 +54,10 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
     public SliderQSTileViewImpl(
             Context context,
-            QSIconView icon,
             boolean collapsed,
             View.OnTouchListener touchListener,
             String settingKey) {
-        super(context, icon, collapsed);
+        super(context, collapsed);
         if (touchListener != null && !settingKey.isEmpty()) {
             mSettingsKey = settingKey;
             percentageDrawable = new PercentageDrawable();
@@ -87,7 +86,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private void updatePercentBackground(boolean active) {
         percentageDrawable.setTint(active ? Color.WHITE : Color.BLACK);
         LayerDrawable layerDrawable =
-                new LayerDrawable(new Drawable[] {colorBackgroundDrawable, percentageDrawable});
+                new LayerDrawable(new Drawable[] {backgroundBaseDrawable, percentageDrawable});
         setBackground(layerDrawable);
     }
 

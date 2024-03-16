@@ -34,6 +34,6 @@ class PowerMenuAction(context: Context) : Action(context) {
             )
         }
 
-        wm.showGlobalActions()
+        wm?.showGlobalActions()
     }
 }

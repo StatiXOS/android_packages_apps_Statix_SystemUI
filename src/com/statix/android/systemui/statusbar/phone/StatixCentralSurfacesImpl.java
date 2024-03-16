@@ -44,7 +44,8 @@ import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.PluginDependencyProvider;
 import com.android.systemui.plugins.PluginManager;
 import com.android.systemui.power.domain.interactor.PowerInteractor;
-import com.android.systemui.recents.ScreenPinningRequest;
+import com.android.systemui.scene.domain.interactor.WindowRootViewVisibilityInteractor;
+import com.android.systemui.scene.shared.flag.SceneContainerFlags;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.shade.CameraLauncher;
@@ -66,20 +67,24 @@ import com.android.systemui.statusbar.NotificationShadeWindowController;
 import com.android.systemui.statusbar.PulseExpansionHandler;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.core.StatusBarInitializer;
+import com.android.systemui.statusbar.data.repository.StatusBarModeRepositoryStore;
 import com.android.systemui.statusbar.notification.DynamicPrivacyController;
+import com.android.systemui.statusbar.notification.NotificationActivityStarter;
+import com.android.systemui.statusbar.notification.NotificationLaunchAnimatorControllerProvider;
 import com.android.systemui.statusbar.notification.NotificationWakeUpCoordinator;
 import com.android.systemui.statusbar.notification.init.NotificationsController;
 import com.android.systemui.statusbar.notification.interruption.NotificationInterruptStateProvider;
+import com.android.systemui.statusbar.notification.interruption.VisualInterruptionDecisionProvider;
 import com.android.systemui.statusbar.notification.logging.NotificationLogger;
 import com.android.systemui.statusbar.notification.row.NotificationGutsManager;
 import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayoutController;
 import com.android.systemui.statusbar.phone.AutoHideController;
 import com.android.systemui.statusbar.phone.BiometricUnlockController;
+import com.android.systemui.statusbar.phone.CentralSurfacesCommandQueueCallbacks;
 import com.android.systemui.statusbar.phone.CentralSurfacesImpl;
 import com.android.systemui.statusbar.phone.DozeParameters;
 import com.android.systemui.statusbar.phone.DozeScrimController;
 import com.android.systemui.statusbar.phone.DozeServiceHost;
-import com.android.systemui.statusbar.phone.HeadsUpManagerPhone;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.statusbar.phone.LightBarController;
 import com.android.systemui.statusbar.phone.NotificationIconAreaController;
@@ -90,11 +95,11 @@ import com.android.systemui.statusbar.phone.StatusBarHideIconsForBouncerManager;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy;
 import com.android.systemui.statusbar.phone.StatusBarTouchableRegionManager;
-import com.android.systemui.statusbar.phone.ongoingcall.OngoingCallController;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.ExtensionController;
+import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
@@ -103,6 +108,7 @@ import com.android.systemui.statusbar.window.StatusBarWindowStateController;
 import com.android.systemui.util.WallpaperController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.MessageRouter;
+import com.android.systemui.util.kotlin.JavaAdapter;
 import com.android.systemui.volume.VolumeComponent;
 import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.StartingSurface;
@@ -132,25 +138,26 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             StatusBarInitializer statusBarInitializer,
             StatusBarWindowController statusBarWindowController,
             StatusBarWindowStateController statusBarWindowStateController,
+            StatusBarModeRepositoryStore statusBarModeRepositoryStore,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
             StatusBarSignalPolicy statusBarSignalPolicy,
             PulseExpansionHandler pulseExpansionHandler,
             NotificationWakeUpCoordinator notificationWakeUpCoordinator,
             KeyguardBypassController keyguardBypassController,
             KeyguardStateController keyguardStateController,
-            HeadsUpManagerPhone headsUpManagerPhone,
+            HeadsUpManager headsUpManager,
             DynamicPrivacyController dynamicPrivacyController,
             FalsingManager falsingManager,
             FalsingCollector falsingCollector,
             BroadcastDispatcher broadcastDispatcher,
             NotificationGutsManager notificationGutsManager,
-            NotificationLogger notificationLogger,
-            NotificationInterruptStateProvider notificationInterruptStateProvider,
+            VisualInterruptionDecisionProvider visualInterruptionDecisionProvider,
             ShadeExpansionStateManager shadeExpansionStateManager,
             KeyguardViewMediator keyguardViewMediator,
             DisplayMetrics displayMetrics,
             MetricsLogger metricsLogger,
             ShadeLogger shadeLogger,
+            JavaAdapter javaAdapter,
             @UiBackground Executor uiBgExecutor,
             ShadeSurface shadeSurface,
             NotificationMediaManager notificationMediaManager,
@@ -175,6 +182,8 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             Lazy<NotificationShadeWindowViewController> notificationShadeWindowViewControllerLazy,
             NotificationStackScrollLayoutController notificationStackScrollLayoutController,
             Lazy<NotificationPresenter> notificationPresenterLazy,
+            Lazy<NotificationActivityStarter> notificationActivityStarterLazy,
+            NotificationLaunchAnimatorControllerProvider notificationLaunchAnimatorControllerProvider,
             DozeParameters dozeParameters,
             ScrimController scrimController,
             Lazy<BiometricUnlockController> biometricUnlockControllerLazy,
@@ -182,12 +191,13 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             DozeServiceHost dozeServiceHost,
             BackActionInteractor backActionInteractor,
             PowerManager powerManager,
-            ScreenPinningRequest screenPinningRequest,
             DozeScrimController dozeScrimController,
             VolumeComponent volumeComponent,
             CommandQueue commandQueue,
+            Lazy<CentralSurfacesCommandQueueCallbacks> centralSurfacesCommandQueueCallbacksLazy,
             PluginManager pluginManager,
             ShadeController shadeController,
+            WindowRootViewVisibilityInteractor windowRootViewVisibilityInteractor,
             StatusBarKeyguardViewManager statusBarKeyguardViewManager,
             ViewMediatorCallback viewMediatorCallback,
             InitController initController,
@@ -204,7 +214,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             BrightnessSliderController.Factory brightnessSliderFactory,
             ScreenOffAnimationController screenOffAnimationController,
             WallpaperController wallpaperController,
-            OngoingCallController ongoingCallController,
             StatusBarHideIconsForBouncerManager statusBarHideIconsForBouncerManager,
             LockscreenShadeTransitionController lockscreenShadeTransitionController,
             FeatureFlags featureFlags,
@@ -224,7 +233,8 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             AlternateBouncerInteractor alternateBouncerInteractor,
             UserTracker userTracker,
             Provider<FingerprintManager> fingerprintManagerProvider,
-            ActivityStarter activityStarter) {
+            ActivityStarter activityStarter,
+            SceneContainerFlags sceneContainerFlags) {
         super(
                 context,
                 notificationsController,
@@ -234,25 +244,26 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 statusBarInitializer,
                 statusBarWindowController,
                 statusBarWindowStateController,
+                statusBarModeRepositoryStore,
                 keyguardUpdateMonitor,
                 statusBarSignalPolicy,
                 pulseExpansionHandler,
                 notificationWakeUpCoordinator,
                 keyguardBypassController,
                 keyguardStateController,
-                headsUpManagerPhone,
+                headsUpManager,
                 dynamicPrivacyController,
                 falsingManager,
                 falsingCollector,
                 broadcastDispatcher,
                 notificationGutsManager,
-                notificationLogger,
-                notificationInterruptStateProvider,
+                visualInterruptionDecisionProvider,
                 shadeExpansionStateManager,
                 keyguardViewMediator,
                 displayMetrics,
                 metricsLogger,
                 shadeLogger,
+                javaAdapter,
                 uiBgExecutor,
                 shadeSurface,
                 notificationMediaManager,
@@ -277,6 +288,8 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 notificationShadeWindowViewControllerLazy,
                 notificationStackScrollLayoutController,
                 notificationPresenterLazy,
+                notificationActivityStarterLazy,
+                notificationLaunchAnimatorControllerProvider,
                 dozeParameters,
                 scrimController,
                 biometricUnlockControllerLazy,
@@ -284,12 +297,13 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 dozeServiceHost,
                 backActionInteractor,
                 powerManager,
-                screenPinningRequest,
                 dozeScrimController,
                 volumeComponent,
                 commandQueue,
+                centralSurfacesCommandQueueCallbacksLazy,
                 pluginManager,
                 shadeController,
+                windowRootViewVisibilityInteractor,
                 statusBarKeyguardViewManager,
                 viewMediatorCallback,
                 initController,
@@ -306,7 +320,6 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 brightnessSliderFactory,
                 screenOffAnimationController,
                 wallpaperController,
-                ongoingCallController,
                 statusBarHideIconsForBouncerManager,
                 lockscreenShadeTransitionController,
                 featureFlags,
@@ -326,6 +339,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 alternateBouncerInteractor,
                 userTracker,
                 fingerprintManagerProvider,
-                activityStarter);
+                activityStarter,
+                sceneContainerFlags);
     }
 }

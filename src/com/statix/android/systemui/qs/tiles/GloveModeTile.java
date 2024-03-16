@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statix.hardware.LineageHardwareManager;
-import com.android.systemui.R;
+import com.statix.android.systemui.res.R;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -96,13 +96,8 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
             return;
         }
 
-        if (state.slash == null) {
-            state.slash = new SlashState();
-        }
-
         state.icon = ResourceIcon.get(R.drawable.ic_qs_glove_mode);
         state.value = mHardwareManager.get(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY);
-        state.slash.isSlashed = state.value;
         state.label = mContext.getString(R.string.quick_settings_glove_mode_label);
         state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
     }

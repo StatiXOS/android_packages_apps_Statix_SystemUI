@@ -9,7 +9,6 @@ import android.app.AlarmManager;
 import android.content.Context;
 
 import com.android.systemui.Dumpable;
-import com.android.systemui.R;
 import com.android.systemui.VendorServices;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.dagger.SysUISingleton;
@@ -23,6 +22,7 @@ import com.android.systemui.util.wakelock.WakeLockLogger;
 import com.statix.android.systemui.ambient.AmbientIndicationContainer;
 import com.statix.android.systemui.ambient.AmbientIndicationService;
 import com.statix.android.systemui.elmyra.ElmyraService;
+import com.statix.android.systemui.res.R;
 import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
 import java.io.PrintWriter;

@@ -26,7 +26,6 @@ import com.android.app.animation.Interpolators.DECELERATE_QUINT
 import com.android.app.animation.Interpolators.LINEAR_OUT_SLOW_IN
 import com.android.systemui.AutoReinflateContainer
 import com.android.systemui.Dependency
-import com.android.systemui.R
 import com.android.systemui.doze.DozeReceiver
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.plugins.statusbar.StatusBarStateController
@@ -37,6 +36,7 @@ import com.android.systemui.statusbar.StatusBarState
 import com.android.systemui.util.wakelock.DelayedWakeLock
 import com.android.systemui.util.wakelock.WakeLock
 import com.android.systemui.util.wakelock.WakeLockLogger
+import com.statix.android.systemui.res.R
 
 class AmbientIndicationContainer(private val context: Context, attrs: AttributeSet) :
     AutoReinflateContainer(context, attrs),
@@ -92,8 +92,8 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
         addInflateListener {
             textView = findViewById(R.id.ambient_indication_text)!!
             iconView = findViewById(R.id.ambient_indication_icon)!!
-            ambientMusicAnimation = context.getDrawable(R.anim.audioanim_animation)
-            ambientMusicNoteIcon = context.getDrawable(R.drawable.ic_music_note)
+            ambientMusicAnimation = context.getDrawable(R.anim.audioanim_animation)!!
+            ambientMusicNoteIcon = context.getDrawable(R.drawable.ic_music_note)!!
             textColor = textView.currentTextColor
             ambientIndicationIconSize =
                 resources.getDimensionPixelSize(R.dimen.ambient_indication_icon_size)

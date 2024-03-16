@@ -6,7 +6,7 @@
 package com.statix.android.systemui.controls
 
 import android.content.ComponentName
-import com.android.systemui.R
+import com.statix.android.systemui.res.R
 import com.android.systemui.controls.controller.ControlsController
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration
 import com.android.systemui.dagger.SysUISingleton

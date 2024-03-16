@@ -49,6 +49,7 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
         super(qsHostLazy, customTileBuilderProvider, tileMap);
     }
 
+/*
     @Override
     public QSTileView createTileView(Context context, QSTile tile, boolean collapsedView) {
         QSIconView icon = tile.createTileView(context);
@@ -63,4 +64,5 @@ public class QSFactoryImplStatix extends QSFactoryImpl {
         }
         return new QSTileViewImpl(context, icon, collapsedView);
     }
+*/
 }

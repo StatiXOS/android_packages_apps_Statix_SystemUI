@@ -17,7 +17,7 @@ import android.service.quicksettings.Tile;
 import android.view.View;
 
 import com.android.internal.logging.MetricsLogger;
-import com.android.systemui.R;
+import com.statix.android.systemui.res.R;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -161,9 +161,6 @@ public class SmartPixelsTile extends QSTileImpl<BooleanState>
                                 UserHandle.USER_CURRENT)
                         == 1);
         state.icon = ResourceIcon.get(R.drawable.ic_qs_smart_pixels);
-        if (state.slash == null) {
-            state.slash = new SlashState();
-        }
         if (mLowPowerMode && mSmartPixelsOnPowerSave) {
             state.label = mContext.getString(R.string.quick_settings_smart_pixels_on_power_save);
             state.value = true;
@@ -174,7 +171,6 @@ public class SmartPixelsTile extends QSTileImpl<BooleanState>
             state.label = mContext.getString(R.string.quick_settings_smart_pixels);
             state.value = false;
         }
-        state.slash.isSlashed = !state.value;
         state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
     }
 

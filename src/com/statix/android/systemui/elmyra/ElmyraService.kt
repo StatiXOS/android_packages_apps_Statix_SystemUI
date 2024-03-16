@@ -289,7 +289,7 @@ constructor(
     }
 
     inner class SettingsObserver(handler: Handler) : ContentObserver(handler) {
-        override fun onChange(selfChange: Boolean, uri: Uri) {
+        override fun onChange(selfChange: Boolean, uri: Uri?) {
             when (uri) {
                 uriForEnabled -> updateEnabled()
                 // Action might change screen callback behavior

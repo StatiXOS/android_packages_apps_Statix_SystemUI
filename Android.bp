@@ -22,7 +22,8 @@ license {
 
 android_library {
     name: "StatixSystemUI-res",
-    manifest: "AndroidManifest.xml",
+    manifest: "AndroidManifest-res.xml",
+    use_resource_processor: true,
     resource_dirs: [
         "res",
     ],
@@ -40,6 +41,7 @@ android_library {
     ],
     static_libs: [
         "adaptivecharging",
+        "android.hardware.biometrics.common-V4-java",
         "elmyra-messages-java",
         "elmyra-sysui-shared",
         "monet",

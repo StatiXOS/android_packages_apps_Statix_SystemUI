@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.android.systemui.R;
+import com.statix.android.systemui.res.R;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -124,19 +124,14 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
         if (mWakeLock == null) {
             return;
         }
-        if (state.slash == null) {
-            state.slash = new SlashState();
-        }
         state.icon = mIcon;
         state.value = mWakeLock.isHeld();
         state.label = mContext.getString(R.string.quick_settings_caffeine_label);
         if (state.value) {
-            state.slash.isSlashed = false;
             state.contentDescription =
                     mContext.getString(R.string.accessibility_quick_settings_caffeine_on);
             state.state = Tile.STATE_ACTIVE;
         } else {
-            state.slash.isSlashed = true;
             state.contentDescription =
                     mContext.getString(R.string.accessibility_quick_settings_caffeine_off);
             state.state = Tile.STATE_INACTIVE;
