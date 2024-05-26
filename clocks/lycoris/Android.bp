@@ -1,0 +1,15 @@
+android_app {
+    name: "LycorisClockPlugin",
+    use_resource_processor: true,
+
+    libs: ["SystemUIPluginLib"],
+
+    certificate: "platform",
+    optimize: {
+        enabled: false,
+    },
+
+    srcs: ["src/**/*.kt"],
+
+    platform_apis: true,
+}

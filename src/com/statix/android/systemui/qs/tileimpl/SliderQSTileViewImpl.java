@@ -86,7 +86,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private void updatePercentBackground(boolean active) {
         percentageDrawable.setTint(active ? Color.WHITE : Color.BLACK);
         LayerDrawable layerDrawable =
-                new LayerDrawable(new Drawable[] {backgroundBaseDrawable, percentageDrawable});
+                new LayerDrawable(new Drawable[] {backgroundDrawable, percentageDrawable});
         setBackground(layerDrawable);
     }
 

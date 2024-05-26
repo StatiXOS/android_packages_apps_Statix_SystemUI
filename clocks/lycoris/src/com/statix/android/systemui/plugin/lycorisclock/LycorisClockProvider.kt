@@ -1,0 +1,3 @@
+class LycorisClockProvider : ClockProvider {
+
+}
