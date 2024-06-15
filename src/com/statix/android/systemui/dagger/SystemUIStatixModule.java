@@ -16,11 +16,14 @@ import com.android.systemui.battery.BatterySaverModule;
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
 import com.android.systemui.dagger.SysUISingleton;
+import com.android.systemui.display.ui.viewmodel.ConnectingDisplayViewModel;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.globalactions.GlobalActionsModule;
 import com.android.systemui.media.dagger.MediaModule;
+import com.android.systemui.media.muteawait.MediaMuteAwaitConnectionCli;
+import com.android.systemui.media.nearby.NearbyMediaDevicesManager;
 import com.android.systemui.navigationbar.NavigationBarControllerModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
@@ -31,7 +34,7 @@ import com.android.systemui.recents.RecentsImplementation;
 import com.android.systemui.rotationlock.RotationLockModule;
 import com.android.systemui.scene.SceneContainerFrameworkModule;
 import com.android.systemui.screenshot.ReferenceScreenshotModule;
-import com.android.systemui.settings.dagger.MultiUserUtilsModule;
+import com.android.systemui.settings.MultiUserUtilsModule;
 import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
 import com.android.systemui.shade.ShadeModule;
 import com.android.systemui.statusbar.CommandQueue;
@@ -51,7 +54,10 @@ import com.android.systemui.statusbar.policy.IndividualSensorPrivacyController;
 import com.android.systemui.statusbar.policy.IndividualSensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
+import com.android.systemui.toast.ToastModule;
 import com.android.systemui.theme.ThemeOverlayController;
+import com.android.systemui.unfold.SysUIUnfoldStartableModule;
+import com.android.systemui.unfold.UnfoldTransitionModule;
 import com.android.systemui.volume.dagger.VolumeModule;
 import com.android.systemui.wallpapers.dagger.WallpaperModule;
 
@@ -89,12 +95,15 @@ import javax.inject.Named;
         AospPolicyModule.class,
         BatterySaverModule.class,
         CollapsedStatusBarFragmentStartableModule.class,
+        ConnectingDisplayViewModel.StartableModule.class,
         GestureModule.class,
         GlobalActionsModule.class,
         HeadsUpModule.class,
         MediaModule.class,
+        MediaMuteAwaitConnectionCli.StartableModule.class,
         MultiUserUtilsModule.class,
         NavigationBarControllerModule.class,
+        NearbyMediaDevicesManager.StartableModule.class,
         QSModule.class,
         ShadeModule.class,
         StatixPowerModule.class,
@@ -102,6 +111,9 @@ import javax.inject.Named;
         ReferenceScreenshotModule.class,
         RotationLockModule.class,
         SceneContainerFrameworkModule.class,
+        SysUIUnfoldStartableModule.class,
+        ToastModule.class,
+        UnfoldTransitionModule.Startables.class,
         VolumeModule.class,
         WallpaperModule.class,
         KeyboardShortcutsModule.class

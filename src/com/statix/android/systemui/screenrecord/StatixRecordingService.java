@@ -157,7 +157,7 @@ public class StatixRecordingService extends RecordingService {
                         .addExtras(extras);
 
         // Add thumbnail if available
-        Bitmap thumbnailBitmap = recording.getThumbnail();
+        Icon thumbnailBitmap = recording.getThumbnail();
         if (thumbnailBitmap != null) {
             Notification.BigPictureStyle pictureStyle =
                     new Notification.BigPictureStyle()

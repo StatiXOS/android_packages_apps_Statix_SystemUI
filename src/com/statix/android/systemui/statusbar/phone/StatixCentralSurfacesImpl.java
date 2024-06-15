@@ -11,13 +11,12 @@ import android.os.PowerManager;
 import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
 
-import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.logging.MetricsLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.InitController;
 import com.android.systemui.accessibility.floatingmenu.AccessibilityFloatingMenuController;
-import com.android.systemui.animation.ActivityLaunchAnimator;
+import com.android.systemui.animation.ActivityTransitionAnimator;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.back.domain.interactor.BackActionInteractor;
 import com.android.systemui.biometrics.AuthRippleController;
@@ -26,6 +25,7 @@ import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.charging.WiredChargingRippleController;
 import com.android.systemui.classifier.FalsingCollector;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
+import com.android.systemui.communal.domain.interactor.CommunalInteractor;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.UiBackground;
@@ -68,13 +68,11 @@ import com.android.systemui.statusbar.PulseExpansionHandler;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.core.StatusBarInitializer;
 import com.android.systemui.statusbar.data.repository.StatusBarModeRepositoryStore;
-import com.android.systemui.statusbar.notification.DynamicPrivacyController;
 import com.android.systemui.statusbar.notification.NotificationActivityStarter;
 import com.android.systemui.statusbar.notification.NotificationLaunchAnimatorControllerProvider;
 import com.android.systemui.statusbar.notification.NotificationWakeUpCoordinator;
 import com.android.systemui.statusbar.notification.init.NotificationsController;
 import com.android.systemui.statusbar.notification.interruption.NotificationInterruptStateProvider;
-import com.android.systemui.statusbar.notification.interruption.VisualInterruptionDecisionProvider;
 import com.android.systemui.statusbar.notification.logging.NotificationLogger;
 import com.android.systemui.statusbar.notification.row.NotificationGutsManager;
 import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayoutController;
@@ -102,7 +100,6 @@ import com.android.systemui.statusbar.policy.ExtensionController;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
-import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.statusbar.window.StatusBarWindowController;
 import com.android.systemui.statusbar.window.StatusBarWindowStateController;
 import com.android.systemui.util.WallpaperController;
@@ -138,7 +135,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             StatusBarInitializer statusBarInitializer,
             StatusBarWindowController statusBarWindowController,
             StatusBarWindowStateController statusBarWindowStateController,
-            StatusBarModeRepositoryStore statusBarModeRepositoryStore,
+            StatusBarModeRepositoryStore statusBarModeRepository,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
             StatusBarSignalPolicy statusBarSignalPolicy,
             PulseExpansionHandler pulseExpansionHandler,
@@ -146,12 +143,10 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             KeyguardBypassController keyguardBypassController,
             KeyguardStateController keyguardStateController,
             HeadsUpManager headsUpManager,
-            DynamicPrivacyController dynamicPrivacyController,
             FalsingManager falsingManager,
             FalsingCollector falsingCollector,
             BroadcastDispatcher broadcastDispatcher,
             NotificationGutsManager notificationGutsManager,
-            VisualInterruptionDecisionProvider visualInterruptionDecisionProvider,
             ShadeExpansionStateManager shadeExpansionStateManager,
             KeyguardViewMediator keyguardViewMediator,
             DisplayMetrics displayMetrics,
@@ -164,12 +159,12 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             NotificationLockscreenUserManager lockScreenUserManager,
             NotificationRemoteInputManager remoteInputManager,
             QuickSettingsController quickSettingsController,
-            UserSwitcherController userSwitcherController,
             BatteryController batteryController,
             SysuiColorExtractor colorExtractor,
             ScreenLifecycle screenLifecycle,
             WakefulnessLifecycle wakefulnessLifecycle,
             PowerInteractor powerInteractor,
+            CommunalInteractor communalInteractor,
             SysuiStatusBarStateController statusBarStateController,
             Optional<Bubbles> bubblesOptional,
             Lazy<NoteTaskController> noteTaskControllerLazy,
@@ -181,9 +176,10 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             NotificationShadeWindowController notificationShadeWindowController,
             Lazy<NotificationShadeWindowViewController> notificationShadeWindowViewControllerLazy,
             NotificationStackScrollLayoutController notificationStackScrollLayoutController,
+            // Lazys due to b/298099682.
             Lazy<NotificationPresenter> notificationPresenterLazy,
             Lazy<NotificationActivityStarter> notificationActivityStarterLazy,
-            NotificationLaunchAnimatorControllerProvider notificationLaunchAnimatorControllerProvider,
+            NotificationLaunchAnimatorControllerProvider notifTransitionAnimatorControllerProvider,
             DozeParameters dozeParameters,
             ScrimController scrimController,
             Lazy<BiometricUnlockController> biometricUnlockControllerLazy,
@@ -194,7 +190,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             DozeScrimController dozeScrimController,
             VolumeComponent volumeComponent,
             CommandQueue commandQueue,
-            Lazy<CentralSurfacesCommandQueueCallbacks> centralSurfacesCommandQueueCallbacksLazy,
+            Lazy<CentralSurfacesCommandQueueCallbacks> commandQueueCallbacksLazy,
             PluginManager pluginManager,
             ShadeController shadeController,
             WindowRootViewVisibilityInteractor windowRootViewVisibilityInteractor,
@@ -222,8 +218,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             @Main MessageRouter messageRouter,
             WallpaperManager wallpaperManager,
             Optional<StartingSurface> startingSurfaceOptional,
-            ActivityLaunchAnimator activityLaunchAnimator,
-            InteractionJankMonitor jankMonitor,
+            ActivityTransitionAnimator activityTransitionAnimator,
             DeviceStateManager deviceStateManager,
             WiredChargingRippleController wiredChargingRippleController,
             IDreamManager dreamManager,
@@ -232,7 +227,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             LightRevealScrim lightRevealScrim,
             AlternateBouncerInteractor alternateBouncerInteractor,
             UserTracker userTracker,
-            Provider<FingerprintManager> fingerprintManagerProvider,
+            Provider<FingerprintManager> fingerprintManager,
             ActivityStarter activityStarter,
             SceneContainerFlags sceneContainerFlags) {
         super(
@@ -244,7 +239,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 statusBarInitializer,
                 statusBarWindowController,
                 statusBarWindowStateController,
-                statusBarModeRepositoryStore,
+                statusBarModeRepository,
                 keyguardUpdateMonitor,
                 statusBarSignalPolicy,
                 pulseExpansionHandler,
@@ -252,12 +247,10 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 keyguardBypassController,
                 keyguardStateController,
                 headsUpManager,
-                dynamicPrivacyController,
                 falsingManager,
                 falsingCollector,
                 broadcastDispatcher,
                 notificationGutsManager,
-                visualInterruptionDecisionProvider,
                 shadeExpansionStateManager,
                 keyguardViewMediator,
                 displayMetrics,
@@ -270,12 +263,12 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 lockScreenUserManager,
                 remoteInputManager,
                 quickSettingsController,
-                userSwitcherController,
                 batteryController,
                 colorExtractor,
                 screenLifecycle,
                 wakefulnessLifecycle,
                 powerInteractor,
+                communalInteractor,
                 statusBarStateController,
                 bubblesOptional,
                 noteTaskControllerLazy,
@@ -289,7 +282,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 notificationStackScrollLayoutController,
                 notificationPresenterLazy,
                 notificationActivityStarterLazy,
-                notificationLaunchAnimatorControllerProvider,
+                notifTransitionAnimatorControllerProvider,
                 dozeParameters,
                 scrimController,
                 biometricUnlockControllerLazy,
@@ -300,7 +293,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 dozeScrimController,
                 volumeComponent,
                 commandQueue,
-                centralSurfacesCommandQueueCallbacksLazy,
+                commandQueueCallbacksLazy,
                 pluginManager,
                 shadeController,
                 windowRootViewVisibilityInteractor,
@@ -328,8 +321,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 messageRouter,
                 wallpaperManager,
                 startingSurfaceOptional,
-                activityLaunchAnimator,
-                jankMonitor,
+                activityTransitionAnimator,
                 deviceStateManager,
                 wiredChargingRippleController,
                 dreamManager,
@@ -338,7 +330,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 lightRevealScrim,
                 alternateBouncerInteractor,
                 userTracker,
-                fingerprintManagerProvider,
+                fingerprintManager,
                 activityStarter,
                 sceneContainerFlags);
     }

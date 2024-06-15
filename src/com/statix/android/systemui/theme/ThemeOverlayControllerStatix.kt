@@ -5,6 +5,7 @@
 
 package com.statix.android.systemui.theme
 
+import android.app.ActivityManager
 import android.app.UiModeManager
 import android.app.WallpaperManager
 import android.content.Context
@@ -51,6 +52,7 @@ constructor(
     keyguardTransitionInteractor: KeyguardTransitionInteractor,
     uiModeManager: UiModeManager,
     private val configurationController: ConfigurationController,
+    activityManager: ActivityManager,
 ) :
     ThemeOverlayController(
         context,
@@ -71,6 +73,7 @@ constructor(
         javaAdapter,
         keyguardTransitionInteractor,
         uiModeManager,
+        activityManager,
     ) {
 
     private val darkConfigurationListener =

@@ -22,6 +22,7 @@ import com.android.settingslib.fuelgauge.BatteryStatus;
 import com.android.systemui.R;
 import com.android.systemui.biometrics.AuthController;
 import com.android.systemui.biometrics.FaceHelpMessageDeferral;
+import com.android.systemui.biometrics.FaceHelpMessageDeferralFactory;
 import com.android.systemui.bouncer.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.bouncer.domain.interactor.BouncerMessageInteractor;
 import com.android.systemui.broadcast.BroadcastDispatcher;
@@ -109,7 +110,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             ScreenLifecycle screenLifecycle,
             KeyguardBypassController keyguardBypassController,
             AccessibilityManager accessibilityManager,
-            FaceHelpMessageDeferral faceHelpMessageDeferral,
+            FaceHelpMessageDeferralFactory faceHelpMessageDeferralFactory,
             DeviceConfigProxy deviceConfigProxy,
             KeyguardLogger keyguardLogger,
             AlternateBouncerInteractor alternateBouncerInteractor,
@@ -139,7 +140,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
                 screenLifecycle,
                 keyguardBypassController,
                 accessibilityManager,
-                faceHelpMessageDeferral,
+                faceHelpMessageDeferralFactory,
                 keyguardLogger,
                 alternateBouncerInteractor,
                 alarmManager,
