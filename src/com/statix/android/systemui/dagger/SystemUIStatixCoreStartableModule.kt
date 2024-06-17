@@ -16,9 +16,18 @@
 
 package com.statix.android.systemui.dagger
 
+import com.android.systemui.CoreStartable
+import com.statix.android.systemui.volume.VolumePanelRegistry
+import dagger.Binds
 import dagger.Module
+import dagger.multibindings.ClassKey
+import dagger.multibindings.IntoMap
 
 /** Collection of {@link CoreStartable}s that should be run on AOSP. */
 @Module
 abstract class SystemUIStatixCoreStartableModule {
+  @Binds
+  @IntoMap
+  @ClassKey(VolumePanelRegistry::class)
+  abstract fun bindVolumePanelRegistry(impl: VolumePanelRegistry): CoreStartable
 }
