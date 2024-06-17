@@ -67,6 +67,7 @@ import com.android.systemui.util.StartBinderLoggerModule
 import com.android.systemui.volume.VolumeUI
 import com.android.systemui.wallpapers.dagger.WallpaperModule
 import com.android.systemui.wmshell.WMShell
+import com.statix.android.systemui.volume.VolumePanelRegistry
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
@@ -359,4 +360,9 @@ abstract class SystemUIStatixCoreStartableModule {
     @IntoMap
     @ClassKey(ScreenPinningRequest::class)
     abstract fun bindScreenPinningRequest(impl: ScreenPinningRequest): CoreStartable
+
+    @Binds
+    @IntoMap
+    @ClassKey(VolumePanelRegistry::class)
+    abstract fun bindVolumePanelRegistry(impl: VolumePanelRegistry): CoreStartable
 }
