@@ -14,6 +14,7 @@ import com.android.systemui.globalactions.ShutdownUiModule;
 import com.android.systemui.keyguard.CustomizationProvider;
 import com.android.systemui.statusbar.NotificationInsetsModule;
 import com.android.systemui.statusbar.QsFrameTranslateModule;
+import com.statix.android.systemui.dagger.SystemUIStatixCoreStartableModule;
 
 import dagger.Subcomponent;
 
@@ -30,7 +31,8 @@ import dagger.Subcomponent;
         SystemUIModule.class,
         SystemUIStatixBinder.class,
         SystemUIStatixModule.class,
-        SystemUICoreStartableModule.class})
+        SystemUICoreStartableModule.class,
+        SystemUIStatixCoreStartableModule.class})
 public interface SysUIComponentStatix extends SysUIComponent {
 
     /**
