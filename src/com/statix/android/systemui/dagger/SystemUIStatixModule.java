@@ -12,6 +12,8 @@ import android.content.Context;
 import android.hardware.SensorPrivacyManager;
 
 import com.android.keyguard.KeyguardViewController;
+import com.android.systemui.ScreenDecorationsModule;
+import com.android.systemui.accessibility.SystemActionsModule;
 import com.android.systemui.battery.BatterySaverModule;
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
@@ -29,9 +31,11 @@ import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
 import com.android.systemui.qs.dagger.QSModule;
 import com.android.systemui.qs.tileimpl.QSFactoryImpl;
+import com.android.systemui.reardisplay.RearDisplayModule;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
 import com.android.systemui.rotationlock.RotationLockModule;
+import com.android.systemui.rotationlock.RotationLockNewModule;
 import com.android.systemui.scene.SceneContainerFrameworkModule;
 import com.android.systemui.screenshot.ReferenceScreenshotModule;
 import com.android.systemui.settings.MultiUserUtilsModule;
@@ -68,6 +72,7 @@ import com.statix.android.systemui.power.dagger.StatixPowerModule;
 import com.statix.android.systemui.qs.tileimpl.QSFactoryImplStatix;
 import com.statix.android.systemui.qs.tileimpl.StatixQSModule;
 import com.statix.android.systemui.statusbar.KeyguardIndicationControllerStatix;
+import com.statix.android.systemui.statusbar.dagger.StatixStartCentralSurfacesModule;
 import com.statix.android.systemui.theme.ThemeOverlayControllerStatix;
 
 import dagger.Binds;
@@ -99,24 +104,29 @@ import javax.inject.Named;
         GestureModule.class,
         GlobalActionsModule.class,
         HeadsUpModule.class,
+        KeyboardShortcutsModule.class,
         MediaModule.class,
         MediaMuteAwaitConnectionCli.StartableModule.class,
         MultiUserUtilsModule.class,
         NavigationBarControllerModule.class,
         NearbyMediaDevicesManager.StartableModule.class,
         QSModule.class,
-        ShadeModule.class,
-        StatixPowerModule.class,
-        StatixQSModule.class,
+        RearDisplayModule.class,
         ReferenceScreenshotModule.class,
         RotationLockModule.class,
+        RotationLockNewModule.class,
         SceneContainerFrameworkModule.class,
+        ScreenDecorationsModule.class,
+        ShadeModule.class,
+        StatixStartCentralSurfacesModule.class,
+        StatixPowerModule.class,
+        StatixQSModule.class,
+        SystemActionsModule.class,
         SysUIUnfoldStartableModule.class,
         ToastModule.class,
         UnfoldTransitionModule.Startables.class,
         VolumeModule.class,
-        WallpaperModule.class,
-        KeyboardShortcutsModule.class
+        WallpaperModule.class
 })
 public abstract class SystemUIStatixModule {
 

@@ -16,7 +16,6 @@
 
 package com.statix.android.systemui.statusbar.phone.dagger;
 
-import com.android.systemui.CoreStartable;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.statusbar.phone.CentralSurfaces;
 
@@ -24,19 +23,10 @@ import com.statix.android.systemui.statusbar.phone.StatixCentralSurfacesImpl;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.multibindings.ClassKey;
-import dagger.multibindings.IntoMap;
 
 /** Dagger Module providing {@link StatixCentralSurfacesImpl}. */
 @Module
 public interface StatixStatusBarPhoneModule {
-    /** Start StatixCentralSurfacesImpl on startup. */
-    @Binds
-    @IntoMap
-    @ClassKey(CentralSurfaces.class)
-    abstract CoreStartable bindsCoreStartableCentralSrufaces(
-            StatixCentralSurfacesImpl statusBarStatix);
-
     /** Provides our instance of CentralSurfaces which is considered optional. */
     @Binds
     @SysUISingleton
