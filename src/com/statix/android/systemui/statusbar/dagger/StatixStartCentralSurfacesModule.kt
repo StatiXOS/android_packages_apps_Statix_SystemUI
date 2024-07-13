@@ -26,9 +26,9 @@ import dagger.multibindings.IntoMap
 
 @Module
 interface StatixStartCentralSurfacesModule {
-    /** Start the CentralSurfaces   */
-    @Binds
-    @IntoMap
-    @ClassKey(CentralSurfaces::class)
-    abstract fun bindsCentralSurfaces(centralSurfaces: StatixCentralSurfacesImpl): CoreStartable
+  /** Start the CentralSurfaces */
+  @Binds
+  @IntoMap
+  @ClassKey(CentralSurfaces::class)
+  abstract fun bindsCentralSurfaces(centralSurfaces: StatixCentralSurfacesImpl): CoreStartable
 }

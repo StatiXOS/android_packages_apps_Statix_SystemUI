@@ -24,16 +24,15 @@ import android.view.WindowManager
 import com.android.internal.util.ScreenshotHelper
 
 class ScreenshotAction(context: Context) : Action(context) {
-    val helper = ScreenshotHelper(context)
-    private val handler = Handler(Looper.getMainLooper())
-    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+  val helper = ScreenshotHelper(context)
+  private val handler = Handler(Looper.getMainLooper())
+  val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
-    override fun canRun() = pm.isInteractive()
+  override fun canRun() = pm.isInteractive()
 
-    override fun canRunWhenScreenOff() = false
+  override fun canRunWhenScreenOff() = false
 
-    override fun run() {
-        helper.takeScreenshot(
-            WindowManager.ScreenshotSource.SCREENSHOT_VENDOR_GESTURE, handler, null)
-    }
+  override fun run() {
+    helper.takeScreenshot(WindowManager.ScreenshotSource.SCREENSHOT_VENDOR_GESTURE, handler, null)
+  }
 }

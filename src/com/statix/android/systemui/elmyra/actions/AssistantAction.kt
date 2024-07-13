@@ -21,8 +21,8 @@ import android.os.Bundle
 import com.android.systemui.assist.AssistManager
 
 class AssistantAction constructor(context: Context, private val assistManager: AssistManager) :
-    Action(context) {
-    override fun run() {
-        assistManager.startAssist(Bundle())
-    }
+  Action(context) {
+  override fun run() {
+    assistManager.startAssist(Bundle())
+  }
 }

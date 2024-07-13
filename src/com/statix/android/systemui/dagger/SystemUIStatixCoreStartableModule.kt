@@ -18,9 +18,7 @@ package com.statix.android.systemui.dagger
 
 import dagger.Module
 
-/**
- * Collection of {@link CoreStartable}s that should be run on AOSP.
- */
+/** Collection of {@link CoreStartable}s that should be run on AOSP. */
 @Module
 abstract class SystemUIStatixCoreStartableModule {
 }

@@ -27,62 +27,65 @@ import com.android.systemui.user.domain.interactor.SelectedUserInteractor
 import com.android.systemui.util.settings.SecureSettings
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 
-class FingerprintInteractiveToAuthProviderImpl @Inject constructor(
-    @Background private val backgroundDispatcher: CoroutineDispatcher,
-    private val context: Context,
-    private val secureSettings: SecureSettings,
-    selectedUserInteractor: SelectedUserInteractor,
+class FingerprintInteractiveToAuthProviderImpl
+@Inject
+constructor(
+  @Background private val backgroundDispatcher: CoroutineDispatcher,
+  private val context: Context,
+  private val secureSettings: SecureSettings,
+  selectedUserInteractor: SelectedUserInteractor,
 ) : FingerprintInteractiveToAuthProvider {
 
-    override fun getVendorExtension(userId: Int): AuthenticateReason.Vendor? = null
+  override fun getVendorExtension(userId: Int): AuthenticateReason.Vendor? = null
 
-    private val defaultValue =
-        if (context
-            .getResources()
-            .getBoolean(com.android.internal.R.bool.config_performantAuthDefault))
-            1
-        else 0
+  private val defaultValue =
+    if (context.getResources().getBoolean(com.android.internal.R.bool.config_performantAuthDefault))
+      1
+    else 0
 
-    override val enabledForCurrentUser =
-        selectedUserInteractor.selectedUser
-            .flatMapLatest { currentUserId ->
-                val getCurrentSettingValue = { isEnabled(currentUserId) }
-                conflatedCallbackFlow {
-                    val callback =
-                        object : ContentObserver(null) {
-                            override fun onChange(selfChange: Boolean) {
-                                trySend(getCurrentSettingValue())
-                            }
-                        }
-                    secureSettings.registerContentObserver(Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED, true, callback)
-                    trySend(getCurrentSettingValue())
-                    awaitClose { secureSettings.unregisterContentObserver(callback) }
-                }
+  override val enabledForCurrentUser =
+    selectedUserInteractor.selectedUser
+      .flatMapLatest { currentUserId ->
+        val getCurrentSettingValue = { isEnabled(currentUserId) }
+        conflatedCallbackFlow {
+          val callback =
+            object : ContentObserver(null) {
+              override fun onChange(selfChange: Boolean) {
+                trySend(getCurrentSettingValue())
+              }
             }
-            .flowOn(backgroundDispatcher)
-
-    private fun isEnabled(userId: Int): Boolean {
-        var value =
-            Settings.Secure.getIntForUser(
-                context.contentResolver,
-                Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
-                -1,
-                userId,
-            )
-        if (value == -1) {
-            value = defaultValue
-            Settings.Secure.putIntForUser(
-                context.contentResolver,
-                Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
-                value,
-                userId,
-            )
+          secureSettings.registerContentObserver(
+            Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
+            true,
+            callback,
+          )
+          trySend(getCurrentSettingValue())
+          awaitClose { secureSettings.unregisterContentObserver(callback) }
         }
-        return value == 0
+      }
+      .flowOn(backgroundDispatcher)
+
+  private fun isEnabled(userId: Int): Boolean {
+    var value =
+      Settings.Secure.getIntForUser(
+        context.contentResolver,
+        Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
+        -1,
+        userId,
+      )
+    if (value == -1) {
+      value = defaultValue
+      Settings.Secure.putIntForUser(
+        context.contentResolver,
+        Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
+        value,
+        userId,
+      )
     }
+    return value == 0
+  }
 }

@@ -23,21 +23,21 @@ import android.os.SystemClock
 import android.provider.MediaStore
 
 class CameraAction(context: Context) : Action(context) {
-    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+  val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
-    override fun run() {
-        if (!pm.isInteractive()) {
-            pm.wakeUp(
-                SystemClock.uptimeMillis(),
-                PowerManager.WAKE_REASON_GESTURE,
-                "com.statix.android.systemui.elmyra:GESTURE",
-            )
-        }
-
-        val intent =
-            Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE).apply {
-                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        context.startActivity(intent)
+  override fun run() {
+    if (!pm.isInteractive()) {
+      pm.wakeUp(
+        SystemClock.uptimeMillis(),
+        PowerManager.WAKE_REASON_GESTURE,
+        "com.statix.android.systemui.elmyra:GESTURE",
+      )
     }
+
+    val intent =
+      Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE).apply {
+        addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or Intent.FLAG_ACTIVITY_NEW_TASK)
+      }
+    context.startActivity(intent)
+  }
 }

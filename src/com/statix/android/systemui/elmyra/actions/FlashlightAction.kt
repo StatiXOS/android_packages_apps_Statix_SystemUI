@@ -21,13 +21,13 @@ import com.android.systemui.statusbar.policy.FlashlightController
 
 class FlashlightAction
 constructor(context: Context, private val flashlightController: FlashlightController) :
-    Action(context) {
-    private var enabled = false
+  Action(context) {
+  private var enabled = false
 
-    override fun canRun() = flashlightController.hasFlashlight()
+  override fun canRun() = flashlightController.hasFlashlight()
 
-    override fun run() {
-        enabled = !enabled
-        flashlightController.setFlashlight(enabled)
-    }
+  override fun run() {
+    enabled = !enabled
+    flashlightController.setFlashlight(enabled)
+  }
 }

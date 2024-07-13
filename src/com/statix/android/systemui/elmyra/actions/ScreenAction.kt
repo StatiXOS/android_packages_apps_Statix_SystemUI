@@ -21,18 +21,17 @@ import android.os.PowerManager
 import android.os.SystemClock
 
 class ScreenAction(context: Context) : Action(context) {
-    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+  val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
-    override fun run() {
-        if (pm.isInteractive()) {
-            pm.goToSleep(
-                SystemClock.uptimeMillis(), PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0)
-        } else {
-            pm.wakeUp(
-                SystemClock.uptimeMillis(),
-                PowerManager.WAKE_REASON_GESTURE,
-                "com.statix.android.systemui.elmyra:GESTURE",
-            )
-        }
+  override fun run() {
+    if (pm.isInteractive()) {
+      pm.goToSleep(SystemClock.uptimeMillis(), PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0)
+    } else {
+      pm.wakeUp(
+        SystemClock.uptimeMillis(),
+        PowerManager.WAKE_REASON_GESTURE,
+        "com.statix.android.systemui.elmyra:GESTURE",
+      )
     }
+  }
 }
