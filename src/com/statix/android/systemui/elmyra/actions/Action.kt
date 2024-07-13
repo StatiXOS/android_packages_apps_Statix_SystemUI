@@ -19,11 +19,11 @@ package com.statix.android.systemui.elmyra.actions
 import android.content.Context
 
 abstract class Action(val context: Context) {
-    open fun canRun() = true
+  open fun canRun() = true
 
-    open fun canRunWhenScreenOff() = true
+  open fun canRunWhenScreenOff() = true
 
-    abstract fun run()
+  abstract fun run()
 
-    open fun destroy() {}
+  open fun destroy() {}
 }

@@ -19,5 +19,5 @@ package com.statix.android.systemui.elmyra.actions
 import android.content.Context
 
 class DummyAction(context: Context) : Action(context) {
-    override fun run() {}
+  override fun run() {}
 }

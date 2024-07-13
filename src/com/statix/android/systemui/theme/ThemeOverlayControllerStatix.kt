@@ -33,58 +33,58 @@ import javax.inject.Inject
 class ThemeOverlayControllerStatix
 @Inject
 constructor(
-    private val context: Context,
-    broadcastDispatcher: BroadcastDispatcher,
-    @Background bgHandler: Handler,
-    @Main mainExecutor: Executor,
-    @Background bgExecutor: Executor,
-    themeOverlayApplier: ThemeOverlayApplier,
-    secureSettings: SecureSettings,
-    wallpaperManager: WallpaperManager,
-    userManager: UserManager,
-    deviceProvisionedController: DeviceProvisionedController,
-    userTracker: UserTracker,
-    dumpManager: DumpManager,
-    featureFlags: FeatureFlags,
-    @Main resources: Resources,
-    wakefulnessLifecycle: WakefulnessLifecycle,
-    javaAdapter: JavaAdapter,
-    keyguardTransitionInteractor: KeyguardTransitionInteractor,
-    uiModeManager: UiModeManager,
-    private val configurationController: ConfigurationController,
-    activityManager: ActivityManager,
+  private val context: Context,
+  broadcastDispatcher: BroadcastDispatcher,
+  @Background bgHandler: Handler,
+  @Main mainExecutor: Executor,
+  @Background bgExecutor: Executor,
+  themeOverlayApplier: ThemeOverlayApplier,
+  secureSettings: SecureSettings,
+  wallpaperManager: WallpaperManager,
+  userManager: UserManager,
+  deviceProvisionedController: DeviceProvisionedController,
+  userTracker: UserTracker,
+  dumpManager: DumpManager,
+  featureFlags: FeatureFlags,
+  @Main resources: Resources,
+  wakefulnessLifecycle: WakefulnessLifecycle,
+  javaAdapter: JavaAdapter,
+  keyguardTransitionInteractor: KeyguardTransitionInteractor,
+  uiModeManager: UiModeManager,
+  private val configurationController: ConfigurationController,
+  activityManager: ActivityManager,
 ) :
-    ThemeOverlayController(
-        context,
-        broadcastDispatcher,
-        bgHandler,
-        mainExecutor,
-        bgExecutor,
-        themeOverlayApplier,
-        secureSettings,
-        wallpaperManager,
-        userManager,
-        deviceProvisionedController,
-        userTracker,
-        dumpManager,
-        featureFlags,
-        resources,
-        wakefulnessLifecycle,
-        javaAdapter,
-        keyguardTransitionInteractor,
-        uiModeManager,
-        activityManager,
-    ) {
+  ThemeOverlayController(
+    context,
+    broadcastDispatcher,
+    bgHandler,
+    mainExecutor,
+    bgExecutor,
+    themeOverlayApplier,
+    secureSettings,
+    wallpaperManager,
+    userManager,
+    deviceProvisionedController,
+    userTracker,
+    dumpManager,
+    featureFlags,
+    resources,
+    wakefulnessLifecycle,
+    javaAdapter,
+    keyguardTransitionInteractor,
+    uiModeManager,
+    activityManager,
+  ) {
 
-    private val darkConfigurationListener =
-        object : ConfigurationListener {
-            override fun onUiModeChanged() {
-                reevaluateSystemTheme(true /* forceReload */)
-            }
-        }
-
-    override fun start() {
-        super.start()
-        configurationController.addCallback(darkConfigurationListener)
+  private val darkConfigurationListener =
+    object : ConfigurationListener {
+      override fun onUiModeChanged() {
+        reevaluateSystemTheme(true /* forceReload */)
+      }
     }
+
+  override fun start() {
+    super.start()
+    configurationController.addCallback(darkConfigurationListener)
+  }
 }

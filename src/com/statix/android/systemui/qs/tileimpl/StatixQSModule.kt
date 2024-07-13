@@ -31,39 +31,39 @@ import dagger.multibindings.StringKey
 @Module
 interface StatixQSModule {
 
-    /** Inject CaffeineTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(CaffeineTile.TILE_SPEC)
-    fun bindCaffeineTile(caffeineTile: CaffeineTile): QSTileImpl<*>
+  /** Inject CaffeineTile into tileMap in QSModule */
+  @Binds
+  @IntoMap
+  @StringKey(CaffeineTile.TILE_SPEC)
+  fun bindCaffeineTile(caffeineTile: CaffeineTile): QSTileImpl<*>
 
-    /** Inject DataSwitchTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(DataSwitchTile.TILE_SPEC)
-    fun bindDataSwitchTile(dataSwitchTile: DataSwitchTile): QSTileImpl<*>
+  /** Inject DataSwitchTile into tileMap in QSModule */
+  @Binds
+  @IntoMap
+  @StringKey(DataSwitchTile.TILE_SPEC)
+  fun bindDataSwitchTile(dataSwitchTile: DataSwitchTile): QSTileImpl<*>
 
-    /** Inject FlashlightStrengthTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(FlashlightStrengthTile.TILE_SPEC)
-    fun bindFlashlightStrengthTile(flashlightStrengthTile: FlashlightStrengthTile): QSTileImpl<*>
+  /** Inject FlashlightStrengthTile into tileMap in QSModule */
+  @Binds
+  @IntoMap
+  @StringKey(FlashlightStrengthTile.TILE_SPEC)
+  fun bindFlashlightStrengthTile(flashlightStrengthTile: FlashlightStrengthTile): QSTileImpl<*>
 
-    /** Inject GloveModeTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(GloveModeTile.TILE_SPEC)
-    fun bindGloveModeTile(gloveModeTile: GloveModeTile): QSTileImpl<*>
+  /** Inject GloveModeTile into tileMap in QSModule */
+  @Binds
+  @IntoMap
+  @StringKey(GloveModeTile.TILE_SPEC)
+  fun bindGloveModeTile(gloveModeTile: GloveModeTile): QSTileImpl<*>
 
-    /** Inject PowerShareTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(PowerShareTile.TILE_SPEC)
-    fun bindPowerShareTile(powerShareTile: PowerShareTile): QSTileImpl<*>
+  /** Inject PowerShareTile into tileMap in QSModule */
+  @Binds
+  @IntoMap
+  @StringKey(PowerShareTile.TILE_SPEC)
+  fun bindPowerShareTile(powerShareTile: PowerShareTile): QSTileImpl<*>
 
-    /** Inject SmartPixelsTile into tileMap in QSModule */
-    @Binds
-    @IntoMap
-    @StringKey(SmartPixelsTile.TILE_SPEC)
-    fun bindSmartPixelsTile(smartPixelsTile: SmartPixelsTile): QSTileImpl<*>
+  /** Inject SmartPixelsTile into tileMap in QSModule */
+  @Binds
+  @IntoMap
+  @StringKey(SmartPixelsTile.TILE_SPEC)
+  fun bindSmartPixelsTile(smartPixelsTile: SmartPixelsTile): QSTileImpl<*>
 }
