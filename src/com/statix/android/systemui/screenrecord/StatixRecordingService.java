@@ -12,7 +12,6 @@ import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,17 +35,19 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 public class StatixRecordingService extends RecordingService {
-
-    private static final int NOTIFICATION_VIEW_ID = 4273;
-
-    private static final String ACTION_DELETE = "com.android.systemui.screenrecord.DELETE";
-    private static final String ACTION_SHARE = "com.android.systemui.screenrecord.SHARE";
-    private static final String CHANNEL_ID = "screen_record";
-    private static final String EXTRA_PATH = "extra_path";
+    private static final int NOTIF_BASE_ID = 4273;
     private static final String TAG = "StatixRecordingService";
+    private static final String CHANNEL_ID = "screen_record";
+    private static final String GROUP_KEY = "screen_record_saved";
+    private static final String EXTRA_PATH = "extra_path";
+
+    private static final String ACTION_SHARE = "com.android.systemui.screenrecord.SHARE";
+    private static final String ACTION_DELETE = "com.android.systemui.screenrecord.DELETE";
 
     private final NotificationManager mNotificationManager;
     private final UserContextProvider mUserContextTracker;
+    private int mNotificationId = NOTIF_BASE_ID;
+    private StatixRecordingServiceStrings mStrings;
 
     @Inject
     public StatixRecordingService(
@@ -70,19 +71,19 @@ public class StatixRecordingService extends RecordingService {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int userId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             return Service.START_NOT_STICKY;
         }
         String action = intent.getAction();
-        Log.d(TAG, "onStartCommand " + action);
+        Log.d(getTag(), "onStartCommand " + action);
 
         int currentUserId = mUserContextTracker.getUserContext().getUserId();
         UserHandle currentUser = new UserHandle(currentUserId);
         switch (action) {
             case ACTION_DELETE:
                 // Close quick shade
-                sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+                closeSystemDialogs();
 
                 ContentResolver resolver = getContentResolver();
                 Uri uri = Uri.parse(intent.getStringExtra(EXTRA_PATH));
@@ -92,11 +93,11 @@ public class StatixRecordingService extends RecordingService {
                         .show();
 
                 // Remove notification
-                mNotificationManager.cancelAsUser(null, NOTIFICATION_VIEW_ID, currentUser);
+                mNotificationManager.cancelAsUser(null, mNotificationId, currentUser);
                 Log.d(TAG, "Deleted recording " + uri);
                 return Service.START_STICKY;
             default:
-                return super.onStartCommand(intent, flags, userId);
+                return super.onStartCommand(intent, flags, startId);
         }
     }
 
@@ -114,7 +115,7 @@ public class StatixRecordingService extends RecordingService {
         Notification.Action shareAction =
                 new Notification.Action.Builder(
                                 Icon.createWithResource(this, R.drawable.ic_screenrecord),
-                                getResources().getString(R.string.screenrecord_share_label),
+                                strings().getShareLabel(),
                                 PendingIntent.getService(
                                         this,
                                         REQUEST_CODE,
@@ -126,7 +127,7 @@ public class StatixRecordingService extends RecordingService {
         Notification.Action deleteAction =
                 new Notification.Action.Builder(
                                 Icon.createWithResource(this, R.drawable.ic_screenrecord),
-                                getResources().getString(R.string.screenrecord_delete_label),
+                                strings().getDeleteLabel(),
                                 PendingIntent.getService(
                                         this,
                                         REQUEST_CODE,
@@ -136,15 +137,13 @@ public class StatixRecordingService extends RecordingService {
                         .build();
 
         Bundle extras = new Bundle();
-        extras.putString(
-                Notification.EXTRA_SUBSTITUTE_APP_NAME,
-                getResources().getString(R.string.screenrecord_title));
+        extras.putString(Notification.EXTRA_SUBSTITUTE_APP_NAME, strings().getTitle());
 
         Notification.Builder builder =
-                new Notification.Builder(this, CHANNEL_ID)
+                new Notification.Builder(this, getChannelId())
                         .setSmallIcon(R.drawable.ic_screenrecord)
-                        .setContentTitle(getResources().getString(R.string.screenrecord_save_title))
-                        .setContentText(getResources().getString(R.string.screenrecord_save_text))
+                        .setContentTitle(strings().getSaveTitle())
+                        .setContentText(strings().getSaveText())
                         .setContentIntent(
                                 PendingIntent.getActivity(
                                         this,
@@ -154,29 +153,40 @@ public class StatixRecordingService extends RecordingService {
                         .addAction(shareAction)
                         .addAction(deleteAction)
                         .setAutoCancel(true)
+                        .setGroup(GROUP_KEY)
                         .addExtras(extras);
 
         // Add thumbnail if available
-        Icon thumbnailBitmap = recording.getThumbnail();
-        if (thumbnailBitmap != null) {
+        if (recording.getThumbnail() != null) {
             Notification.BigPictureStyle pictureStyle =
                     new Notification.BigPictureStyle()
-                            .bigPicture(thumbnailBitmap)
+                            .bigPicture(recording.getThumbnail())
                             .showBigPictureWhenCollapsed(true);
             builder.setStyle(pictureStyle);
         }
         return builder.build();
     }
 
-    private static Intent getDeleteIntent(Context context, String path) {
-        return new Intent(context, RecordingService.class)
-                .setAction(ACTION_DELETE)
+    private StatixRecordingServiceStrings strings() {
+        if (mStrings == null) {
+            mStrings = provideStatixRecordingServiceStrings();
+        }
+        return mStrings;
+    }
+
+    protected StatixRecordingServiceStrings provideStatixRecordingServiceStrings() {
+        return new StatixRecordingServiceStrings(getResources());
+    }
+
+    private Intent getShareIntent(Context context, String path) {
+        return new Intent(context, this.getClass())
+                .setAction(ACTION_SHARE)
                 .putExtra(EXTRA_PATH, path);
     }
 
-    private static Intent getShareIntent(Context context, String path) {
-        return new Intent(context, RecordingService.class)
-                .setAction(ACTION_SHARE)
+    private Intent getDeleteIntent(Context context, String path) {
+        return new Intent(context, this.getClass())
+                .setAction(ACTION_DELETE)
                 .putExtra(EXTRA_PATH, path);
     }
 }
