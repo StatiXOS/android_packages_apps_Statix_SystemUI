@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d04f994_8d994aaf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000125
+      },
+      "writtenOn": "2024-07-28T20:32:55Z",
+      "side": 1,
+      "message": "This fixed stopping recording, but delete button doesn\u0027t dismiss the notification.",
+      "revId": "ab618b390860540b48500e8d9f8eb06fd7303858",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
