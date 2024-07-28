@@ -37,11 +37,10 @@ import javax.inject.Inject;
 
 public class StatixRecordingService extends RecordingService {
 
-    private static final int NOTIFICATION_VIEW_ID = 4273;
-
     private static final String ACTION_DELETE = "com.android.systemui.screenrecord.DELETE";
+    private static final String ACTION_STOP_NOTIF =
+            "com.android.systemui.screenrecord.STOP_FROM_NOTIF";
     private static final String ACTION_SHARE = "com.android.systemui.screenrecord.SHARE";
-    private static final String CHANNEL_ID = "screen_record";
     private static final String EXTRA_PATH = "extra_path";
     private static final String TAG = "StatixRecordingService";
 
@@ -80,9 +79,14 @@ public class StatixRecordingService extends RecordingService {
         int currentUserId = mUserContextTracker.getUserContext().getUserId();
         UserHandle currentUser = new UserHandle(currentUserId);
         switch (action) {
+            case ACTION_STOP_NOTIF:
+            case ACTION_STOP:
+                super.onStartCommand(intent, flags, userId);
+                stopForeground(STOP_FOREGROUND_DETACH);
+                return Service.START_NOT_STICKY;
             case ACTION_DELETE:
                 // Close quick shade
-                sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+                closeSystemDialogs();
 
                 ContentResolver resolver = getContentResolver();
                 Uri uri = Uri.parse(intent.getStringExtra(EXTRA_PATH));
@@ -92,9 +96,11 @@ public class StatixRecordingService extends RecordingService {
                         .show();
 
                 // Remove notification
-                mNotificationManager.cancelAsUser(null, NOTIFICATION_VIEW_ID, currentUser);
+                mNotificationManager.cancelAsUser(null, mNotificationId, currentUser);
                 Log.d(TAG, "Deleted recording " + uri);
-                return Service.START_STICKY;
+                stopSelf();
+                stopForeground(STOP_FOREGROUND_DETACH);
+                return Service.START_NOT_STICKY;
             default:
                 return super.onStartCommand(intent, flags, userId);
         }
@@ -102,26 +108,20 @@ public class StatixRecordingService extends RecordingService {
 
     @Override
     protected Notification createSaveNotification(ScreenMediaRecorder.SavedRecording recording) {
-        // Keep in sync with AOSP.
-        Uri uri = recording.getUri();
-        Intent viewIntent =
-                new Intent(Intent.ACTION_VIEW)
-                        .setFlags(
-                                Intent.FLAG_ACTIVITY_NEW_TASK
-                                        | Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        .setDataAndType(uri, "video/mp4");
+        Notification originalNotification = super.createSaveNotification(recording);
+        Notification.Builder originalBuilder = Notification.Builder.recoverBuilder(this, originalNotification);
 
-        Notification.Action shareAction =
-                new Notification.Action.Builder(
-                                Icon.createWithResource(this, R.drawable.ic_screenrecord),
-                                getResources().getString(R.string.screenrecord_share_label),
-                                PendingIntent.getService(
-                                        this,
-                                        REQUEST_CODE,
-                                        getShareIntent(this, uri.toString()),
-                                        PendingIntent.FLAG_UPDATE_CURRENT
-                                                | PendingIntent.FLAG_IMMUTABLE))
-                        .build();
+        // BEGIN: Keep in sync with AOSP
+        Notification.Action shareAction = new Notification.Action.Builder(
+                Icon.createWithResource(this, R.drawable.ic_screenrecord),
+                provideRecordingServiceStrings().getShareLabel(),
+                PendingIntent.getService(
+                        this,
+                        REQUEST_CODE,
+                        getShareIntent(this, recording.getUri().toString()),
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
+                .build();
+        // END: Keep in sync with AOSP
 
         Notification.Action deleteAction =
                 new Notification.Action.Builder(
@@ -130,53 +130,31 @@ public class StatixRecordingService extends RecordingService {
                                 PendingIntent.getService(
                                         this,
                                         REQUEST_CODE,
-                                        getDeleteIntent(this, uri.toString()),
+                                        getDeleteIntent(this, recording.getUri().toString()),
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                                 | PendingIntent.FLAG_IMMUTABLE))
                         .build();
 
-        Bundle extras = new Bundle();
-        extras.putString(
-                Notification.EXTRA_SUBSTITUTE_APP_NAME,
-                getResources().getString(R.string.screenrecord_title));
+        originalBuilder.setActions(shareAction, deleteAction);
+        originalBuilder.setAutoCancel(true);
 
-        Notification.Builder builder =
-                new Notification.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_screenrecord)
-                        .setContentTitle(getResources().getString(R.string.screenrecord_save_title))
-                        .setContentText(getResources().getString(R.string.screenrecord_save_text))
-                        .setContentIntent(
-                                PendingIntent.getActivity(
-                                        this,
-                                        REQUEST_CODE,
-                                        viewIntent,
-                                        PendingIntent.FLAG_IMMUTABLE))
-                        .addAction(shareAction)
-                        .addAction(deleteAction)
-                        .setAutoCancel(true)
-                        .addExtras(extras);
+        return originalBuilder.build();
+    }
 
-        // Add thumbnail if available
-        Icon thumbnailBitmap = recording.getThumbnail();
-        if (thumbnailBitmap != null) {
-            Notification.BigPictureStyle pictureStyle =
-                    new Notification.BigPictureStyle()
-                            .bigPicture(thumbnailBitmap)
-                            .showBigPictureWhenCollapsed(true);
-            builder.setStyle(pictureStyle);
-        }
-        return builder.build();
+    // Keep in sync with AOSP.
+    private Intent getShareIntent(Context context, String path) {
+        return new Intent(context, RecordingService.class).setAction(ACTION_SHARE)
+                .putExtra(EXTRA_PATH, path);
+    }
+
+    @Override
+    protected Intent getNotificationIntent(Context context) {
+        return new Intent(context, RecordingService.class).setAction(ACTION_STOP_NOTIF);
     }
 
     private static Intent getDeleteIntent(Context context, String path) {
         return new Intent(context, RecordingService.class)
                 .setAction(ACTION_DELETE)
-                .putExtra(EXTRA_PATH, path);
-    }
-
-    private static Intent getShareIntent(Context context, String path) {
-        return new Intent(context, RecordingService.class)
-                .setAction(ACTION_SHARE)
                 .putExtra(EXTRA_PATH, path);
     }
 }
