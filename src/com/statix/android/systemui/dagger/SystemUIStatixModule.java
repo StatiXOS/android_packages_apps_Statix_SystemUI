@@ -22,7 +22,9 @@ import com.android.systemui.display.ui.viewmodel.ConnectingDisplayViewModel;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
-import com.android.systemui.globalactions.GlobalActionsModule;
+//import com.android.systemui.globalactions.GlobalActionsModule;
+import com.android.systemui.keyguard.ui.view.layout.blueprints.KeyguardBlueprintModule;
+import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardSectionsModule;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.media.muteawait.MediaMuteAwaitConnectionCli;
 import com.android.systemui.media.nearby.NearbyMediaDevicesManager;
@@ -102,9 +104,10 @@ import javax.inject.Named;
         CollapsedStatusBarFragmentStartableModule.class,
         ConnectingDisplayViewModel.StartableModule.class,
         GestureModule.class,
-        GlobalActionsModule.class,
         HeadsUpModule.class,
         KeyboardShortcutsModule.class,
+        KeyguardBlueprintModule.class,
+        KeyguardSectionsModule.class,
         MediaModule.class,
         MediaMuteAwaitConnectionCli.StartableModule.class,
         MultiUserUtilsModule.class,
