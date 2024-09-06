@@ -44,6 +44,7 @@ android_library {
         "android.hardware.biometrics.common-V4-java",
         "elmyra-messages-java",
         "elmyra-sysui-shared",
+        "lineage_hw_helpers",
         "monet",
         "StatixSystemUI-res",
         "SystemUI-core",

@@ -15,8 +15,10 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.android.internal.statix.hardware.LineageHardwareManager;
+
+import com.statix.internal.hardware.LineageHardwareManager;
 import com.statix.android.systemui.res.R;
+
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
