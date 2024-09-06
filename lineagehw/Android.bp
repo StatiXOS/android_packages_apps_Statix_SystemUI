@@ -1,0 +1,10 @@
+java_library {
+    name: "lineage_hw_helpers",
+    srcs: [
+        "**/*.aidl",
+        "**/*.java",
+    ],
+    static_libs: [
+        "vendor.lineage.touch-V1.0-java",
+    ],
+}
