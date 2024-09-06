@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.android.internal.logging.MetricsLogger;
 import com.statix.android.systemui.res.R;
+import com.android.systemui.animation.Expandable;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -97,7 +98,7 @@ public class SmartPixelsTile extends QSTileImpl<BooleanState>
     }
 
     @Override
-    public void handleClick(View v) {
+    public void handleClick(Expandable expandable) {
         mSmartPixelsEnable =
                 (Settings.System.getIntForUser(
                                 mContext.getContentResolver(),
