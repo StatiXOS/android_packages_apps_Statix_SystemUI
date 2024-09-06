@@ -16,6 +16,7 @@
 
 package com.statix.android.systemui.statusbar.dagger;
 
+import com.android.systemui.emergency.EmergencyGestureModule;
 import com.android.systemui.statusbar.dagger.CentralSurfacesDependenciesModule;
 import com.android.systemui.statusbar.notification.dagger.NotificationsModule;
 import com.android.systemui.statusbar.notification.row.NotificationRowModule;
@@ -32,6 +33,7 @@ import dagger.Module;
             CentralSurfacesDependenciesModule.class,
             NotificationsModule.class,
             NotificationRowModule.class,
-            StatusBarNotificationPresenterModule.class
+            StatusBarNotificationPresenterModule.class,
+            EmergencyGestureModule.class
         })
 public interface StatixCentralSurfacesModule {}
