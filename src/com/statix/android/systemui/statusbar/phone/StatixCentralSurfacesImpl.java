@@ -21,6 +21,7 @@ import com.android.systemui.assist.AssistManager;
 import com.android.systemui.back.domain.interactor.BackActionInteractor;
 import com.android.systemui.biometrics.AuthRippleController;
 import com.android.systemui.bouncer.domain.interactor.AlternateBouncerInteractor;
+import com.android.systemui.settings.brightness.domain.interactor.BrightnessMirrorShowingInteractor;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.charging.WiredChargingRippleController;
 import com.android.systemui.classifier.FalsingCollector;
@@ -30,6 +31,7 @@ import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.UiBackground;
 import com.android.systemui.demomode.DemoModeController;
+import com.android.systemui.emergency.EmergencyGestureModule.EmergencyGestureIntentFactory;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.fragments.FragmentService;
 import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
@@ -45,10 +47,10 @@ import com.android.systemui.plugins.PluginDependencyProvider;
 import com.android.systemui.plugins.PluginManager;
 import com.android.systemui.power.domain.interactor.PowerInteractor;
 import com.android.systemui.scene.domain.interactor.WindowRootViewVisibilityInteractor;
-import com.android.systemui.scene.shared.flag.SceneContainerFlags;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.shade.CameraLauncher;
+import com.android.systemui.shade.GlanceableHubContainerController;
 import com.android.systemui.shade.NotificationShadeWindowViewController;
 import com.android.systemui.shade.QuickSettingsController;
 import com.android.systemui.shade.ShadeController;
@@ -229,7 +231,10 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             UserTracker userTracker,
             Provider<FingerprintManager> fingerprintManager,
             ActivityStarter activityStarter,
-            SceneContainerFlags sceneContainerFlags) {
+            BrightnessMirrorShowingInteractor brightnessMirrorShowingInteractor,
+            GlanceableHubContainerController glanceableHubContainerController,
+            EmergencyGestureIntentFactory emergencyGestureIntentFactory
+    ) {
         super(
                 context,
                 notificationsController,
@@ -332,6 +337,8 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 userTracker,
                 fingerprintManager,
                 activityStarter,
-                sceneContainerFlags);
+                brightnessMirrorShowingInteractor,
+                glanceableHubContainerController,
+                emergencyGestureIntentFactory);
     }
 }
