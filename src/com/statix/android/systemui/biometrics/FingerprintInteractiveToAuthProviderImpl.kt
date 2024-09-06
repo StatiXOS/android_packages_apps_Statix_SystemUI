@@ -21,15 +21,16 @@ import android.database.ContentObserver
 import android.hardware.biometrics.common.AuthenticateReason
 import android.provider.Settings
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider
-import com.android.systemui.common.coroutine.ConflatedCallbackFlow.conflatedCallbackFlow
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.user.domain.interactor.SelectedUserInteractor
 import com.android.systemui.util.settings.SecureSettings
+import com.android.systemui.util.settings.SettingsProxyExt.observerFlow
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 class FingerprintInteractiveToAuthProviderImpl
 @Inject
@@ -50,22 +51,7 @@ constructor(
   override val enabledForCurrentUser =
     selectedUserInteractor.selectedUser
       .flatMapLatest { currentUserId ->
-        val getCurrentSettingValue = { isEnabled(currentUserId) }
-        conflatedCallbackFlow {
-          val callback =
-            object : ContentObserver(null) {
-              override fun onChange(selfChange: Boolean) {
-                trySend(getCurrentSettingValue())
-              }
-            }
-          secureSettings.registerContentObserver(
-            Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
-            true,
-            callback,
-          )
-          trySend(getCurrentSettingValue())
-          awaitClose { secureSettings.unregisterContentObserver(callback) }
-        }
+        secureSettings.observerFlow(Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED).map { isEnabled(currentUserId) }
       }
       .flowOn(backgroundDispatcher)
 
