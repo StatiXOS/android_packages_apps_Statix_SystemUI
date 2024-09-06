@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
 import com.statix.android.systemui.res.R;
+import com.android.systemui.animation.Expandable;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -80,7 +81,7 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
                                         mContext.getContentResolver(),
                                         FLASHLIGHT_BRIGHTNESS_SETTING,
                                         mCurrentPercent);
-                                handleClick(view);
+                                handleClick(null);
                             }
                             return true;
                         }
@@ -93,7 +94,7 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
                                         mCurrentPercent);
                             } else {
                                 mClicked = true;
-                                handleClick(view);
+                                handleClick(null);
                             }
                             return true;
                         }
@@ -164,7 +165,7 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
     }
 
     @Override
-    protected void handleClick(@Nullable View view) {
+    protected void handleClick(@Nullable Expandable expandable) {
         boolean newState = !mClicked || !mState.value;
         if (mSupportsSettingFlashLevel && newState) {
             try {

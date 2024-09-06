@@ -19,6 +19,7 @@ import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.statix.internal.hardware.LineageHardwareManager;
 import com.statix.android.systemui.res.R;
 
+import com.android.systemui.animation.Expandable;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
@@ -75,7 +76,7 @@ public class GloveModeTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    public void handleClick(@Nullable View view) {
+    public void handleClick(@Nullable Expandable expandable) {
         boolean enabled =
                 mHardwareManager.get(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY);
         mHardwareManager.set(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY, !enabled);
