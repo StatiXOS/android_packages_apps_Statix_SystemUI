@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcce9577_13efb86c",
+        "filename": "src/com/statix/android/systemui/assist/StatixAssistManager.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1000125
+      },
+      "writtenOn": "2024-10-31T06:50:27Z",
+      "side": 1,
+      "message": "my bad",
+      "range": {
+        "startLine": 113,
+        "startChar": 43,
+        "endLine": 113,
+        "endChar": 80
+      },
+      "revId": "eaa12be17c5961fe6a469cac72feb93e79aabac9",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
