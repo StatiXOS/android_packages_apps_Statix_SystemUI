@@ -103,6 +103,14 @@ constructor(
           )
           return
         }
+        1 -> {
+          // Open camera
+          cameraGestureHelper
+            .get()
+            .launchCamera(
+              StatusBarManager.CAMERA_LAUNCH_SOURCE_POWER_DOUBLE_TAP
+            ) // This is wrong...
+        }
         else -> return super.startAssist(args)
       }
     }
