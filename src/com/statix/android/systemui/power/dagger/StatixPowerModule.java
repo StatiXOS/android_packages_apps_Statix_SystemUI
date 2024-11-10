@@ -16,15 +16,28 @@
 
 package com.statix.android.systemui.power.dagger;
 
+import android.content.Context;
+
+import com.android.internal.logging.UiEventLogger;
+import com.android.systemui.animation.DialogTransitionAnimator;
+import com.android.systemui.broadcast.BroadcastDispatcher;
+import com.android.systemui.broadcast.BroadcastSender;
+import com.android.systemui.dagger.SysUISingleton;
+import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.power.EnhancedEstimates;
-import com.android.systemui.power.PowerNotificationWarnings;
 import com.android.systemui.power.PowerUI;
 import com.android.systemui.power.data.repository.PowerRepositoryModule;
+import com.android.systemui.settings.UserTracker;
+import com.android.systemui.statusbar.phone.SystemUIDialog;
+import com.android.systemui.statusbar.policy.BatteryController;
 
 import com.statix.android.systemui.power.EnhancedEstimatesStatixImpl;
+import com.statix.android.systemui.power.PowerNotificationWarningsStatixImpl;
 
 import dagger.Binds;
+import dagger.Lazy;
 import dagger.Module;
+import dagger.Provides;
 
 /** Dagger Module for code in the power package. */
 @Module(
@@ -32,6 +45,30 @@ import dagger.Module;
             PowerRepositoryModule.class,
         })
 public interface StatixPowerModule {
+    @Provides
+    @SysUISingleton
+    static PowerNotificationWarningsStatixImpl providePowerNotificationWarningsStatixImpl(
+            Context context,
+            ActivityStarter activityStarter,
+            BroadcastSender broadcastSender,
+            Lazy<BatteryController> batteryControllerLazy,
+            DialogTransitionAnimator dialogTransitionAnimator,
+            UiEventLogger uiEventLogger,
+            UserTracker userTracker,
+            SystemUIDialog.Factory systemUIDialogFactory,
+            BroadcastDispatcher broadcastDispatcher) {
+        return new PowerNotificationWarningsStatixImpl(
+                context,
+                activityStarter,
+                broadcastSender,
+                batteryControllerLazy,
+                dialogTransitionAnimator,
+                uiEventLogger,
+                userTracker,
+                systemUIDialogFactory,
+                broadcastDispatcher);
+    }
+
     /** */
     @Binds
     EnhancedEstimates bindEnhancedEstimates(EnhancedEstimatesStatixImpl enhancedEstimates);
