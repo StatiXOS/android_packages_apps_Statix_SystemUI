@@ -50,6 +50,10 @@
     <string name="home_controls_tile_title">Home</string>
 
     <!-- Adaptive charging -->
-    <string name="adaptive_charging_time_estimate">%1$s • Adaptive charging • Full by %2$s</string>
+    <string name="adaptive_charging_notify_des">Battery full by %1$s. Charging steadily to extend battery lifespan.</string>
+    <string name="adaptive_charging_notify_help_url">https://support.google.com/pixelphone?p=adaptive_charging</string>
+    <string name="adaptive_charging_notify_title">Adaptive Charging is on</string>
+    <string name="adaptive_charging_notify_turn_off_once">Turn off once</string>
+    <string name="adaptive_charging_time_estimate">%1$s • Adaptive Charging • Full by %2$s</string>
 
 </resources>
