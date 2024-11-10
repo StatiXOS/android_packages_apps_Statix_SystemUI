@@ -40,4 +40,9 @@
 
     </application>
 
+    <!-- Battery -->
+    <protected-broadcast android:name="PNW.defenderResumeCharging.settings" />
+    <protected-broadcast android:name="PNW.batteryStatusChanged" />
+    <protected-broadcast android:name="PNW.bluetoothStatusChanged" />
+
 </manifest>
