@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5857deaa_1e4b0d80",
+        "filename": "src/com/statix/android/systemui/power/PowerNotificationWarningsStatixImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-11-12T14:47:57Z",
+      "side": 1,
+      "message": "nit: inline",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 27
+      },
+      "revId": "f6a1bd929b0a1de90c9579a50b3f844c353fc569",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2bc34dc2_85bfbd3a",
+        "filename": "src/com/statix/android/systemui/power/PowerNotificationWarningsStatixImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-11-12T14:47:57Z",
+      "side": 1,
+      "message": "nit: use constant fields from Intent.",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 100
+      },
+      "revId": "f6a1bd929b0a1de90c9579a50b3f844c353fc569",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8febcae8_a464122a",
+        "filename": "src/com/statix/android/systemui/power/PowerUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-11-12T14:47:57Z",
+      "side": 1,
+      "message": "replace with constants",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 5
+      },
+      "revId": "f6a1bd929b0a1de90c9579a50b3f844c353fc569",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "459351a9_4b2b2787",
+        "filename": "src/com/statix/android/systemui/power/PowerUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-11-12T14:47:57Z",
+      "side": 1,
+      "message": "Notification.EXTRA_SUBSTITUTE_APP_NAME",
+      "range": {
+        "startLine": 61,
+        "startChar": 26,
+        "endLine": 61,
+        "endChar": 43
+      },
+      "revId": "f6a1bd929b0a1de90c9579a50b3f844c353fc569",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91e6690e_f568e3a2",
+        "filename": "src/com/statix/android/systemui/power/dagger/StatixPowerModule.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-11-12T14:47:57Z",
+      "side": 1,
+      "message": "not needed",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 5
+      },
+      "revId": "f6a1bd929b0a1de90c9579a50b3f844c353fc569",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
