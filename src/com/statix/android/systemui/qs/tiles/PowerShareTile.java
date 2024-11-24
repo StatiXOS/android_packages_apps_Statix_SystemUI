@@ -1,10 +1,20 @@
 /*
  * Copyright (C) 2020 The LineageOS Project
- * Copyright (C) 2022 StatiXOS
- * SPDX-License-Identifer: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package com.statix.android.systemui.qs.tiles;
+package com.android.systemui.qs.tiles;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,32 +24,28 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.service.quicksettings.Tile;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
-import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.statix.android.systemui.res.R;
 import com.android.systemui.animation.Expandable;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.FalsingManager;
-import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
+import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
-import com.android.systemui.shade.NotificationShadeWindowView;
+import com.android.systemui.res.R;
 import com.android.systemui.statusbar.policy.BatteryController;
 
-import com.statix.android.systemui.ambient.AmbientIndicationContainer;
+import org.lineageos.internal.logging.LineageMetricsLogger;
 
-import vendor.lineage.powershare.IPowerShare;
+import vendor.lineage.powershare.V1_0.IPowerShare;
 
 import java.util.NoSuchElementException;
 
@@ -50,22 +56,17 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
 
     public static final String TILE_SPEC = "powershare";
 
-    private final IPowerShare mPowerShare;
-    private NotificationShadeWindowView mNotificationShadeWindowView;
-    private AmbientIndicationContainer mAmbientContainer;
+    private IPowerShare mPowerShare;
     private BatteryController mBatteryController;
     private NotificationManager mNotificationManager;
     private Notification mNotification;
-    private static final String CHANNEL_ID = "powershare";
+    private static final String CHANNEL_ID = TILE_SPEC;
     private static final int NOTIFICATION_ID = 273298;
-
-    private static final String POWERSHARE_SERVICE_NAME =
-            "vendor.lineage.powershare.IPowerShare/default";
 
     @Inject
     public PowerShareTile(
             QSHost host,
-            QsEventLogger qsEventLogger,
+            QsEventLogger uiEventLogger,
             @Background Looper backgroundLooper,
             @Main Handler mainHandler,
             FalsingManager falsingManager,
@@ -73,32 +74,21 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
             QSLogger qsLogger,
-            BatteryController batteryController,
-            NotificationShadeWindowView notificationShadeWindowView) {
-        super(
-                host,
-                qsEventLogger,
-                backgroundLooper,
-                mainHandler,
-                falsingManager,
-                metricsLogger,
-                statusBarStateController,
-                activityStarter,
-                qsLogger);
+            BatteryController batteryController
+    ) {
+        super(host, uiEventLogger, backgroundLooper, mainHandler, falsingManager, metricsLogger,
+                statusBarStateController, activityStarter, qsLogger);
         mPowerShare = getPowerShare();
         if (mPowerShare == null) {
             return;
         }
-        mNotificationShadeWindowView = notificationShadeWindowView;
 
         mBatteryController = batteryController;
         mNotificationManager = mContext.getSystemService(NotificationManager.class);
 
-        NotificationChannel notificationChannel =
-                new NotificationChannel(
-                        CHANNEL_ID,
-                        mContext.getString(R.string.quick_settings_powershare_label),
-                        NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
+                mContext.getString(R.string.quick_settings_powershare_label),
+                NotificationManager.IMPORTANCE_DEFAULT);
         mNotificationManager.createNotificationChannel(notificationChannel);
 
         Notification.Builder builder = new Notification.Builder(mContext, CHANNEL_ID);
@@ -111,15 +101,6 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         mNotification.visibility = Notification.VISIBILITY_PUBLIC;
 
         batteryController.addCallback(this);
-    }
-
-    public void initialize() {
-        if (isAvailable()) {
-            mAmbientContainer =
-                    (AmbientIndicationContainer)
-                            mNotificationShadeWindowView.findViewById(
-                                    R.id.ambient_indication_container);
-        }
     }
 
     @Override
@@ -150,14 +131,8 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         try {
             if (mPowerShare.isEnabled()) {
                 mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-                if (mAmbientContainer != null) {
-                    mAmbientContainer.setReverseChargingMessage("Sharing battery");
-                }
             } else {
                 mNotificationManager.cancel(NOTIFICATION_ID);
-                if (mAmbientContainer != null) {
-                    mAmbientContainer.setReverseChargingMessage("");
-                }
             }
         } catch (RemoteException ex) {
             ex.printStackTrace();
@@ -233,15 +208,18 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
 
     @Override
     public int getMetricsCategory() {
-        return MetricsEvent.QS_CUSTOM;
+        return LineageMetricsLogger.TILE_POWERSHARE;
     }
 
     @Override
-    public void handleSetListening(boolean listening) {}
+    public void handleSetListening(boolean listening) {
+    }
 
     private synchronized IPowerShare getPowerShare() {
         try {
-            return IPowerShare.Stub.asInterface(ServiceManager.getService(POWERSHARE_SERVICE_NAME));
+            return IPowerShare.getService();
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
         } catch (NoSuchElementException ex) {
             // service not available
         }
