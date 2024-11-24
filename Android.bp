@@ -48,7 +48,7 @@ android_library {
         "monet",
         "StatixSystemUI-res",
         "SystemUI-core",
-        "vendor.lineage.powershare-V1-java",
+        "vendor.lineage.powershare-V1.0-java",
         "//hardware/google/interfaces:com.google.hardware.pixel.display-V3-java",
         "com.google.hardware.biometrics.fingerprint.fingerprint-ext-V1-java",
     ],
