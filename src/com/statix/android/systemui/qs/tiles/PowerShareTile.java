@@ -7,7 +7,6 @@
 package com.statix.android.systemui.qs.tiles;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.BatteryManager;
@@ -16,13 +15,11 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.service.quicksettings.Tile;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.statix.android.systemui.res.R;
 import com.android.systemui.animation.Expandable;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
@@ -38,6 +35,7 @@ import com.android.systemui.shade.NotificationShadeWindowView;
 import com.android.systemui.statusbar.policy.BatteryController;
 
 import com.statix.android.systemui.ambient.AmbientIndicationContainer;
+import com.statix.android.systemui.res.R;
 
 import vendor.lineage.powershare.IPowerShare;
 
@@ -129,7 +127,8 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         try {
             if (mPowerShare.isEnabled()) {
                 if (mAmbientContainer != null) {
-                    mAmbientContainer.setReverseChargingMessage("Sharing battery");
+                    mAmbientContainer.setReverseChargingMessage(
+                            mContext.getString(R.string.ambient_container_sharing_battery));
                 }
             } else {
                 if (mAmbientContainer != null) {
