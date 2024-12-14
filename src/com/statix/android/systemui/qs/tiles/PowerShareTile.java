@@ -56,8 +56,6 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
     private BatteryController mBatteryController;
     private NotificationManager mNotificationManager;
     private Notification mNotification;
-    private static final String CHANNEL_ID = "powershare";
-    private static final int NOTIFICATION_ID = 273298;
 
     private static final String POWERSHARE_SERVICE_NAME =
             "vendor.lineage.powershare.IPowerShare/default";
@@ -92,25 +90,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
         mNotificationShadeWindowView = notificationShadeWindowView;
 
         mBatteryController = batteryController;
-        mNotificationManager = mContext.getSystemService(NotificationManager.class);
-
-        NotificationChannel notificationChannel =
-                new NotificationChannel(
-                        CHANNEL_ID,
-                        mContext.getString(R.string.quick_settings_powershare_label),
-                        NotificationManager.IMPORTANCE_DEFAULT);
-        mNotificationManager.createNotificationChannel(notificationChannel);
-
-        Notification.Builder builder = new Notification.Builder(mContext, CHANNEL_ID);
-        builder.setContentTitle(
-                mContext.getString(R.string.quick_settings_powershare_enabled_label));
-        builder.setSmallIcon(R.drawable.ic_qs_powershare);
-        builder.setOnlyAlertOnce(true);
-        mNotification = builder.build();
-        mNotification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        mNotification.visibility = Notification.VISIBILITY_PUBLIC;
-
-        batteryController.addCallback(this);
+        mBatteryController.addCallback(this);
     }
 
     public void initialize() {
@@ -146,15 +126,12 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
                 ex.printStackTrace();
             }
         }
-
         try {
             if (mPowerShare.isEnabled()) {
-                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
                 if (mAmbientContainer != null) {
                     mAmbientContainer.setReverseChargingMessage("Sharing battery");
                 }
             } else {
-                mNotificationManager.cancel(NOTIFICATION_ID);
                 if (mAmbientContainer != null) {
                     mAmbientContainer.setReverseChargingMessage("");
                 }
