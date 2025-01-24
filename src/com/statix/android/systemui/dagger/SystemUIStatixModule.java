@@ -73,6 +73,7 @@ import com.android.systemui.volume.dagger.VolumeModule;
 import com.android.systemui.wallpapers.dagger.WallpaperModule;
 
 import com.statix.android.systemui.assist.StatixAssistManager;
+import com.statix.android.systemui.assist.StatixAssistModule;
 import com.statix.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
@@ -131,6 +132,7 @@ import javax.inject.Named;
             SceneContainerFrameworkModule.class,
             ScreenDecorationsModule.class,
             ShadeModule.class,
+            StatixAssistModule.class,
             StatixStartCentralSurfacesModule.class,
             StatixPowerModule.class,
             StatixQSModule.class,
