@@ -73,6 +73,7 @@ import com.android.systemui.volume.dagger.VolumeModule;
 import com.android.systemui.wallpapers.dagger.WallpaperModule;
 
 import com.statix.android.systemui.assist.StatixAssistManager;
+import com.statix.android.systemui.assist.StatixAssistModule;
 import com.statix.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl;
 import com.statix.android.systemui.controls.StatixControlsTileResourceConfigurationImpl;
 import com.statix.android.systemui.power.dagger.StatixPowerModule;
@@ -91,16 +92,16 @@ import javax.inject.Named;
 /**
  * A dagger module for injecting default implementations of components of System UI.
  *
- * Variants of SystemUI should make a copy of this, include it in their component, and customize it
- * as needed.
+ * <p>Variants of SystemUI should make a copy of this, include it in their component, and customize
+ * it as needed.
  *
- * This module might alternatively be named `AospSystemUIModule`, `PhoneSystemUIModule`,
- * or `BasicSystemUIModule`.
+ * <p>This module might alternatively be named `AospSystemUIModule`, `PhoneSystemUIModule`, or
+ * `BasicSystemUIModule`.
  *
- * Nothing in the module should be strictly required. Each piece should either be swappable with
+ * <p>Nothing in the module should be strictly required. Each piece should either be swappable with
  * a different implementation or entirely removable.
  *
- * This is different from {@link SystemUIModule} which should be used for pieces of required
+ * <p>This is different from {@link SystemUIModule} which should be used for pieces of required
  * SystemUI code that variants of SystemUI _must_ include to function correctly.
  */
 @Module(
@@ -131,6 +132,7 @@ import javax.inject.Named;
             SceneContainerFrameworkModule.class,
             ScreenDecorationsModule.class,
             ShadeModule.class,
+            StatixAssistModule.class,
             StatixStartCentralSurfacesModule.class,
             StatixPowerModule.class,
             StatixQSModule.class,
