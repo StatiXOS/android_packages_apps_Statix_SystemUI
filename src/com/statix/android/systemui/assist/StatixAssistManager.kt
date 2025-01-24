@@ -2,6 +2,7 @@ package com.statix.android.systemui.assist
 
 import android.app.ActivityManager
 import android.app.StatusBarManager
+import android.app.contextualsearch.ContextualSearchManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -39,51 +40,52 @@ import kotlinx.coroutines.flow.stateIn
 class StatixAssistManager
 @Inject
 constructor(
-  controller: DeviceProvisionedController,
-  context: Context,
-  assistUtils: AssistUtils,
-  commandQueue: CommandQueue,
-  phoneStateMonitor: PhoneStateMonitor,
-  overviewProxyService: OverviewProxyService,
-  sysUiState: Lazy<SysUiState>,
-  defaultUiController: DefaultUiController,
-  assistLogger: AssistLogger,
-  @Main private val uiHandler: Handler,
-  userTracker: UserTracker,
-  displayTracker: DisplayTracker,
-  private val cameraGestureHelper: Lazy<CameraGestureHelper>,
-  private val secureSettings: SecureSettings,
-  selectedUserInteractor: SelectedUserInteractor,
-  activityManager: ActivityManager,
-  interactor: AssistInteractor,
-  viewCaptureAwareWindowManager: ViewCaptureAwareWindowManager,
-  @Background backgroundScope: CoroutineScope,
+    controller: DeviceProvisionedController,
+    context: Context,
+    assistUtils: AssistUtils,
+    commandQueue: CommandQueue,
+    phoneStateMonitor: PhoneStateMonitor,
+    overviewProxyService: OverviewProxyService,
+    sysUiState: Lazy<SysUiState>,
+    defaultUiController: DefaultUiController,
+    assistLogger: AssistLogger,
+    @Main private val uiHandler: Handler,
+    userTracker: UserTracker,
+    displayTracker: DisplayTracker,
+    private val cameraGestureHelper: Lazy<CameraGestureHelper>,
+    private val contextualSearchManager: ContextualSearchManager,
+    private val secureSettings: SecureSettings,
+    selectedUserInteractor: SelectedUserInteractor,
+    activityManager: ActivityManager,
+    interactor: AssistInteractor,
+    viewCaptureAwareWindowManager: ViewCaptureAwareWindowManager,
+    @Background backgroundScope: CoroutineScope,
 ) :
-  AssistManager(
-    controller,
-    context,
-    assistUtils,
-    commandQueue,
-    phoneStateMonitor,
-    overviewProxyService,
-    sysUiState,
-    defaultUiController,
-    assistLogger,
-    uiHandler,
-    userTracker,
-    displayTracker,
-    secureSettings,
-    selectedUserInteractor,
-    activityManager,
-    interactor,
-    viewCaptureAwareWindowManager,
-  ) {
+    AssistManager(
+        controller,
+        context,
+        assistUtils,
+        commandQueue,
+        phoneStateMonitor,
+        overviewProxyService,
+        sysUiState,
+        defaultUiController,
+        assistLogger,
+        uiHandler,
+        userTracker,
+        displayTracker,
+        secureSettings,
+        selectedUserInteractor,
+        activityManager,
+        interactor,
+        viewCaptureAwareWindowManager,
+    ) {
 
   private val assistActionFlow =
-    secureSettings
-      .observerFlow(ASSIST_ACTION)
-      .map { getAssistInt() }
-      .stateIn(backgroundScope, started = SharingStarted.Eagerly, initialValue = getAssistInt())
+      secureSettings
+          .observerFlow(ASSIST_ACTION)
+          .map { getAssistInt() }
+          .stateIn(backgroundScope, started = SharingStarted.Eagerly, initialValue = getAssistInt())
 
   private val screenshotHelper = ScreenshotHelper(context)
 
@@ -103,18 +105,23 @@ constructor(
         0 -> {
           // Take screenshot
           screenshotHelper.takeScreenshot(
-            WindowManager.ScreenshotSource.SCREENSHOT_VENDOR_GESTURE,
-            uiHandler,
-            null,
+              WindowManager.ScreenshotSource.SCREENSHOT_VENDOR_GESTURE,
+              uiHandler,
+              null,
           )
           return
         }
         1 -> {
           // Open camera
           cameraGestureHelper
-            .get()
-            .launchCamera(StatusBarManager.CAMERA_LAUNCH_SOURCE_POWER_DOUBLE_TAP)
+              .get()
+              .launchCamera(StatusBarManager.CAMERA_LAUNCH_SOURCE_POWER_DOUBLE_TAP)
           return
+        }
+        2 -> {
+          // Invoke Contextual Search
+          contextualSearchManager.startContextualSearch(
+              ContextualSearchManager.ENTRYPOINT_LONG_PRESS_NAV_HANDLE)
         }
         else -> return super.startAssist(args)
       }
