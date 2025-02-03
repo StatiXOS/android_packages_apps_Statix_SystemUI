@@ -8,5 +8,5 @@ android_library {
     srcs: [
         "src/**/*.kt",
     ],
-    resource_dirs: ["res"],
+
 }

@@ -24,9 +24,7 @@ android_library {
     name: "StatixSystemUI-res",
     manifest: "AndroidManifest-res.xml",
     use_resource_processor: true,
-    resource_dirs: [
-        "res",
-    ],
+
     static_libs: [
         "SystemUI-core",
     ],
