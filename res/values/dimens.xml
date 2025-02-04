@@ -8,6 +8,24 @@
     <dimen name="biometric_dialog_corner_size">8.0dip</dimen>
 
     <!-- Smartspace -->
-    <dimen name="enhanced_smartspace_height">104.0dip</dimen>
+    <dimen name="enhanced_smartspace_base_action_icon_margin">8dp</dimen>
+    <dimen name="enhanced_smartspace_base_action_icon_padding">4dp</dimen>
+    <dimen name="enhanced_smartspace_card_height">76dp</dimen>
+    <dimen name="enhanced_smartspace_combination_sub_card_corner_radius">20dp</dimen>
+    <dimen name="enhanced_smartspace_height">104dp</dimen>
+    <dimen name="enhanced_smartspace_icon_inset">2dp</dimen>
+    <dimen name="enhanced_smartspace_icon_margin">4dp</dimen>
+    <dimen name="enhanced_smartspace_icon_size">20dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_corner_radius">20dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_padding_end">12dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_start_margin">1dp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_margin_top">5dp</dimen>
+    <dimen name="enhanced_smartspace_text_size_medium">16sp</dimen>
+    <dimen name="enhanced_smartspace_text_size_regular">20sp</dimen>
+    <dimen name="keyguard_smartspace_top_offset">12dp</dimen>
+    <dimen name="smartspaceLetterSpacing">0.01</dimen>
+    <dimen name="weather_clock_smartspace_scale">1</dimen>
+    <dimen name="weather_clock_smartspace_translateX">0dp</dimen>
+    <dimen name="weather_clock_smartspace_translateY">0dp</dimen>
 
 </resources>
