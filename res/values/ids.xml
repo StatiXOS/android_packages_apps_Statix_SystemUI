@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <item type="id" name="smartspace_card_pager"/>
+    <item type="id" name="smartspace_extras_group"/>
+    <item type="id" name="smartspace_page_indicator"/>
+    <item type="id" name="smartspace_subtitle_group"/>
+    <item type="id" name="sub_card_icon"/>
+    <item type="id" name="sub_card_text"/>
+</resources>

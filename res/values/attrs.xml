@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="smartspaceSubtitleTextSize" format="dimension">
+    </attr>
+    <attr name="smartspaceTitleTextSize" format="dimension">
+    </attr>
+</resources>
