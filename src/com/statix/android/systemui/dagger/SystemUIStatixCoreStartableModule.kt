@@ -16,9 +16,19 @@
 
 package com.statix.android.systemui.dagger
 
+import com.google.android.systemui.smartspace.KeyguardSmartspaceStartable
+
+import dagger.Binds
 import dagger.Module
+import dagger.multibindings.ClassKey
+import dagger.multibindings.IntoMap
 
 /** Collection of {@link CoreStartable}s that should be run on AOSP. */
 @Module
 abstract class SystemUIStatixCoreStartableModule {
+    /** Inject into KeyguardSmartspaceStartable. */
+    @Binds
+    @IntoMap
+    @ClassKey(KeyguardSmartspaceStartable::class)
+    abstract fun bindKeyguardSmartspaceStartable(sysui: KeyguardSmartspaceStartable): CoreStartable
 }
