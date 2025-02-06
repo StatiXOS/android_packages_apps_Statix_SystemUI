@@ -19,7 +19,6 @@ package com.statix.android.systemui.qs.tileimpl
 import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.statix.android.systemui.qs.tiles.CaffeineTile
 import com.statix.android.systemui.qs.tiles.DataSwitchTile
-import com.statix.android.systemui.qs.tiles.FlashlightStrengthTile
 import com.statix.android.systemui.qs.tiles.GloveModeTile
 import com.statix.android.systemui.qs.tiles.PowerShareTile
 import com.statix.android.systemui.qs.tiles.SmartPixelsTile
@@ -42,12 +41,6 @@ interface StatixQSModule {
   @IntoMap
   @StringKey(DataSwitchTile.TILE_SPEC)
   fun bindDataSwitchTile(dataSwitchTile: DataSwitchTile): QSTileImpl<*>
-
-  /** Inject FlashlightStrengthTile into tileMap in QSModule */
-  @Binds
-  @IntoMap
-  @StringKey(FlashlightStrengthTile.TILE_SPEC)
-  fun bindFlashlightStrengthTile(flashlightStrengthTile: FlashlightStrengthTile): QSTileImpl<*>
 
   /** Inject GloveModeTile into tileMap in QSModule */
   @Binds
