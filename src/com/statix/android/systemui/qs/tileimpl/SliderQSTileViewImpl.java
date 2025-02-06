@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2022 StatiXOS
+ * Copyright (C) 2024 The LibreMobileOS Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@
 package com.statix.android.systemui.qs.tileimpl;
 
 import static android.service.quicksettings.Tile.STATE_ACTIVE;
+import static android.service.quicksettings.Tile.STATE_INACTIVE;
 
 import android.content.Context;
 import android.database.ContentObserver;
@@ -40,10 +42,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.statix.android.systemui.res.R;
+import com.android.settingslib.Utils;
 import com.android.systemui.plugins.qs.QSIconView;
 import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.qs.tileimpl.QSTileViewImpl;
+import com.statix.android.systemui.res.R;
 
 public class SliderQSTileViewImpl extends QSTileViewImpl {
 
@@ -51,18 +54,25 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private String mSettingsKey;
     private SettingObserver mSettingObserver;
     private boolean enabled = false;
+    private float mCurrentPercent;
+    private int mWarnColor;
+
+    private final static int ACTIVE_STATE_PERCENTAGE_ALPHA = 64;
+    private final static int INACTIVE_STATE_PERCENTAGE_ALPHA = 0;
 
     public SliderQSTileViewImpl(
             Context context,
             boolean collapsed,
             View.OnTouchListener touchListener,
-            String settingKey) {
+            String settingKey,
+            float settingsDefaultValue) {
         super(context, collapsed);
         if (touchListener != null && !settingKey.isEmpty()) {
             mSettingsKey = settingKey;
-            percentageDrawable = new PercentageDrawable();
-            percentageDrawable.setAlpha(64);
-            updatePercentBackground(false /* default */);
+            mWarnColor = Utils.getColorErrorDefaultColor(context);
+            percentageDrawable = new PercentageDrawable(settingsDefaultValue);
+            percentageDrawable.setTint(Color.WHITE);
+            updatePercentBackground(STATE_INACTIVE); // default
             mSettingObserver = new SettingObserver(new Handler(Looper.getMainLooper()));
             setOnTouchListener(touchListener);
             mContext.getContentResolver()
@@ -79,14 +89,29 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     public void handleStateChanged(QSTile.State state) {
         super.handleStateChanged(state);
         if (enabled) {
-            updatePercentBackground(state.state == STATE_ACTIVE);
+            updatePercentBackground(state.state);
         }
     }
 
-    private void updatePercentBackground(boolean active) {
-        percentageDrawable.setTint(active ? Color.WHITE : Color.BLACK);
+    @Override
+    public int getBackgroundColorForState(int state, boolean disabledByPolicy) {
+        if (state == STATE_ACTIVE && mCurrentPercent >= 0.90f) {
+            return mWarnColor;
+        } else {
+            return super.getBackgroundColorForState(state, disabledByPolicy);
+        }
+    }
+
+    private void updatePercentBackground(int state) {
+        // Hide the percentage when inactive.
+        boolean isActive = state == STATE_ACTIVE;
+        percentageDrawable.setAlpha(isActive ? ACTIVE_STATE_PERCENTAGE_ALPHA
+                : INACTIVE_STATE_PERCENTAGE_ALPHA);
+        if (isActive) {
+            setColor(getBackgroundColorForState(state, false));
+        }
         LayerDrawable layerDrawable =
-                new LayerDrawable(new Drawable[] {qsTileBackground, percentageDrawable});
+                new LayerDrawable(new Drawable[] {backgroundBaseDrawable, percentageDrawable});
         setBackground(layerDrawable);
     }
 
@@ -104,17 +129,18 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
 
     private class PercentageDrawable extends Drawable {
         private Drawable shape;
-        private float mCurrentPercent;
+        private float mDefaultPercent;
 
-        private PercentageDrawable() {
+        private PercentageDrawable(float defaultPercent) {
             shape = mContext.getDrawable(R.drawable.qs_tile_background_shape);
-            mCurrentPercent =
-                    Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
+            mDefaultPercent = defaultPercent;
+            mCurrentPercent = Settings.System.getFloat(mContext.getContentResolver(),
+                    mSettingsKey, mDefaultPercent);
         }
 
         synchronized void updatePercent() {
-            mCurrentPercent =
-                    Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
+            mCurrentPercent = Settings.System.getFloat(mContext.getContentResolver(),
+                    mSettingsKey, mDefaultPercent);
         }
 
         @Override
