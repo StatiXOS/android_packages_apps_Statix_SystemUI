@@ -3,7 +3,7 @@
  * SPDX-License-Identifer: Apache-2.0
  */
 
-package com.statix.android.systemui.controls
+package com.statix.android.systemui.controls.controller
 
 import android.content.ComponentName
 import com.android.systemui.controls.controller.ControlsController

@@ -5,6 +5,7 @@
 
 package com.statix.android.systemui.screenrecord;
 
+import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +14,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
+import android.media.projection.StopReason;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -22,10 +24,11 @@ import android.widget.Toast;
 import com.android.internal.logging.UiEventLogger;
 import com.android.systemui.dagger.qualifiers.LongRunning;
 import com.android.systemui.dagger.qualifiers.Main;
+import com.android.systemui.recordissue.ScreenRecordingStartTimeStore;
 import com.android.systemui.res.R;
 import com.android.systemui.screenrecord.RecordingController;
 import com.android.systemui.screenrecord.RecordingService;
-import com.android.systemui.screenrecord.ScreenMediaRecorder;
+import com.android.systemui.screenrecord.ScreenMediaRecorder.SavedRecording;
 import com.android.systemui.settings.UserContextProvider;
 import com.android.systemui.statusbar.phone.KeyguardDismissUtil;
 
@@ -35,14 +38,17 @@ import javax.inject.Inject;
 
 public class StatixRecordingService extends RecordingService {
 
+    private static final int USER_ID_NOT_SPECIFIED = -1;
     private static final String ACTION_DELETE = "com.android.systemui.screenrecord.DELETE";
     private static final String ACTION_STOP_NOTIF =
             "com.android.systemui.screenrecord.STOP_FROM_NOTIF";
     private static final String ACTION_SHARE = "com.android.systemui.screenrecord.SHARE";
     private static final String EXTRA_PATH = "extra_path";
+    private static final String EXTRA_STOP_REASON = "extra_stopReason";
     private static final String TAG = "StatixRecordingService";
 
     private final NotificationManager mNotificationManager;
+    private final RecordingController mController;
     private final UserContextProvider mUserContextTracker;
 
     @Inject
@@ -53,7 +59,8 @@ public class StatixRecordingService extends RecordingService {
             UiEventLogger uiEventLogger,
             NotificationManager notificationManager,
             UserContextProvider userContextTracker,
-            KeyguardDismissUtil keyguardDismissUtil) {
+            KeyguardDismissUtil keyguardDismissUtil,
+            ScreenRecordingStartTimeStore screenRecordingStartTimeStore) {
         super(
                 controller,
                 executor,
@@ -61,7 +68,9 @@ public class StatixRecordingService extends RecordingService {
                 uiEventLogger,
                 notificationManager,
                 userContextTracker,
-                keyguardDismissUtil);
+                keyguardDismissUtil,
+                screenRecordingStartTimeStore);
+        mController = controller;
         mNotificationManager = notificationManager;
         mUserContextTracker = userContextTracker;
     }
@@ -81,6 +90,11 @@ public class StatixRecordingService extends RecordingService {
             case ACTION_STOP:
                 super.onStartCommand(intent, flags, userId);
                 stopForeground(STOP_FOREGROUND_DETACH);
+                // Check user ID - we may be getting a stop intent after user switch, in which case
+                // we want to post the notifications for that user, which is NOT current user
+                int userId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, USER_ID_NOT_SPECIFIED);
+                int stopReason = intent.getIntExtra(EXTRA_STOP_REASON, mController.getStopReason());
+                stopService(userId, stopReason);
                 return Service.START_NOT_STICKY;
             case ACTION_DELETE:
                 // Close quick shade
@@ -105,7 +119,7 @@ public class StatixRecordingService extends RecordingService {
     }
 
     @Override
-    protected Notification createSaveNotification(ScreenMediaRecorder.SavedRecording recording) {
+    protected Notification createSaveNotification(@Nullable SavedRecording recording) {
         Notification originalNotification = super.createSaveNotification(recording);
         Notification.Builder originalBuilder =
                 Notification.Builder.recoverBuilder(this, originalNotification);
@@ -152,7 +166,8 @@ public class StatixRecordingService extends RecordingService {
 
     @Override
     protected Intent getNotificationIntent(Context context) {
-        return new Intent(context, RecordingService.class).setAction(ACTION_STOP_NOTIF);
+        return new Intent(context, RecordingService.class).setAction(ACTION_STOP_NOTIF)
+                .putExtra(EXTRA_STOP_REASON, StopReason.STOP_HOST_APP);
     }
 
     private static Intent getDeleteIntent(Context context, String path) {

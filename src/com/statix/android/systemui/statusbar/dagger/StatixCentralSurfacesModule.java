@@ -16,24 +16,33 @@
 
 package com.statix.android.systemui.statusbar.dagger;
 
+import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.emergency.EmergencyGestureModule;
 import com.android.systemui.statusbar.dagger.CentralSurfacesDependenciesModule;
 import com.android.systemui.statusbar.notification.dagger.NotificationsModule;
 import com.android.systemui.statusbar.notification.row.NotificationRowModule;
+import com.android.systemui.statusbar.phone.CentralSurfaces;
 import com.android.systemui.statusbar.phone.StatusBarNotificationPresenterModule;
 
-import com.statix.android.systemui.statusbar.phone.dagger.StatixStatusBarPhoneModule;
+import com.statix.android.systemui.statusbar.phone.StatixCentralSurfacesImpl;
 
+import dagger.Binds;
 import dagger.Module;
 
 /** */
 @Module(
         includes = {
-            StatixStatusBarPhoneModule.class,
             CentralSurfacesDependenciesModule.class,
             NotificationsModule.class,
             NotificationRowModule.class,
             StatusBarNotificationPresenterModule.class,
             EmergencyGestureModule.class
         })
-public interface StatixCentralSurfacesModule {}
+public interface StatixCentralSurfacesModule {
+    /**
+     * Provides our instance of CentralSurfaces which is considered optional.
+     */
+    @Binds
+    @SysUISingleton
+    CentralSurfaces bindsCentralSurfaces(StatixCentralSurfacesImpl impl);
+}

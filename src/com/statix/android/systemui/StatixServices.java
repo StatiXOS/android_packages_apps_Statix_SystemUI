@@ -29,8 +29,6 @@ import com.statix.android.systemui.elmyra.ElmyraService;
 import com.statix.android.systemui.res.R;
 import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
-import dagger.Lazy;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -44,8 +42,7 @@ public class StatixServices extends VendorServices {
     private final AlarmManager mAlarmManager;
     private final AssistManager mAssistManager;
     private final FlashlightController mFlashlightController;
-    private final Lazy<Handler> mBgHandler;
-    private final Lazy<Handler> mMainHandler;
+    private final Handler mBgHandler;
     private final NotificationShadeWindowView mNotificationShadeWindowView;
     private final PowerInteractor mPowerInteractor;
     private final SelectedUserInteractor mSelectedUserInteractor;
@@ -66,8 +63,7 @@ public class StatixServices extends VendorServices {
             SelectedUserInteractor selectedUserInteractor,
             ShadeViewController shadeViewController,
             WakeLockLogger wakeLockLogger,
-            @Background Lazy<Handler> bgHandler,
-            @Main Lazy<Handler> mainHandler) {
+            @Background Handler bgHandler) {
         super();
         mActivityStarter = activityStarter;
         mAlarmManager = alarmManager;
@@ -80,7 +76,6 @@ public class StatixServices extends VendorServices {
         mShadeViewController = shadeViewController;
         mWakelockLogger = wakeLockLogger;
         mBgHandler = bgHandler;
-        mMainHandler = mainHandler;
     }
 
     @Override
@@ -96,7 +91,7 @@ public class StatixServices extends VendorServices {
                         mNotificationShadeWindowView.findViewById(
                                 R.id.ambient_indication_container);
         ambientIndicationContainer.initializeView(
-                mShadeViewController, mPowerInteractor, mActivityStarter, mWakelockLogger, mBgHandler, mMainHandler);
+                mShadeViewController, mPowerInteractor, mActivityStarter, mWakelockLogger, mBgHandler);
         addService(
                 new AmbientIndicationService(mContext, ambientIndicationContainer, mSelectedUserInteractor, mAlarmManager));
     }

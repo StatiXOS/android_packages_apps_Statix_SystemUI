@@ -82,14 +82,13 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
     powerInteractor: PowerInteractor,
     activityStarter: ActivityStarter,
     wakelockLogger: WakeLockLogger,
-    bgHandler: Lazy<Handler>,
-    mainHandler: Lazy<Handler>,
+    bgHandler: Handler,
   ) {
     this.activityStarter = activityStarter
     this.powerInteractor = powerInteractor
     this.wakeLockLogger = wakelockLogger
     this.shadeViewController = shadeViewController
-    wakeLock = DelayedWakeLock(bgHandler, mainHandler, context, wakeLockLogger, "AmbientIndication")
+    wakeLock = DelayedWakeLock(bgHandler, context, wakeLockLogger, "AmbientIndication")
     addInflateListener {
       textView = findViewById(R.id.ambient_indication_text)!!
       iconView = findViewById(R.id.ambient_indication_icon)!!
