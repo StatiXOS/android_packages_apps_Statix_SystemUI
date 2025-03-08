@@ -107,7 +107,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         private float mCurrentPercent;
 
         private PercentageDrawable() {
-            shape = mContext.getDrawable(R.drawable.qs_tile_background_shape);
+            shape = mContext.getDrawable(com.android.systemui.res.R.drawable.qs_tile_background_shape);
             mCurrentPercent =
                     Settings.System.getFloat(mContext.getContentResolver(), mSettingsKey, 0.01f);
         }

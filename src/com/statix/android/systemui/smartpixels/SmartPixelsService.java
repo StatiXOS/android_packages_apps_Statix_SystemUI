@@ -185,7 +185,7 @@ public class SmartPixelsService extends Service {
         Point windowSize = new Point();
         windowManager.getDefaultDisplay().getRealSize(windowSize);
         Resources res = getResources();
-        int mStatusBarHeight = res.getDimensionPixelOffset(R.dimen.status_bar_height);
+        int mStatusBarHeight = res.getDimensionPixelOffset(com.android.systemui.res.R.dimen.status_bar_height);
         displaySize.x += displaySize.x - windowSize.x + (mStatusBarHeight * 2);
         displaySize.y += displaySize.y - windowSize.y + (mStatusBarHeight * 2);
 

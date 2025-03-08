@@ -305,7 +305,7 @@ class AmbientIndicationContainer(private val context: Context, attrs: AttributeS
   }
 
   private fun updateBottomSpacing() {
-    val marginBottom = resources.getDimensionPixelSize(R.dimen.ambient_indication_margin_bottom)
+    val marginBottom = resources.getDimensionPixelSize(com.android.systemui.res.R.dimen.ambient_indication_margin_bottom)
     if (bottomMarginPx != marginBottom) {
       bottomMarginPx = marginBottom
       (layoutParams as FrameLayout.LayoutParams).bottomMargin = bottomMarginPx

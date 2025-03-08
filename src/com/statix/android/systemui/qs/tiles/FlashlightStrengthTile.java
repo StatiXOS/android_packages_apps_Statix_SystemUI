@@ -191,7 +191,7 @@ public class FlashlightStrengthTile extends FlashlightTile implements TouchableQ
             state.label =
                     String.format(
                             "%s - %s%%",
-                            mHost.getContext().getString(R.string.quick_settings_flashlight_label),
+                            mHost.getContext().getString(com.android.systemui.res.R.string.quick_settings_flashlight_label),
                             Math.round(mCurrentPercent * 100f));
         }
     }
