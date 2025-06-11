@@ -13,7 +13,10 @@ import com.android.systemui.dagger.SystemUIModule;
 import com.android.systemui.keyguard.CustomizationProvider;
 import com.android.systemui.statusbar.NotificationInsetsModule;
 import com.android.systemui.statusbar.QsFrameTranslateModule;
+import com.android.systemui.unfold.SysUIUnfoldModule;
+
 import com.statix.android.systemui.dagger.SystemUIStatixCoreStartableModule;
+import com.statix.android.systemui.dagger.SystemUIStatixModule;
 
 import dagger.Subcomponent;
 
@@ -27,10 +30,10 @@ import dagger.Subcomponent;
         QsFrameTranslateModule.class,
         StatixComponentBinder.class,
         SystemUIModule.class,
-        SystemUIStatixBinder.class,
         SystemUIStatixModule.class,
         SystemUICoreStartableModule.class,
-        SystemUIStatixCoreStartableModule.class})
+        SystemUIStatixCoreStartableModule.class,
+        SysUIUnfoldModule.class})
 public interface SysUIComponentStatix extends SysUIComponent {
 
     /**

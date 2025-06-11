@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings.SettingNotFoundException
 import android.view.WindowManager
-import com.android.app.viewcapture.ViewCaptureAwareWindowManager
 import com.android.internal.app.AssistUtils
 import com.android.internal.util.ScreenshotHelper
 import com.android.systemui.assist.AssistLogger
@@ -20,7 +19,7 @@ import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.model.SysUiState
-import com.android.systemui.recents.OverviewProxyService
+import com.android.systemui.recents.LauncherProxyService
 import com.android.systemui.settings.DisplayTracker
 import com.android.systemui.settings.UserTracker
 import com.android.systemui.statusbar.CommandQueue
@@ -44,7 +43,7 @@ constructor(
   assistUtils: AssistUtils,
   commandQueue: CommandQueue,
   phoneStateMonitor: PhoneStateMonitor,
-  overviewProxyService: OverviewProxyService,
+  launcherProxyService: LauncherProxyService,
   sysUiState: Lazy<SysUiState>,
   defaultUiController: DefaultUiController,
   assistLogger: AssistLogger,
@@ -56,7 +55,7 @@ constructor(
   selectedUserInteractor: SelectedUserInteractor,
   activityManager: ActivityManager,
   interactor: AssistInteractor,
-  viewCaptureAwareWindowManager: ViewCaptureAwareWindowManager,
+  windowManager: WindowManager,
   @Background backgroundScope: CoroutineScope,
 ) :
   AssistManager(
@@ -65,7 +64,7 @@ constructor(
     assistUtils,
     commandQueue,
     phoneStateMonitor,
-    overviewProxyService,
+    launcherProxyService,
     sysUiState,
     defaultUiController,
     assistLogger,
@@ -76,7 +75,7 @@ constructor(
     selectedUserInteractor,
     activityManager,
     interactor,
-    viewCaptureAwareWindowManager,
+    windowManager,
   ) {
 
   private val assistActionFlow =

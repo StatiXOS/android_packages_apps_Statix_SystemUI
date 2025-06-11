@@ -27,11 +27,11 @@ import com.android.app.animation.Interpolators.LINEAR_OUT_SLOW_IN
 import com.android.systemui.AutoReinflateContainer
 import com.android.systemui.Dependency
 import com.android.systemui.doze.DozeReceiver
+import com.android.systemui.media.NotificationMediaManager
 import com.android.systemui.plugins.ActivityStarter
 import com.android.systemui.plugins.statusbar.StatusBarStateController
 import com.android.systemui.power.domain.interactor.PowerInteractor
 import com.android.systemui.shade.ShadeViewController
-import com.android.systemui.statusbar.NotificationMediaManager
 import com.android.systemui.statusbar.StatusBarState
 import com.android.systemui.util.wakelock.DelayedWakeLock
 import com.android.systemui.util.wakelock.WakeLock

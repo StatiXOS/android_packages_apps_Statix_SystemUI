@@ -17,6 +17,7 @@ import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.dump.DumpManager
 import com.android.systemui.flags.FeatureFlags
+import com.android.systemui.flags.SystemPropertiesHelper;
 import com.android.systemui.keyguard.WakefulnessLifecycle
 import com.android.systemui.keyguard.domain.interactor.KeyguardTransitionInteractor
 import com.android.systemui.settings.UserTracker
@@ -53,6 +54,7 @@ constructor(
   uiModeManager: UiModeManager,
   private val configurationController: ConfigurationController,
   activityManager: ActivityManager,
+  systemPropertiesHelper: SystemPropertiesHelper,
 ) :
   ThemeOverlayController(
     context,
@@ -74,6 +76,7 @@ constructor(
     keyguardTransitionInteractor,
     uiModeManager,
     activityManager,
+    systemPropertiesHelper,
   ) {
 
   private val darkConfigurationListener =

@@ -5,13 +5,12 @@ import static com.android.systemui.Dependency.TIME_TICK_HANDLER_NAME;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.hardware.devicestate.DeviceStateManager;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
-import com.android.app.viewcapture.ViewCaptureAwareWindowManager;
 import com.android.internal.logging.MetricsLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
@@ -38,6 +37,7 @@ import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
+import com.android.systemui.media.NotificationMediaManager;
 import com.android.systemui.navigationbar.NavigationBarController;
 import com.android.systemui.notetask.NoteTaskController;
 import com.android.systemui.plugins.ActivityStarter;
@@ -48,7 +48,7 @@ import com.android.systemui.power.domain.interactor.PowerInteractor;
 import com.android.systemui.scene.domain.interactor.WindowRootViewVisibilityInteractor;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
-import com.android.systemui.settings.brightness.domain.interactor.BrightnessMirrorShowingInteractor;
+import com.android.systemui.settings.brightness.data.repository.BrightnessMirrorShowingRepository;
 import com.android.systemui.shade.CameraLauncher;
 import com.android.systemui.shade.GlanceableHubContainerController;
 import com.android.systemui.shade.NotificationShadeWindowViewController;
@@ -61,7 +61,6 @@ import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.LightRevealScrim;
 import com.android.systemui.statusbar.LockscreenShadeTransitionController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
-import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.statusbar.NotificationPresenter;
 import com.android.systemui.statusbar.NotificationRemoteInputManager;
 import com.android.systemui.statusbar.NotificationShadeDepthController;
@@ -105,7 +104,9 @@ import com.android.systemui.util.WallpaperController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.MessageRouter;
 import com.android.systemui.util.kotlin.JavaAdapter;
+import com.android.systemui.utils.windowmanager.WindowManagerProvider;
 import com.android.systemui.volume.VolumeComponent;
+import com.android.systemui.wallet.controller.QuickAccessWalletController;
 import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.StartingSurface;
 
@@ -118,7 +119,6 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 
 @SysUISingleton
 public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
@@ -226,12 +226,13 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             LightRevealScrim lightRevealScrim,
             AlternateBouncerInteractor alternateBouncerInteractor,
             UserTracker userTracker,
-            Provider<FingerprintManager> fingerprintManager,
             ActivityStarter activityStarter,
-            BrightnessMirrorShowingInteractor brightnessMirrorShowingInteractor,
+            BrightnessMirrorShowingRepository brightnessMirrorShowingRepository,
             GlanceableHubContainerController glanceableHubContainerController,
             EmergencyGestureIntentFactory emergencyGestureIntentFactory,
-            ViewCaptureAwareWindowManager viewCaptureAwareWindowManager) {
+            QuickAccessWalletController walletController,
+            WindowManager windowManager,
+            WindowManagerProvider windowManagerProvider) {
         super(
                 context,
                 notificationsController,
@@ -330,11 +331,12 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 lightRevealScrim,
                 alternateBouncerInteractor,
                 userTracker,
-                fingerprintManager,
                 activityStarter,
-                brightnessMirrorShowingInteractor,
+                brightnessMirrorShowingRepository,
                 glanceableHubContainerController,
                 emergencyGestureIntentFactory,
-                viewCaptureAwareWindowManager);
+                walletController,
+                windowManager,
+                windowManagerProvider);
     }
 }

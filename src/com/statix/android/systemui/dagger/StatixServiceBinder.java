@@ -19,10 +19,12 @@ package com.statix.android.systemui.dagger;
 import android.app.Service;
 
 import com.android.systemui.SystemUIService;
+import com.android.systemui.communal.widgets.GlanceableHubWidgetManagerService;
 import com.android.systemui.doze.DozeService;
 import com.android.systemui.dreams.DreamOverlayService;
 import com.android.systemui.dump.SystemUIAuxiliaryDumpService;
 import com.android.systemui.keyguard.KeyguardService;
+import com.android.systemui.recordissue.IssueRecordingService;
 import com.android.systemui.screenrecord.RecordingService;
 import com.android.systemui.statusbar.phone.NotificationListenerWithPlugins;
 import com.android.systemui.wallpapers.ImageWallpaper;
@@ -85,4 +87,17 @@ public abstract class StatixServiceBinder {
     @IntoMap
     @ClassKey(RecordingService.class)
     public abstract Service bindRecordingService(StatixRecordingService service);
+
+    /** Inject into IssueRecordingService */
+    @Binds
+    @IntoMap
+    @ClassKey(IssueRecordingService.class)
+    public abstract Service bindIssueRecordingService(IssueRecordingService service);
+
+    /** Inject into GlanceableHubWidgetManagerService */
+    @Binds
+    @IntoMap
+    @ClassKey(GlanceableHubWidgetManagerService.class)
+    public abstract Service bindGlanceableHubWidgetManagerService(
+            GlanceableHubWidgetManagerService service);
 }
