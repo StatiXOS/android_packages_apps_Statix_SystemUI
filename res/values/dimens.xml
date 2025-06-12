@@ -1,9 +1,5 @@
 <resources>
 
-    <!-- Ambient indication -->
-    <dimen name="ambient_indication_icon_size">20.0dip</dimen>
-    <dimen name="ambient_indication_note_icon_size">14.0dip</dimen>
-
     <!-- Smartspace -->
     <dimen name="enhanced_smartspace_height">104.0dip</dimen>
 
