@@ -29,8 +29,6 @@ import com.android.systemui.screenrecord.RecordingService;
 import com.android.systemui.statusbar.phone.NotificationListenerWithPlugins;
 import com.android.systemui.wallpapers.ImageWallpaper;
 
-import com.statix.android.systemui.screenrecord.StatixRecordingService;
-
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.ClassKey;
@@ -86,7 +84,7 @@ public abstract class StatixServiceBinder {
     @Binds
     @IntoMap
     @ClassKey(RecordingService.class)
-    public abstract Service bindRecordingService(StatixRecordingService service);
+    public abstract Service bindRecordingService(RecordingService service);
 
     /** Inject into IssueRecordingService */
     @Binds
