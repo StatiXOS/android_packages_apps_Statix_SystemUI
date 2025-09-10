@@ -44,6 +44,8 @@ android_library {
         "elmyra-sysui-shared",
         "lineage_hw_helpers",
         "monet",
+        "smartspace-proto-java",
+        "smartspace-proto-lite-java",
         "StatixSystemUI-res",
         "SystemUI-core",
         "vendor.lineage.powershare-V1-java",
