@@ -1,7 +1,12 @@
 -include ../../../../frameworks/base/packages/SystemUI/proguard.flags
 
 # Custom rules
+-keep class com.android.systemui.smartspace.** { *; }
 -keep class com.statix.** { *; }
 
 # Custom rules
 -keep class vendor.** { *; }
+
+# Google rules
+-keep class android.hardware.** { *; }
+-keep class com.google.** { *; }
