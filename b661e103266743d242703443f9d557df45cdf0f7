@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3740857_e7710b19",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 20
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000125
+      },
+      "writtenOn": "2025-10-07T04:01:41Z",
+      "side": 1,
+      "message": "We should either move these to src/com/google/ or rename packages to statix",
+      "revId": "b661e103266743d242703443f9d557df45cdf0f7",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
