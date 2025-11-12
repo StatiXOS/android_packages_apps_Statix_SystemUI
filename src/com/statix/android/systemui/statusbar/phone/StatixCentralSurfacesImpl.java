@@ -100,6 +100,7 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.window.StatusBarWindowControllerStore;
 import com.android.systemui.statusbar.window.StatusBarWindowStateController;
+import com.android.systemui.topui.TopUiController;
 import com.android.systemui.util.WallpaperController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.MessageRouter;
@@ -176,6 +177,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             ConfigurationController configurationController,
             NotificationShadeWindowController notificationShadeWindowController,
             Lazy<NotificationShadeWindowViewController> notificationShadeWindowViewControllerLazy,
+            TopUiController topUiController,
             NotificationStackScrollLayoutController notificationStackScrollLayoutController,
             // Lazys due to b/298099682.
             Lazy<NotificationPresenter> notificationPresenterLazy,
@@ -282,6 +284,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 configurationController,
                 notificationShadeWindowController,
                 notificationShadeWindowViewControllerLazy,
+                topUiController,
                 notificationStackScrollLayoutController,
                 notificationPresenterLazy,
                 notificationActivityStarterLazy,

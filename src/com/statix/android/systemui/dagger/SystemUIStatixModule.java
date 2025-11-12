@@ -16,6 +16,7 @@ import com.android.systemui.ScreenDecorationsModule;
 import com.android.systemui.accessibility.AccessibilityModule;
 import com.android.systemui.accessibility.SystemActionsModule;
 import com.android.systemui.accessibility.data.repository.AccessibilityRepositoryModule;
+import com.android.systemui.actioncorner.ActionCornerModule;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.battery.BatterySaverModule;
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
@@ -24,13 +25,17 @@ import com.android.systemui.communal.posturing.dagger.NoopPosturingModule;
 import com.android.systemui.controls.controller.ControlsTileResourceConfiguration;
 import com.android.systemui.CoreStartable;
 import com.android.systemui.dagger.SysUISingleton;
+import com.android.systemui.display.dagger.SystemUIDisplaySubcomponent;
+import com.android.systemui.display.dagger.SystemUIPhoneDisplaySubcomponent;
+import com.android.systemui.display.data.repository.DisplayPhoneModule;
 import com.android.systemui.display.ui.viewmodel.ConnectingDisplayViewModel;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.education.dagger.ContextualEducationModule;
-import com.android.systemui.topwindoweffects.dagger.SqueezeEffectRepositoryModule;
-import com.android.systemui.topwindoweffects.dagger.TopLevelWindowEffectsModule;
+import com.android.systemui.Flags;
+import com.android.systemui.minmode.MinModeManager;
+import com.android.systemui.minmode.MinModeManagerImpl;
 import com.android.systemui.emergency.EmergencyGestureModule;
 import com.android.systemui.globalactions.GlobalActionsModule;
 import com.android.systemui.inputdevice.tutorial.KeyboardTouchpadTutorialModule;
@@ -45,6 +50,7 @@ import com.android.systemui.media.nearby.NearbyMediaDevicesManager;
 import com.android.systemui.navigationbar.NavigationBarControllerModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
+import com.android.systemui.qs.QSFragmentStartableModule;
 import com.android.systemui.qs.dagger.QSModule;
 import com.android.systemui.reardisplay.RearDisplayModule;
 import com.android.systemui.recents.Recents;
@@ -85,6 +91,8 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.toast.ToastModule;
+import com.android.systemui.topwindoweffects.dagger.SqueezeEffectRepositoryModule;
+import com.android.systemui.topwindoweffects.dagger.TopLevelWindowEffectsModule;
 import com.android.systemui.touchpad.tutorial.TouchpadTutorialModule;
 import com.android.systemui.unfold.SysUIUnfoldStartableModule;
 import com.android.systemui.unfold.UnfoldTransitionModule;
@@ -109,9 +117,11 @@ import dagger.Provides;
 import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Named;
+import javax.inject.Provider;
 
 /**
  * A dagger module for injecting default implementations of components of System UI.
@@ -132,6 +142,7 @@ import javax.inject.Named;
         includes = {
             AccessibilityModule.class,
             AccessibilityRepositoryModule.class,
+            ActionCornerModule.class,
             AospPolicyModule.class,
             BatterySaverModule.class,
             BrightnessSliderModule.class,
@@ -141,6 +152,7 @@ import javax.inject.Named;
             ContextualEducationModule.class,
             DefaultBlueprintModule.class,
             DeviceStateAutoRotateModule.class,
+            DisplayPhoneModule.class,
             EmergencyGestureModule.class,
             GestureModule.class,
             GlobalActionsModule.class,
@@ -155,6 +167,7 @@ import javax.inject.Named;
             MultiUserUtilsModule.class,
             NavigationBarControllerModule.class,
             NearbyMediaDevicesManager.StartableModule.class,
+            QSFragmentStartableModule.class,
             QSModule.class,
             RearDisplayModule.class,
             RecentsModule.class,
@@ -182,8 +195,14 @@ import javax.inject.Named;
             UnfoldTransitionModule.Startables.class,
             VolumeModule.class,
             WallpaperModule.class
+        }, subcomponents = {
+            SystemUIPhoneDisplaySubcomponent.class
         })
 public abstract class SystemUIStatixModule {
+
+    @Binds
+    abstract SystemUIDisplaySubcomponent.Factory systemUIDisplaySubcomponentFactory(
+            SystemUIPhoneDisplaySubcomponent.Factory factory);
 
     @SysUISingleton
     @Provides
@@ -217,6 +236,16 @@ public abstract class SystemUIStatixModule {
 
     @Binds
     abstract DockManager bindDockManager(DockManagerImpl dockManager);
+
+    @Provides
+    @SysUISingleton
+    static Optional<MinModeManager> bindMinModeManager(Provider<MinModeManagerImpl> minModeManager) {
+      if (Flags.enableMinmode()) {
+        return Optional.of(minModeManager.get());
+      } else {
+        return Optional.empty();
+      }
+    }
 
     @SysUISingleton
     @Provides

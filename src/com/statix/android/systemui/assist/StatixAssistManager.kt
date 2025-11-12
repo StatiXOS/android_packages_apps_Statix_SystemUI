@@ -9,6 +9,7 @@ import android.provider.Settings.SettingNotFoundException
 import android.view.WindowManager
 import com.android.internal.app.AssistUtils
 import com.android.internal.util.ScreenshotHelper
+import com.android.systemui.LauncherProxyService
 import com.android.systemui.assist.AssistLogger
 import com.android.systemui.assist.AssistManager
 import com.android.systemui.assist.PhoneStateMonitor
@@ -19,7 +20,6 @@ import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.model.SysUiState
-import com.android.systemui.recents.LauncherProxyService
 import com.android.systemui.settings.DisplayTracker
 import com.android.systemui.settings.UserTracker
 import com.android.systemui.statusbar.CommandQueue
@@ -48,6 +48,7 @@ constructor(
   defaultUiController: DefaultUiController,
   assistLogger: AssistLogger,
   @Main private val uiHandler: Handler,
+  @Background private val bgHandler: Handler,
   userTracker: UserTracker,
   displayTracker: DisplayTracker,
   private val cameraGestureHelper: Lazy<CameraGestureHelper>,
@@ -69,6 +70,7 @@ constructor(
     defaultUiController,
     assistLogger,
     uiHandler,
+    bgHandler,
     userTracker,
     displayTracker,
     secureSettings,
