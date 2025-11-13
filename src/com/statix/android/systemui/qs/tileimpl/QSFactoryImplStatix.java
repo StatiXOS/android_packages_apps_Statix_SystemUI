@@ -39,8 +39,6 @@ import javax.inject.Provider;
 @SysUISingleton
 public class QSFactoryImplStatix extends QSFactoryImpl {
 
-    private static final String[] SLIDER_TILES = {"flashlight"};
-
     @Inject
     public QSFactoryImplStatix(
             Lazy<QSHost> qsHostLazy,
