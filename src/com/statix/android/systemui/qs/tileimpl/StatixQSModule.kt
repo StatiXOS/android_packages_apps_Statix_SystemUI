@@ -16,15 +16,22 @@
 
 package com.statix.android.systemui.qs.tileimpl
 
+import com.android.systemui.qs.QsEventLogger
+import com.android.systemui.qs.pipeline.shared.TileSpec
+import com.android.systemui.qs.shared.model.TileCategory
 import com.android.systemui.qs.tileimpl.QSTileImpl
+import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig
+import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig
 import com.statix.android.systemui.qs.tiles.CaffeineTile
 import com.statix.android.systemui.qs.tiles.DataSwitchTile
 import com.statix.android.systemui.qs.tiles.FlashlightStrengthTile
 import com.statix.android.systemui.qs.tiles.GloveModeTile
 import com.statix.android.systemui.qs.tiles.PowerShareTile
 import com.statix.android.systemui.qs.tiles.SmartPixelsTile
+import com.statix.android.systemui.res.R
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
@@ -66,4 +73,88 @@ interface StatixQSModule {
   @IntoMap
   @StringKey(SmartPixelsTile.TILE_SPEC)
   fun bindSmartPixelsTile(smartPixelsTile: SmartPixelsTile): QSTileImpl<*>
+
+  companion object {
+
+    const val CAFFEINE_TILE_SPEC = "caffeine"
+    const val DATA_SWITCH_TILE_SPEC = "dataswitch"
+    const val GLOVE_MODE_TILE_SPEC = "glovemode"
+    const val POWERSHARE_TILE_SPEC = "powershare"
+    const val SMART_PIXELS_TILE_SPEC = "smartpixels"
+
+    @Provides
+    @IntoMap
+    @StringKey(CAFFEINE_TILE_SPEC)
+    fun provideCaffeineTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+      QSTileConfig(
+        tileSpec = TileSpec.create(CAFFEINE_TILE_SPEC),
+        uiConfig =
+          QSTileUIConfig.Resource(
+            iconRes = R.drawable.ic_qs_caffeine,
+            labelRes = R.string.quick_settings_caffeine_label,
+          ),
+        instanceId = uiEventLogger.getNewInstanceId(),
+        category = TileCategory.DISPLAY,
+      )
+
+    @Provides
+    @IntoMap
+    @StringKey(DATA_SWITCH_TILE_SPEC)
+    fun provideDataSwitchTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+      QSTileConfig(
+        tileSpec = TileSpec.create(DATA_SWITCH_TILE_SPEC),
+        uiConfig =
+          QSTileUIConfig.Resource(
+            iconRes = R.drawable.ic_qs_data_switch_1,
+            labelRes = R.string.qs_data_switch_label,
+          ),
+        instanceId = uiEventLogger.getNewInstanceId(),
+        category = TileCategory.CONNECTIVITY,
+      )
+
+    @Provides
+    @IntoMap
+    @StringKey(GLOVE_MODE_TILE_SPEC)
+    fun provideGloveModeTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+      QSTileConfig(
+        tileSpec = TileSpec.create(GLOVE_MODE_TILE_SPEC),
+        uiConfig =
+          QSTileUIConfig.Resource(
+            iconRes = R.drawable.ic_qs_glove_mode,
+            labelRes = R.string.quick_settings_glove_mode_label,
+          ),
+        instanceId = uiEventLogger.getNewInstanceId(),
+        category = TileCategory.UTILITIES,
+      )
+
+    @Provides
+    @IntoMap
+    @StringKey(POWERSHARE_TILE_SPEC)
+    fun providePowerShareTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+      QSTileConfig(
+        tileSpec = TileSpec.create(POWERSHARE_TILE_SPEC),
+        uiConfig =
+          QSTileUIConfig.Resource(
+            iconRes = R.drawable.ic_qs_powershare,
+            labelRes = R.string.quick_settings_powershare_label,
+          ),
+        instanceId = uiEventLogger.getNewInstanceId(),
+        category = TileCategory.UTILITIES,
+      )
+
+    @Provides
+    @IntoMap
+    @StringKey(SMART_PIXELS_TILE_SPEC)
+    fun provideSmartPixelsTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+      QSTileConfig(
+        tileSpec = TileSpec.create(SMART_PIXELS_TILE_SPEC),
+        uiConfig =
+          QSTileUIConfig.Resource(
+            iconRes = R.drawable.ic_qs_smart_pixels,
+            labelRes = R.string.quick_settings_smart_pixels,
+          ),
+        instanceId = uiEventLogger.getNewInstanceId(),
+        category = TileCategory.DISPLAY,
+      )
+  }
 }
