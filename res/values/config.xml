@@ -9,6 +9,11 @@
     <!-- Whether or not long-pressing on keyguard will display to customize lockscreen -->
     <bool name="long_press_keyguard_customize_lockscreen_enabled">true</bool>
 
+    <!-- The default tiles to display in QuickSettings with the new UI -->
+    <string name="quick_settings_tiles_new_default" translatable="false">
+        internet,bt,dnd,custom(com.google.android.gms/.nearby.sharing.SharingTileService),flashlight,airplane,rotation,wallet,cast,alarm,controls,screenrecord
+    </string>
+
     <!-- Tiles native to Statix System UI. Order should match "quick_settings_tiles_default" -->
     <string name="quick_settings_tiles_stock" translatable="false">
         internet,bt,flashlight,dnd,modes_dnd,alarm,airplane,controls,wallet,rotation,battery,cast,screenrecord,mictoggle,cameratoggle,location,hotspot,inversion,saver,dark,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling,record_issue,hearing_devices,notes,desktopeffects,powershare,caffeine,glovemode,nfc,smartpixels,dataswitch
