@@ -79,6 +79,7 @@ interface StatixQSModule {
     const val CAFFEINE_TILE_SPEC = "caffeine"
     const val DATA_SWITCH_TILE_SPEC = "dataswitch"
     const val GLOVE_MODE_TILE_SPEC = "glovemode"
+    const val NFC_TILE_SPEC = "nfc"
     const val POWERSHARE_TILE_SPEC = "powershare"
     const val SMART_PIXELS_TILE_SPEC = "smartpixels"
 
@@ -125,6 +126,21 @@ interface StatixQSModule {
           ),
         instanceId = uiEventLogger.getNewInstanceId(),
         category = TileCategory.UTILITIES,
+      )
+
+    @Provides
+    @IntoMap
+    @StringKey(NFC_TILE_SPEC)
+    fun provideNfcTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+      QSTileConfig(
+        tileSpec = TileSpec.create(NFC_TILE_SPEC),
+        uiConfig =
+          QSTileUIConfig.Resource(
+            iconRes = R.drawable.ic_qs_nfc,
+            labelRes = com.android.systemui.res.R.string.quick_settings_nfc_label,
+          ),
+        instanceId = uiEventLogger.getNewInstanceId(),
+        category = TileCategory.CONNECTIVITY,
       )
 
     @Provides
