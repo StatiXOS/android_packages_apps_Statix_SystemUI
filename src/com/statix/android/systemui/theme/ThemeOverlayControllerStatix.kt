@@ -26,6 +26,7 @@ import com.android.systemui.statusbar.policy.ConfigurationController.Configurati
 import com.android.systemui.statusbar.policy.DeviceProvisionedController
 import com.android.systemui.theme.ThemeOverlayApplier
 import com.android.systemui.theme.ThemeOverlayController
+import com.android.systemui.user.utils.UserScopedService
 import com.android.systemui.util.kotlin.JavaAdapter
 import com.android.systemui.util.settings.SecureSettings
 import java.util.concurrent.Executor
@@ -52,6 +53,7 @@ constructor(
   javaAdapter: JavaAdapter,
   keyguardTransitionInteractor: KeyguardTransitionInteractor,
   uiModeManager: UiModeManager,
+  uiModeManagerProvider: UserScopedService<UiModeManager>,
   private val configurationController: ConfigurationController,
   activityManager: ActivityManager,
   systemPropertiesHelper: SystemPropertiesHelper,
@@ -75,6 +77,7 @@ constructor(
     javaAdapter,
     keyguardTransitionInteractor,
     uiModeManager,
+    uiModeManagerProvider,
     activityManager,
     systemPropertiesHelper,
   ) {

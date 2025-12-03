@@ -24,10 +24,12 @@ import com.android.systemui.settings.DisplayTracker
 import com.android.systemui.settings.UserTracker
 import com.android.systemui.statusbar.CommandQueue
 import com.android.systemui.statusbar.policy.DeviceProvisionedController
+import com.android.systemui.topwindoweffects.data.repository.InvocationEffectEnabler
 import com.android.systemui.user.domain.interactor.SelectedUserInteractor
 import com.android.systemui.util.settings.SecureSettings
 import com.android.systemui.util.settings.SettingsProxyExt.observerFlow
 import dagger.Lazy
+import java.util.Optional
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -57,6 +59,7 @@ constructor(
   activityManager: ActivityManager,
   interactor: AssistInteractor,
   windowManager: WindowManager,
+  optionalInvocationEffectEnabler: Optional<InvocationEffectEnabler>,
   @Background backgroundScope: CoroutineScope,
 ) :
   AssistManager(
@@ -78,6 +81,7 @@ constructor(
     activityManager,
     interactor,
     windowManager,
+    optionalInvocationEffectEnabler,
   ) {
 
   private val assistActionFlow =

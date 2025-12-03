@@ -12,6 +12,7 @@ import android.content.Context;
 import android.hardware.SensorPrivacyManager;
 
 import com.android.keyguard.KeyguardViewController;
+import com.android.systemui.Flags;
 import com.android.systemui.ScreenDecorationsModule;
 import com.android.systemui.accessibility.AccessibilityModule;
 import com.android.systemui.accessibility.SystemActionsModule;
@@ -26,16 +27,14 @@ import com.android.systemui.controls.controller.ControlsTileResourceConfiguratio
 import com.android.systemui.CoreStartable;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.display.dagger.SystemUIDisplaySubcomponent;
-import com.android.systemui.display.dagger.SystemUIPhoneDisplaySubcomponent;
+import com.android.systemui.display.dagger.ReferenceSysUIDisplaySubcomponent;
 import com.android.systemui.display.data.repository.DisplayPhoneModule;
 import com.android.systemui.display.ui.viewmodel.ConnectingDisplayViewModel;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.dock.DockManagerImpl;
 import com.android.systemui.doze.DozeHost;
+import com.android.systemui.dreams.suppression.dagger.NoOpActivityRecognitionModule;
 import com.android.systemui.education.dagger.ContextualEducationModule;
-import com.android.systemui.Flags;
-import com.android.systemui.minmode.MinModeManager;
-import com.android.systemui.minmode.MinModeManagerImpl;
 import com.android.systemui.emergency.EmergencyGestureModule;
 import com.android.systemui.globalactions.GlobalActionsModule;
 import com.android.systemui.inputdevice.tutorial.KeyboardTouchpadTutorialModule;
@@ -44,9 +43,12 @@ import com.android.systemui.keyguard.dagger.KeyguardModule;
 import com.android.systemui.keyguard.ui.composable.blueprint.DefaultBlueprintModule;
 import com.android.systemui.keyguard.ui.view.layout.blueprints.KeyguardBlueprintModule;
 import com.android.systemui.keyguard.ui.view.layout.sections.KeyguardSectionsModule;
+import com.android.systemui.lowlight.dagger.NoopAmbientLightModeMonitorModule;
 import com.android.systemui.media.dagger.MediaModule;
 import com.android.systemui.media.muteawait.MediaMuteAwaitConnectionCli;
 import com.android.systemui.media.nearby.NearbyMediaDevicesManager;
+import com.android.systemui.minmode.MinModeManager;
+import com.android.systemui.minmode.MinModeManagerImpl;
 import com.android.systemui.navigationbar.NavigationBarControllerModule;
 import com.android.systemui.navigationbar.gestural.GestureModule;
 import com.android.systemui.plugins.qs.QSFactory;
@@ -68,7 +70,6 @@ import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
 import com.android.systemui.shade.ShadeModule;
 import com.android.systemui.startable.Dependencies;
 import com.android.systemui.statusbar.CommandQueue;
-import com.android.systemui.statusbar.KeyboardShortcutsModule;
 import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 import com.android.systemui.statusbar.NotificationLockscreenUserManagerImpl;
@@ -91,7 +92,6 @@ import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.theme.ThemeOverlayController;
 import com.android.systemui.toast.ToastModule;
-import com.android.systemui.topwindoweffects.dagger.SqueezeEffectRepositoryModule;
 import com.android.systemui.topwindoweffects.dagger.TopLevelWindowEffectsModule;
 import com.android.systemui.touchpad.tutorial.TouchpadTutorialModule;
 import com.android.systemui.unfold.SysUIUnfoldStartableModule;
@@ -158,7 +158,6 @@ import javax.inject.Provider;
             GlobalActionsModule.class,
             HeadsUpModule.class,
             KeyguardModule.class,
-            KeyboardShortcutsModule.class,
             KeyguardBlueprintModule.class,
             KeyguardSectionsModule.class,
             KeyboardTouchpadTutorialModule.class,
@@ -167,19 +166,20 @@ import javax.inject.Provider;
             MultiUserUtilsModule.class,
             NavigationBarControllerModule.class,
             NearbyMediaDevicesManager.StartableModule.class,
+            NoOpActivityRecognitionModule.class,
             QSFragmentStartableModule.class,
             QSModule.class,
             RearDisplayModule.class,
             RecentsModule.class,
             ReferenceNotificationsModule.class,
             NoopPosturingModule.class,
+            NoopAmbientLightModeMonitorModule.class,
             ReferenceScreenshotModule.class,
             RotationLockModule.class,
             RotationLockNewModule.class,
             SceneContainerFrameworkModule.class,
             ScreenDecorationsModule.class,
             ShadeModule.class,
-            SqueezeEffectRepositoryModule.class,
             ShortcutHelperModule.class,
             StatixCentralSurfacesModule.class,
             StatixStartCentralSurfacesModule.class,
@@ -196,13 +196,13 @@ import javax.inject.Provider;
             VolumeModule.class,
             WallpaperModule.class
         }, subcomponents = {
-            SystemUIPhoneDisplaySubcomponent.class
+            ReferenceSysUIDisplaySubcomponent.class
         })
 public abstract class SystemUIStatixModule {
 
     @Binds
     abstract SystemUIDisplaySubcomponent.Factory systemUIDisplaySubcomponentFactory(
-            SystemUIPhoneDisplaySubcomponent.Factory factory);
+            ReferenceSysUIDisplaySubcomponent.Factory factory);
 
     @SysUISingleton
     @Provides

@@ -11,6 +11,7 @@ import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.android.app.displaylib.PerDisplayRepository;
 import com.android.internal.logging.MetricsLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
@@ -30,6 +31,7 @@ import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.UiBackground;
 import com.android.systemui.demomode.DemoModeController;
+import com.android.systemui.display.dagger.SystemUIDisplaySubcomponent;
 import com.android.systemui.emergency.EmergencyGestureModule.EmergencyGestureIntentFactory;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.fragments.FragmentService;
@@ -134,7 +136,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             AutoHideController autoHideController,
             StatusBarInitializer statusBarInitializer,
             StatusBarWindowControllerStore statusBarWindowControllerStore,
-            StatusBarWindowStateController statusBarWindowStateController,
+            PerDisplayRepository<SystemUIDisplaySubcomponent> perDisplaySubcomponentRepository,
             StatusBarModeRepositoryStore statusBarModeRepository,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
             StatusBarSignalPolicy statusBarSignalPolicy,
@@ -184,7 +186,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
             Lazy<NotificationActivityStarter> notificationActivityStarterLazy,
             NotificationLaunchAnimatorControllerProvider notifTransitionAnimatorControllerProvider,
             DozeParameters dozeParameters,
-            ScrimController scrimController,
+            Lazy<ScrimController> scrimController,
             Lazy<BiometricUnlockController> biometricUnlockControllerLazy,
             AuthRippleController authRippleController,
             DozeServiceHost dozeServiceHost,
@@ -243,7 +245,7 @@ public class StatixCentralSurfacesImpl extends CentralSurfacesImpl {
                 autoHideController,
                 statusBarInitializer,
                 statusBarWindowControllerStore,
-                statusBarWindowStateController,
+                perDisplaySubcomponentRepository,
                 statusBarModeRepository,
                 keyguardUpdateMonitor,
                 statusBarSignalPolicy,

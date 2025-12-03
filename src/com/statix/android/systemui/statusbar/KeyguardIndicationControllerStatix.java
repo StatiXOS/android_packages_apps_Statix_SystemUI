@@ -39,6 +39,7 @@ import com.android.systemui.keyguard.domain.interactor.KeyguardInteractor;
 import com.android.systemui.keyguard.util.IndicationHelper;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
+import com.android.systemui.securelockdevice.domain.interactor.SecureLockDeviceInteractor;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
@@ -49,6 +50,8 @@ import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.wakelock.WakeLock;
 
 import com.statix.android.systemui.adaptivecharging.AdaptiveChargingManager;
+
+import dagger.Lazy;
 
 import java.text.NumberFormat;
 import java.util.concurrent.TimeUnit;
@@ -127,7 +130,8 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             BiometricMessageInteractor biometricMessageInteractor,
             DeviceEntryFingerprintAuthInteractor deviceEntryFingerprintAuthInteractor,
             DeviceEntryFaceAuthInteractor deviceEntryFaceAuthInteractor,
-            UserLogoutInteractor userLogoutInteractor) {
+            UserLogoutInteractor userLogoutInteractor,
+            Lazy<SecureLockDeviceInteractor> secureLockDeviceInteractor) {
         super(
                 context,
                 mainLooper,
@@ -160,7 +164,8 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
                 biometricMessageInteractor,
                 deviceEntryFingerprintAuthInteractor,
                 deviceEntryFaceAuthInteractor,
-                userLogoutInteractor);
+                userLogoutInteractor,
+                secureLockDeviceInteractor);
         mBroadcastReceiver =
                 new BroadcastReceiver() {
                     @Override
