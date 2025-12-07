@@ -14,7 +14,6 @@ import com.android.systemui.VendorServices;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Background;
-import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.power.domain.interactor.PowerInteractor;
 import com.android.systemui.shade.NotificationShadeWindowView;
@@ -24,8 +23,6 @@ import com.android.systemui.user.domain.interactor.SelectedUserInteractor;
 import com.android.systemui.util.wakelock.WakeLockLogger;
 
 import com.statix.android.systemui.elmyra.ElmyraService;
-import com.statix.android.systemui.res.R;
-import com.statix.android.systemui.smartpixels.SmartPixelsReceiver;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -78,7 +75,6 @@ public class StatixServices extends VendorServices {
 
     @Override
     public void start() {
-        addService(new SmartPixelsReceiver(mContext));
         if (mContext.getPackageManager().hasSystemFeature("android.hardware.context_hub")
                 && mContext.getPackageManager()
                         .hasSystemFeature("android.hardware.sensor.assist")) {

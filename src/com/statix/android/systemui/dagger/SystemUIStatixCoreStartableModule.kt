@@ -16,9 +16,19 @@
 
 package com.statix.android.systemui.dagger
 
+import com.android.systemui.CoreStartable
+import com.statix.android.systemui.smartpixels.SmartPixelsReceiver
+import dagger.Binds
 import dagger.Module
+import dagger.multibindings.ClassKey
+import dagger.multibindings.IntoMap
 
 /** Collection of {@link CoreStartable}s that should be run on AOSP. */
 @Module
 abstract class SystemUIStatixCoreStartableModule {
+    /** Inject into SmartPixelsReceiver. */
+    @Binds
+    @IntoMap
+    @ClassKey(SmartPixelsReceiver::class)
+    abstract fun bindSmartPixelsReceiver(sysui: SmartPixelsReceiver): CoreStartable
 }
