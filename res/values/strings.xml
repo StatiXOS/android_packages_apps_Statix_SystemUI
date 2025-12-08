@@ -52,4 +52,16 @@
     <!-- Adaptive charging -->
     <string name="adaptive_charging_time_estimate">%1$s • Adaptive charging • Full by %2$s</string>
 
+    <!-- Charging strings V2 -->
+    <string name="keyguard_indication_charging_time_dock_v2">%2$s • Fully charged by %1$s</string>
+    <string name="keyguard_indication_charging_time_fast_v2">%2$s • Fast charging • Full by %1$s</string>
+    <string name="keyguard_indication_charging_time_slowly_v2">%2$s • Fully charged by %1$s</string>
+    <string name="keyguard_indication_charging_time_v2">%2$s • Fully charged by %1$s</string>
+    <string name="keyguard_indication_charging_time_wireless_v2">%2$s • Fully charged by %1$s</string>
+    <string name="keyguard_plugged_in_charging_fast_v2">%s • Fast charging</string>
+    <string name="keyguard_plugged_in_charging_slowly_v2">%s • Charging</string>
+    <string name="keyguard_plugged_in_dock_v2">%s • Charging</string>
+    <string name="keyguard_plugged_in_v2">%s • Charging</string>
+    <string name="keyguard_plugged_in_wireless_v2">%s • Charging</string>
+
 </resources>

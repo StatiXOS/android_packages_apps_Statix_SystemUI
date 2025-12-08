@@ -6,10 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.icu.text.DateFormat;
 import android.os.BatteryManager;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.text.format.Formatter;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -19,9 +21,9 @@ import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.keyguard.logging.KeyguardLogger;
 import com.android.settingslib.fuelgauge.BatteryStatus;
-import com.android.systemui.R;
+import com.android.settingslib.fuelgauge.BatteryUtils;
+import com.android.settingslib.utils.PowerUtil;
 import com.android.systemui.biometrics.AuthController;
-import com.android.systemui.biometrics.FaceHelpMessageDeferral;
 import com.android.systemui.biometrics.FaceHelpMessageDeferralFactory;
 import com.android.systemui.bouncer.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.bouncer.domain.interactor.BouncerMessageInteractor;
@@ -47,13 +49,18 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.user.domain.interactor.UserLogoutInteractor;
 import com.android.systemui.util.DeviceConfigProxy;
 import com.android.systemui.util.concurrency.DelayableExecutor;
+import com.android.systemui.util.time.SystemClock;
+import com.android.systemui.util.time.impl.SystemClockImpl;
 import com.android.systemui.util.wakelock.WakeLock;
 
 import com.statix.android.systemui.adaptivecharging.AdaptiveChargingManager;
+import com.statix.android.systemui.res.R;
 
 import dagger.Lazy;
 
 import java.text.NumberFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -73,6 +80,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
     private final BroadcastReceiver mBroadcastReceiver;
     private final Context mContext;
     private final DeviceConfigProxy mDeviceConfig;
+    private final SystemClock mSystemClock;
     private long mEstimatedChargeCompletion;
     private boolean mInited;
     private boolean mIsCharging;
@@ -125,6 +133,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
             UserTracker userTracker,
             BouncerMessageInteractor bouncerMessageInteractor,
             IndicationHelper indicationHelper,
+            SystemClock systemClock,
             DeviceEntryBiometricSettingsInteractor deviceEntryBiometricSettingsInteractor,
             KeyguardInteractor keyguardInteractor,
             BiometricMessageInteractor biometricMessageInteractor,
@@ -201,6 +210,7 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
         mBroadcastDispatcher = broadcastDispatcher;
         mDeviceConfig = deviceConfigProxy;
         mAdaptiveChargingManager = new AdaptiveChargingManager(context);
+        mSystemClock = systemClock;
     }
 
     @Override
@@ -266,5 +276,125 @@ public class KeyguardIndicationControllerStatix extends KeyguardIndicationContro
         } else {
             mAdaptiveChargingActive = false;
         }
+    }
+
+    @Override
+    protected String computePowerChargingStringIndication() {
+        if (mPowerCharged) {
+            return mContext.getResources()
+                    .getString(com.android.systemui.res.R.string.keyguard_charged);
+        }
+
+        String percentage = NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
+        if (mBatteryDead) {
+            return mContext.getResources()
+                    .getString(
+                            BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_plugged_in_v2
+                                    : com.android.systemui.res.R.string.keyguard_plugged_in,
+                            percentage);
+        }
+
+        final boolean hasChargingTime = mChargingTimeRemaining > 0;
+        int chargingId;
+        if (mPowerPluggedInWired) {
+            switch (mChargingSpeed) {
+                case BatteryStatus.CHARGING_FAST:
+                    chargingId =
+                            hasChargingTime
+                                    ? (BatteryUtils.isChargingStringV2Enabled()
+                                            ? R.string.keyguard_indication_charging_time_fast_v2
+                                            : com.android.systemui.res.R.string
+                                                    .keyguard_indication_charging_time_fast)
+                                    : (BatteryUtils.isChargingStringV2Enabled()
+                                            ? R.string.keyguard_plugged_in_charging_fast_v2
+                                            : com.android.systemui.res.R.string
+                                                    .keyguard_plugged_in_charging_fast);
+                    break;
+                case BatteryStatus.CHARGING_SLOWLY:
+                    chargingId =
+                            hasChargingTime
+                                    ? (BatteryUtils.isChargingStringV2Enabled()
+                                            ? R.string.keyguard_indication_charging_time_slowly_v2
+                                            : com.android.systemui.res.R.string
+                                                    .keyguard_indication_charging_time_slowly)
+                                    : (BatteryUtils.isChargingStringV2Enabled()
+                                            ? R.string.keyguard_plugged_in_charging_slowly_v2
+                                            : com.android.systemui.res.R.string
+                                                    .keyguard_plugged_in_charging_slowly);
+                    break;
+                default:
+                    chargingId =
+                            hasChargingTime
+                                    ? (BatteryUtils.isChargingStringV2Enabled()
+                                            ? R.string.keyguard_indication_charging_time_v2
+                                            : com.android.systemui.res.R.string
+                                                    .keyguard_indication_charging_time)
+                                    : (BatteryUtils.isChargingStringV2Enabled()
+                                            ? R.string.keyguard_plugged_in_v2
+                                            : com.android.systemui.res.R.string
+                                                    .keyguard_plugged_in);
+                    break;
+            }
+        } else if (mPowerPluggedInWireless) {
+            chargingId =
+                    hasChargingTime
+                            ? (BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_indication_charging_time_wireless_v2
+                                    : com.android.systemui.res.R.string
+                                            .keyguard_indication_charging_time_wireless)
+                            : (BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_plugged_in_wireless_v2
+                                    : com.android.systemui.res.R.string
+                                            .keyguard_plugged_in_wireless);
+        } else if (mPowerPluggedInDock) {
+            chargingId =
+                    hasChargingTime
+                            ? (BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_indication_charging_time_dock_v2
+                                    : com.android.systemui.res.R.string
+                                            .keyguard_indication_charging_time_dock)
+                            : (BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_plugged_in_dock_v2
+                                    : com.android.systemui.res.R.string.keyguard_plugged_in_dock);
+        } else {
+            chargingId =
+                    hasChargingTime
+                            ? (BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_indication_charging_time_v2
+                                    : com.android.systemui.res.R.string
+                                            .keyguard_indication_charging_time)
+                            : (BatteryUtils.isChargingStringV2Enabled()
+                                    ? R.string.keyguard_plugged_in_v2
+                                    : com.android.systemui.res.R.string.keyguard_plugged_in);
+        }
+
+        if (hasChargingTime) {
+            String chargingTimeFormatted =
+                    getChargingTimeFormatted(mContext, mChargingTimeRemaining);
+            return mContext.getResources().getString(chargingId, chargingTimeFormatted, percentage);
+        } else {
+            return mContext.getResources().getString(chargingId, percentage);
+        }
+    }
+
+    public final String getChargingTimeFormatted(Context context, long millis) {
+        if (!BatteryUtils.isChargingStringV2Enabled()) {
+            return Formatter.formatShortElapsedTimeRoundingUpToMinutes(context, millis);
+        }
+        ((SystemClockImpl) mSystemClock).getClass();
+        long currentTimeMillis = System.currentTimeMillis() + millis;
+        long fifteenMinutesMillis = PowerUtil.FIFTEEN_MINUTES_MILLIS;
+        if (millis >= fifteenMinutesMillis) {
+            long absCurrentTimeMillis = Math.abs(currentTimeMillis);
+            long absFifteenMinutesMillis = Math.abs(fifteenMinutesMillis);
+            currentTimeMillis =
+                    absFifteenMinutesMillis
+                            * (((absCurrentTimeMillis + absFifteenMinutesMillis) - 1)
+                                    / absFifteenMinutesMillis);
+        }
+        return DateFormat.getInstanceForSkeleton(
+                        android.text.format.DateFormat.getTimeFormatString(context))
+                .format(Date.from(Instant.ofEpochMilli(currentTimeMillis)));
     }
 }
